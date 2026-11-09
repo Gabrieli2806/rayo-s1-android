@@ -1,16 +1,16 @@
-# Recuperación y límites de escritura
+# Recovery and write boundaries
 
-## Qué se comprobó
+## Verified recovery paths
 
-Se comprobó Android Recovery, Rockchip Loader, lectura de particiones, escritura de recovery original, lectura de vuelta y coincidencia de MD5. También se regresó varias veces de la prueba a Android 7.1.2 y el usuario confirmó la proyección original. **MaskROM y una entrada física de emergencia no están probados.**
+Android Recovery, Rockchip Loader, partition reads, writing original recovery, readback, and matching MD5 were tested. The trial was exited repeatedly to Android 7.1.2, with stock projection confirmed by the owner. **MaskROM and physical emergency entry remain untested.**
 
-Las herramientas y el driver Rockusb de esta sesión están en el respaldo local y en el kit privado del dispositivo. Loader USB observado: `2207:310c`. No usar otro loader, DDR ni firmware de otro aparato por compartir RK3128.
+Session Rockusb drivers/tools are preserved locally and in the private kit. Observed Loader USB ID: `2207:310c`. Do not substitute another device's loader, DDR initialization, or firmware merely because it also uses RK3128.
 
-## Particiones de esta unidad
+## This unit's partitions
 
 Base: `/dev/block/platform/1021c000.rksdmmc/by-name/`.
 
-| Partición | Inicio LBA | Longitud en sectores |
+| Partition | Start LBA | Sector count |
 |---|---:|---:|
 | uboot | 0x2000 | 0x2000 |
 | trust | 0x4000 | 0x2000 |
@@ -25,23 +25,22 @@ Base: `/dev/block/platform/1021c000.rksdmmc/by-name/`.
 | kpanic | 0x130000 | 0x2000 |
 | system | 0x132000 | 0x400000 |
 | radical_update | 0x532000 | 0x20000 |
-| userdata | 0x5f2000 | resto |
+| userdata | 0x5f2000 | remaining |
 
-Estos valores son registros de esta unidad, no detección automática para otros dispositivos.
+These addresses are records for this unit, not automatic detection for other devices.
 
-## Volver al arranque original
+## Return to stock boot
 
-Dentro del ensayo con serial `0123456789ABCDEF`, el comando comprobado es `adb -s 0123456789ABCDEF shell setprop sys.powerctl reboot`. El comando `adb reboot` del adbd antiguo puede quedar esperando; no confundirlo con un bloqueo del equipo.
+In the trial with serial `0123456789ABCDEF`, the verified command is `adb -s 0123456789ABCDEF shell setprop sys.powerctl reboot`. Legacy recovery adbd's `adb reboot` may wait indefinitely; this alone does not prove a device hang.
 
-El Android normal puede reponer recovery original mediante `install-recovery.sh`. Comprobar versión, arranque completo y MD5 de recovery; no suponer que el ensayo siga instalado después de un arranque normal.
+Normal Android may restore stock recovery through `install-recovery.sh`. Check version, completed boot, and recovery MD5; do not assume trial recovery remains installed after normal boot.
 
-## Escribir recovery
+## Writing recovery
 
-La recuperación original ocupa exactamente 33.554.432 bytes. La herramienta portable solo escribe recovery después de comprobar dispositivo, versión, longitud de imagen, transferencia y lectura de vuelta. Para entrar en el ensayo desde stock: detener `flash_recovery` y reiniciar directamente a recovery tras la escritura.
+Original recovery is exactly 33,554,432 bytes. Portable tooling checks identity, version, image size, transfer, and readback before/after writing only recovery. To enter the trial from stock, stop `flash_recovery`, write/verify recovery, and reboot directly into recovery.
 
-En Loader se comprobó `WL 0x30000 0x10000 recovery.img`, seguido de `RL` de los mismos sectores y comparación. Consultar la documentación y logs locales antes de utilizar la CLI; su directorio de trabajo necesita `config.ini`. No usar una lectura virtual PARM de LBA 0 como imagen para flashear.
+Loader `WL 0x30000 0x10000 recovery.img` followed by matching `RL` and comparison was tested. Review local documentation/logs before using the CLI; its working directory requires `config.ini`. Do not flash a virtual PARM read from LBA 0 as a physical storage image.
 
-## Formato de la imagen experimental
+## Experimental image format
 
-Se conservan kernel, segundo bloque RSCE, direcciones y página de 16 KiB originales. El SHA-1 Rockchip añade `header[32:576]` al cálculo estándar. El gzip del ramdisk se rellena a múltiplo de cuatro bytes antes de declarar su tamaño y calcular el hash. Ambos detalles fueron necesarios para que el cargador aceptara la imagen.
-
+Preserve factory kernel, second RSCE block, addresses, and 16 KiB boot-image page size. Rockchip SHA-1 additionally hashes `header[32:576]`. Pad the gzip ramdisk to a four-byte length before declaring its size and hashing. Both details were necessary for loader acceptance. Boot-image packaging page size is distinct from the Linux memory page-size requirement of a newer Android release.

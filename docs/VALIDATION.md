@@ -1,13 +1,13 @@
-# Verificación de la migración — 2026-11-09
+# Migration verification — 2026-11-09
 
-- Copia del workspace y outputs: Robocopy sin errores; volumen AOSP independiente con sparse conservado.
-- Las ocho modificaciones de proyectos AOSP pasan la comprobación inversa de parches contra el volumen copiado, montado en modo lectura.
-- El empaquetador portable reproduce byte por byte recovery v12: SHA-256 `4c5fe84a7973e47b297b72afedd4abe5e7bebee52bff0c395ffa3ebe7bba0419`.
-- Rayo Dark se recompiló y su firma se verificó desde la carpeta nueva.
-- Scripts PowerShell analizados; scripts Bash comprobados con bash -n. Consulta ADB de solo lectura confirmó Android 8.1, ensayo 1 y arranque completado 1.
-- Kit ZIP: todas las entradas pasaron CRC; manifiesto individual con SHA-256 y MD5, y SHA-256 del ZIP fijado en `manifests/device-kit.json`.
-- Caché Linux: gzip completo descomprimido y CRC verificado, 39.330.508.800 bytes. Un lector WSL/DrvFS falló con E/S; la verificación completa desde Windows fue correcta. Si ocurre al trasladar, copiar el archivo a ext4 nativo antes de extraerlo.
+- Workspace/output copies: Robocopy reported no failures; the AOSP volume is an independent sparse copy.
+- All eight modified AOSP projects pass reverse patch checks against the copied, read-only mounted source volume.
+- Portable packaging reproduces recovery v12 byte for byte: SHA-256 `4c5fe84a7973e47b297b72afedd4abe5e7bebee52bff0c395ffa3ebe7bba0419`.
+- Rayo Dark was rebuilt and its signature verified from the new folder.
+- PowerShell scripts parsed successfully; Bash scripts passed `bash -n`. Read-only ADB queries confirmed Android 8.1, trial flag 1, and completed boot flag 1.
+- Device kit ZIP entries passed CRC verification. Its internal manifest records file sizes, SHA-256, and MD5; the archive SHA-256 is pinned in `manifests/device-kit.json`.
+- Linux cache: complete gzip decompression and CRC verification succeeded, covering 39,330,508,800 bytes. One WSL/DrvFS reader reported an I/O error, while complete Windows verification succeeded. If this recurs during transfer, copy the archive to native ext4 before extraction.
+- The copied source volume passed all five `e2fsck -fn` phases without errors or modifications.
+- A fresh GitHub clone was checked. The published release asset's remote SHA-256 matches the local descriptor.
 
-No se ejecutaron escrituras ni reinicios del proyector durante esta migración. La validez del respaldo no sustituye las pruebas de hardware pendientes en STATUS.md. La reconstrucción completa de AOSP no se repitió: se verificaron fuentes/parches y reproducción del empaquetado conocido.
-
-El volumen copiado completó e2fsck -fn sin errores (cinco fases, sin modificaciones). Se comprobó un clon nuevo de GitHub y la release publicada: su SHA-256 remoto coincide con el descriptor local del kit.
+No projector writes or reboots were performed during migration. Backup validation does not replace pending hardware tests in STATUS.md. A complete AOSP rebuild was not repeated; source patches and known recovery packaging were verified.

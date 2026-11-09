@@ -1,8 +1,8 @@
-# Dependencias de los componentes originales
+# Stock component dependencies
 
-Inventario de binarios Android 7.1.2. Encontrarlos no prueba compatibilidad binaria con Android 8.1.
+Android 7.1.2 binary inventory; presence does not establish Android 8.1 compatibility.
 
-| Componente | Dependencias dinámicas |
+| Component | Dynamic dependencies |
 |---|---|
 | lib/egl/libGLES_mali.so | libutils.so, libcutils.so, libbinder.so, libc.so, libdl.so, libui.so, libhardware.so, liblog.so, libc++.so, libm.so |
 | lib/hw/audio.a2dp.default.so | liblog.so, libc++.so, libdl.so, libc.so, libm.so |
@@ -33,6 +33,4 @@ Inventario de binarios Android 7.1.2. Encontrarlos no prueba compatibilidad bina
 | bin/displayd | libcutils.so, libnetutils.so, libcrypto.so, libsysutils.so, libc++.so, libdl.so, libc.so, libm.so |
 | bin/wpa_supplicant | libc.so, libcutils.so, liblog.so, libhardware_legacy.so, libiconv.so, libcrypto.so, libssl.so, libkeystore_binder.so, libkeystore-engine.so, libnl.so, libc++.so, libdl.so, libm.so |
 
-Los binarios que dependen de libgui, libui, libbinder, libutils o libstagefright requieren especial revisión: esas interfaces no son una ABI de proveedor estable entre Android 7.1 y 8.1.
-
-Los módulos .ko deben conservarse con su kernel original; no son intercambiables con un kernel más nuevo.
+Review libgui/libui/libbinder/libutils/libstagefright dependencies carefully: these are not stable vendor ABIs between 7.1 and 8.1. Kernel .ko modules must remain paired with their original kernel; they are not interchangeable with newer kernels.

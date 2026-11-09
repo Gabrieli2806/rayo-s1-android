@@ -1,14 +1,14 @@
-# Procedencia y licencias
+# Provenance and licenses
 
-Este repositorio combina trabajo de adaptación con código y referencias de varios proyectos. No hay una licencia única que cambie la licencia de todos ellos. Mantener los avisos de cada archivo.
+This repository combines adaptation work with code and references from several projects. There is no blanket license overriding their individual terms. Preserve each file's notices.
 
-- AOSP Android 8.1: manifiesto fijado `manifests/aosp-android-8.1.0_r81.xml`; Android Open Source Project, con Apache 2.0 y otras licencias por proyecto.
-- Kernel Rockchip: fuente pública `rockchip-linux/kernel`, rama release-3.10, más configuración y verificaciones conservadas en el archivo Linux. Linux y los componentes derivados del módulo Binder conservan GPLv2 y sus avisos.
-- Backport Binder: `LineageOS/android_kernel_samsung_msm8974`, revisión `390ab6ec6ff941f6407f91459612887faefa86e8`; adaptación documentada en `prepare_hwbinder_port.py` y archivos asociados.
-- Referencia HWC Rockchip: `TinkerBoard-Android/rockchip-android-rk-hardware-libhardware`, revisión `8467d9a13c64d99ade4a730d1575c2b226fa4d52`. Se contrastó con el binario de esta unidad.
-- Rockchip U-Boot, revisión `1ab854d6bb36a46c10ef93f36a8040145faceb25`, usado como referencia para el hash y alineación de las imágenes.
-- Los blobs, firmware y respaldos Canon/Rockchip del kit son específicos de esta unidad y no forman parte del historial Git. No se concede aquí una licencia de redistribución general del fabricante.
-- SmartTube y Aurora Store son aplicaciones independientes. Aurora 4.8.4 se obtuvo de F-Droid; la procedencia y firma se registran en los informes históricos.
-- El logo y los recursos del launcher pertenecen al proyecto del usuario; no asumir que están licenciados igual que AOSP.
+- AOSP Android 8.1: pinned `manifests/aosp-android-8.1.0_r81.xml`; Android Open Source Project, Apache 2.0 and other per-project licenses.
+- Rockchip kernel: public `rockchip-linux/kernel`, release-3.10 branch, plus configuration/checks in the Linux archive. Linux and derived Binder module components retain GPLv2 and their notices.
+- Binder backport: `LineageOS/android_kernel_samsung_msm8974`, revision `390ab6ec6ff941f6407f91459612887faefa86e8`; adaptation recorded in `prepare_hwbinder_port.py` and associated files.
+- Rockchip HWC reference: `TinkerBoard-Android/rockchip-android-rk-hardware-libhardware`, revision `8467d9a13c64d99ade4a730d1575c2b226fa4d52`, checked against this unit's binary.
+- Rockchip U-Boot: revision `1ab854d6bb36a46c10ef93f36a8040145faceb25`, used to investigate image hashing/alignment.
+- Canon/Rockchip proprietary components, firmware, and backups are unit-specific private kit assets outside Git history. This repository grants no general manufacturer redistribution license.
+- SmartTube and Aurora Store are independent applications. Aurora 4.8.4 came from F-Droid; provenance and signature details are retained in historical reports.
+- The logo and launcher artwork belong to the owner's project; do not assume AOSP licensing applies to them.
 
-Los scripts históricos de construcción y los manifiestos conservan los enlaces y revisiones adicionales. Las claves y credenciales del host no forman parte del código compartido.
+Historical scripts and manifests retain further URLs and revisions. Host credentials and signing keys are not shared source.

@@ -1,41 +1,40 @@
-# Construcción
+# Building
 
-## Entorno utilizado
+## Environment used
 
-Windows con WSL2 y Ubuntu 24.04; AOSP `android-8.1.0_r81`; fuentes en ext4 por sensibilidad de mayúsculas. La sesión usó un volumen disperso de 256 GiB y OUT_DIR nativo de Linux. Reservar del orden de 100 GiB libres como mínimo práctico para fuentes y compilación; la necesidad depende de los objetivos y cachés.
+Windows, WSL2, Ubuntu 24.04, and AOSP `android-8.1.0_r81`. Sources live on case-sensitive ext4. The original session used a sparse 256 GiB volume and native Linux OUT_DIR. Around 100 GiB free is a practical starting point for sources/builds; actual needs vary by targets and caches.
 
-Las herramientas antiguas de esta rama necesitan el Python 2.7.5 y JDK 8 que incluye AOSP. El host usa Python 3 para los scripts del proyecto. Se emplearon las bibliotecas libncurses/libtinfo 5 del sysroot precompilado para compatibilidad del compilador antiguo. Las rutas de las herramientas del host y versiones se documentan también en el respaldo histórico.
+Legacy tools require AOSP's bundled Python 2.7.5 and JDK 8. Project scripts use host Python 3. Bundled sysroot libncurses/libtinfo 5 libraries provide compatibility for old compilers. Additional host paths and versions are retained in historical backups.
 
-## Fuentes
+## Sources
 
-Con el volumen copiado: `bash tools/mount-aosp.sh`; después establecer `RAYO_AOSP_DIR` a `<repo>/local/aosp-volume/aosp`.
+With the copied volume: run `bash tools/mount-aosp.sh`, then set `RAYO_AOSP_DIR` to `<repo>/local/aosp-volume/aosp`.
 
-Sin volumen: preparar un directorio en un filesystem Linux sensible a mayúsculas, instalar la herramienta oficial `repo`, inicializar el manifiesto AOSP con la etiqueta `android-8.1.0_r81` y sincronizar. Para fijar las revisiones exactas antes de sincronizar, copiar `manifests/aosp-android-8.1.0_r81.xml` del proyecto como `.repo/manifests/rayo-pinned.xml` y seleccionar ese manifiesto con `repo init -m rayo-pinned.xml`. El remoto relativo `..` corresponde al manifiesto oficial `https://android.googlesource.com/platform/manifest`. No sincronizar directamente en un directorio NTFS normal.
+Without it: prepare a case-sensitive Linux directory, install the official `repo` tool, and initialize AOSP using tag `android-8.1.0_r81`. Before synchronization, copy this project's `manifests/aosp-android-8.1.0_r81.xml` to `.repo/manifests/rayo-pinned.xml` and select it with `repo init -m rayo-pinned.xml`. Its relative remote `..` corresponds to official manifest repository `https://android.googlesource.com/platform/manifest`. Do not synchronize directly into an ordinary case-insensitive NTFS directory.
 
-Los parches por proyecto se guardan en `patches/aosp/`, con una serie JSON. `python3 tools/apply-aosp-patches.py --aosp "$RAYO_AOSP_DIR"` comprueba si cada parche está pendiente o ya aplicado. No fuerza cambios cuando una fuente difiere.
+Per-project patches and their JSON series live in `patches/aosp/`. `python3 tools/apply-aosp-patches.py --aosp "$RAYO_AOSP_DIR"` checks whether each patch is pending or already applied; it does not force application to divergent sources.
 
-`bash tools/build-linux.sh libsurfaceflinger hwcomposer.rayo_fluidity validatekeymaps` configura las variables, copia los árboles de dispositivo del proyecto y compila esos objetivos. No flashea nada. Se puede pasar otro objetivo AOSP de forma explícita. El default es compilar componentes nativos, no una instalación completa.
+`bash tools/build-linux.sh libsurfaceflinger hwcomposer.rayo_fluidity validatekeymaps` configures the environment, copies device trees, and builds those targets. It does not flash the device. Other AOSP targets can be supplied explicitly. Defaults build native components rather than a complete installation.
 
-## Particularidades comprobadas
+## Verified build details
 
-- Corrección del mmap del ART **del host Linux** para poder ejecutar dex2oat con kernels nuevos. No es un cambio del runtime del proyector.
-- Wrappers Python de compiladores antiguos ajustados para usar el Python adecuado.
-- `ANDROID_DATA` del dex2oat del host debe existir.
-- El empaquetado `systemimage` original llegó a fallar por zlib de Python 2. Se utilizó make_ext4fs/mkuserimg para empaquetar el árbol ya compilado y se comprobó ext4. No confundir esa limitación de empaquetado con una compilación de framework incompleta.
-- El ramdisk final y la integración de blobs son pasos separados. Las fuentes bajo `trial-root-v01/` no contienen todos los binarios/políticas; el kit privado y el archivo AOSP los conservan.
-- El sistema activo incluye modificaciones de overlay que deben integrarse al generar una imagen completa. El archivo de sistema aislado por sí solo no representa el último estado funcional.
+- The ART mmap fix affects the **Linux host**, allowing dex2oat on newer kernels; it is not a device runtime change.
+- Legacy compiler Python wrappers were adjusted to select the appropriate interpreter.
+- Host dex2oat requires an existing `ANDROID_DATA` directory.
+- Original `systemimage` packaging encountered Python 2 zlib problems. make_ext4fs/mkuserimg packaged the compiled tree, followed by ext4 validation. This packaging limitation did not establish an incomplete framework build.
+- Final ramdisk and proprietary component integration are separate steps. `trial-root-v01/` does not contain all binaries/policies; the private kit and source volume preserve them.
+- Active overlay changes must be integrated when building a complete image. The standalone system file does not represent the latest working runtime by itself.
 
-## Kernel y HwBinder
+## Kernel and HwBinder
 
-Se usó código público Rockchip 3.10 y un backport Binder de LineageOS. Las revisiones y las comprobaciones de disposición se conservan en los scripts, JSON y archivos de commit. El kit incluye el módulo que funcionó con el kernel original. No cargar uno recompilado sin auditoría de imports, banner y layouts. El archivo nativo Linux conserva las fuentes y configuración usadas.
+Public Rockchip 3.10 sources and a LineageOS Binder backport were used. Revisions, structure-layout checks, and configurations are preserved in scripts, JSON, commit records, and the Linux archive. The kit contains the module tested with the original kernel. Audit imports, banner, and layouts before loading any rebuilt module.
 
 ## Launcher
 
-`tools/build-launcher.ps1` utiliza SDK y Java de la PC actual. Requiere la plataforma android-26 y build-tools 36.0.0, o parámetros equivalentes. La firma lee `local/secrets/` o variables de entorno; no hay una contraseña publicada. El APK resultante queda en `outputs/`.
+`tools/build-launcher.ps1` uses the current PC's SDK and Java. Install platform android-26 and build-tools 36.0.0, or provide suitable parameters. Signing reads `local/secrets/` or environment variables; no signing password is published. Output: `outputs/Rayo-Dark-TV.apk`.
 
-Las pruebas en hardware se realizan después, conservando los componentes conocidos y registrando resultados. Compilar correctamente no demuestra proyección, fluidez ni conectividad.
+Successful compilation does not establish working projection, responsiveness, or connectivity; validate those on hardware while preserving known components.
 
+## Reproduce the known recovery
 
-## Empaquetar el recovery conocido
-
-Extraer `local/device-kit/runtime/trial-root-v12.tar.gz` en un directorio Linux con tar, conservando enlaces simbólicos. Ejecutar `python3 tools/pack-recovery.py --ramdisk <directorio> --output <imagen-nueva.img>`. El original se toma de `local/device-kit/original/recovery.img`. La herramienta rechaza otra imagen base y no sobrescribe el destino. La salida de este ramdisk debe coincidir con el SHA-256 v12 de STATUS.md. No escribe en el proyector.
+Extract `local/device-kit/runtime/trial-root-v12.tar.gz` into a Linux directory using tar, preserving symlinks. Run `python3 tools/pack-recovery.py --ramdisk <directory> --output <new-image.img>`. The default base is `local/device-kit/original/recovery.img`. The tool rejects an unexpected base and refuses to overwrite an existing output. This ramdisk must reproduce the v12 SHA-256 in STATUS.md. Packing does not write to the projector.

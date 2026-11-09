@@ -1,32 +1,30 @@
-# Continuar en otra PC
+# Continuing on another PC
 
-Hay dos formas de trasladar el trabajo.
+## Complete transfer, without downloading AOSP again
 
-## Copia completa, también sin descargar AOSP
+Copy **this entire folder, including `local/`**. Git does not transfer that directory. It contains:
 
-Copiar **toda esta carpeta, incluida `local/`**. Git no transporta esa carpeta. Contiene:
+- `local/legacy-workspace/`: original workspace copy, including scripts, experiments, images, backups, and APKs.
+- `local/legacy-workspace/work/android81/build-volume.ext4`: independent sparse ext4 volume, 256 GiB logical size, containing synchronized sources. Physical allocation is much smaller; preserve sparseness when copying.
+- `local/portable/linux-native-build.tar.gz`: native Linux work archive, including OUT_DIR, built tools, and kernel sources used. This historical cache is optional for a fresh build.
+- `local/portable/rayo81-live-overlay.tar.gz`: export of the active device libraries and configuration.
+- `local/secrets/`: launcher signing key and local password file. Keep these outside Git and transfer privately to retain the installed application's signing identity.
+- `local/documentation-before-english/`: original documentation snapshot retained privately for historical comparison.
 
-- `local/legacy-workspace/`: copia del workspace original con scripts, pruebas, imágenes, respaldos y APK.
-- `local/legacy-workspace/work/android81/build-volume.ext4`: volumen ext4 disperso de 256 GiB lógicos con las fuentes sincronizadas. Su ocupación física es mucho menor; copiarlo conservando archivos dispersos. No es un enlace al workspace anterior.
-- `local/portable/linux-native-build.tar.gz`: archivo del trabajo nativo de Linux, incluido OUT_DIR, herramientas compiladas y fuentes de kernel usadas. Es una caché histórica, no un requisito para reconstruir.
-- `local/portable/rayo81-live-overlay.tar.gz`: exportación del conjunto de bibliotecas y configuraciones que estaba activo en el proyector.
-- `local/secrets/`: clave de firma del launcher y su contraseña local. Mantenerla fuera de Git y trasladarla por un medio privado si se quiere actualizar la aplicación instalada con la misma firma.
+Use enough free space and a sparse-aware Windows copy utility, such as modern Robocopy with `/SPARSE:Y`. Avoid FAT32's file-size limit. Do not copy an ext4 image while it is mounted and being modified.
 
-En Windows hace falta espacio suficiente y una copia que conserve sparse; por ejemplo Robocopy moderno con `/SPARSE:Y`. Evitar FAT32 por el límite de tamaño. No copiar una imagen ext4 mientras esté montada y modificándose.
+Install WSL2/Ubuntu and host tools. `bash tools/mount-aosp.sh` mounts the copied volume without formatting it. Recommended AOSP location: `local/aosp-volume/aosp`.
 
-Después, instalar WSL2/Ubuntu y las herramientas del host. `bash tools/mount-aosp.sh` monta el volumen copiado; no lo formatea. La ruta recomendada de AOSP es `local/aosp-volume/aosp`.
+To recover the historical Linux cache, extract `linux-native-build.tar.gz` into `/var/tmp/codex-rayo-android81/`, preserving its `work/` subdirectory. Build files often contain original absolute paths; cache regeneration may be necessary. Prefer a fresh OUT_DIR after changing paths or machines.
 
-Para recuperar la caché histórica se puede extraer `linux-native-build.tar.gz` en `/var/tmp/codex-rayo-android81/`, conservando su subcarpeta `work/`. Muchos archivos de compilación guardan rutas absolutas de la PC anterior; la caché puede requerir regeneración. Se recomienda un OUT_DIR nuevo al cambiar de ruta o máquina.
+## GitHub and fresh downloads
 
-## Solo GitHub y descargas
+Clone the private repository and run `tools/download-device-kit.ps1`. The private release includes this unit's images, original backups, Rockchip tools, and current overlay. The script verifies SHA-256 before extraction.
 
-Clonar el repositorio y ejecutar `tools/download-device-kit.ps1`. La release privada contiene el kit específico de esta unidad, con imágenes, respaldos, herramientas Rockchip y overlay actual. El script comprueba SHA-256 antes de extraerlo.
+Obtain AOSP again through the pinned manifest in `manifests/`; see [BUILD.md](BUILD.md). Upstream sources and compiled caches do not belong in Git history.
 
-Las fuentes AOSP se pueden obtener otra vez mediante el manifiesto fijado en `manifests/`. Ver `docs/BUILD.md`. No hace falta poner decenas de gigabytes de código upstream ni cachés compiladas en el historial Git.
+The signing key is not in the release. Without it, Android development and installation of the kit's pre-signed APKs remain possible; updating the launcher with its existing identity requires privately transferring `local/secrets/`.
 
-La clave de firma no se sube a la release. Sin ella se puede investigar Android y volver a instalar los APK ya firmados del kit; para actualizar el launcher con la misma identidad hay que transferir `local/secrets/` desde la PC anterior.
+## This kit is not a final ROM
 
-## Kit y entorno no equivalen a ROM final
-
-El kit permite retomar este ensayo en **la misma unidad**. No incluye una copia de cuentas o contraseñas Wi-Fi del usuario. Las aplicaciones y ajustes existentes del ensayo permanecen en el dispositivo; una instalación limpia necesita inicialización y pruebas específicas. No borrar userdata para hacer una simple migración de PC.
-
+The kit resumes this experiment on **the same unit**. It does not copy user accounts or Wi-Fi passwords. Existing trial applications/settings stay on the device; a clean installation requires separate initialization and validation. Do not erase userdata for a PC migration.

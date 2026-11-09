@@ -1,50 +1,47 @@
-# Estado de referencia — 9 de noviembre de 2026
+# Reference checkpoint — November 9, 2026
 
 ## Hardware
 
-Canon Rayo S1, RK3128 Cortex-A7 ARMv7 de cuatro núcleos, aproximadamente 1 GB de RAM y eMMC de 8 GB; Mali-400; Wi-Fi/Bluetooth AP6330. Se conserva Linux 3.10.104 de fábrica. Android 7.1.2 sigue disponible en el arranque original.
+Canon Rayo S1: RK3128 quad-core Cortex-A7 ARMv7, approximately 1 GB RAM, 8 GB eMMC, Mali-400, AP6330 Wi-Fi/Bluetooth. The factory Linux 3.10.104 kernel is preserved. Stock Android 7.1.2 remains available through normal boot.
 
-## Ensayo actual
+## Current trial
 
-Android 8.1.0 AOSP `android-8.1.0_r81`, producto `rayos1_oreo-userdebug`. Ramdisk experimental v12 en recovery; archivo de sistema de 445.988.864 bytes en userdata; modificaciones adicionales en una carpeta privada. Launcher `local.rayo.launcher/.MainActivity`.
+AOSP Android 8.1.0 `android-8.1.0_r81`, product `rayos1_oreo-userdebug`. Experimental v12 ramdisk in recovery; 445,988,864-byte system image file on userdata; additional changes in a private overlay. Launcher: `local.rayo.launcher/.MainActivity`.
 
-El sistema de prueba vive así:
-
-```
-userdata normal /data/local/tmp/rayo81-system.raw.img
-userdata normal /data/rayo81-trial/data/        -> /data del ensayo
-userdata normal /data/rayo81-trial/cache/       -> /cache del ensayo
-ensayo /data/local/tmp/rayo-live/               -> bibliotecas/configuración activas
+```text
+normal userdata /data/local/tmp/rayo81-system.raw.img
+normal userdata /data/rayo81-trial/data/        -> trial /data
+normal userdata /data/rayo81-trial/cache/       -> trial /cache
+trial /data/local/tmp/rayo-live/               -> active libraries/configuration
 ```
 
-No hay sustitución de las particiones boot o system originales. El arranque normal sigue en 7.1.2 y puede restaurar recovery original.
+Original boot and system partitions are preserved. Normal boot remains 7.1.2 and may restore stock recovery.
 
-## Comprobado en el dispositivo
+## Verified on the device
 
-- Arranque completo 8.1, proyección con colores y orientación del menú correctos.
-- Logo de arranque confirmado correcto por el usuario.
-- Botones y clic del panel integrado ekt2101.
-- La lectura de movimiento tiene intervalos medianos de unos 11,4 ms tanto en stock como en Oreo.
-- Corrección de DispSync: desapareció la dependencia de las esperas de un segundo. El usuario confirmó una mejora clara del cursor.
-- Wi-Fi encendido, conexión e internet validado, también confirmado por el usuario.
-- Lectura del nivel de batería y carga; no equivale a prueba de autonomía.
-- SmartTube 32.71 y Aurora Store 4.8.4 instalados. Aurora abre; falta validar una descarga/instalación desde la tienda.
+- Complete 8.1 boot and projected menu with correct colors/orientation.
+- Boot logo confirmed correct by the owner.
+- Integrated ekt2101 panel buttons and clicks.
+- Median raw motion-event intervals approximately 11.4 ms on both stock and Oreo.
+- DispSync initialization eliminated reliance on one-second waits; the owner confirmed clearly smoother cursor response.
+- Wi-Fi enabled, connected, and internet validated; also confirmed by the owner.
+- Battery level and charging state readable; battery runtime is not validated.
+- SmartTube 32.71 and Aurora Store 4.8.4 installed. Aurora opens; downloading/installing an app through it remains untested.
 
-## Pendiente
+## Pending
 
-Bluetooth no está integrado por completo: falta el servicio principal y sus pruebas. También faltan audio, micrófono, reproducción/decodificación de vídeo, autonomía, temperatura bajo carga, suspensión y uso prolongado. No afirmar estabilidad final ni prometer una versión posterior a 8.1 sin probarla. La compilación mantiene depuración y SELinux permisivo.
+Bluetooth is not fully integrated: its main Android service and tests are missing. Audio, microphone, hardware video decoding/playback, battery runtime, load temperature, suspend, and extended use remain unverified. Do not claim final stability or a working Android version beyond 8.1. The build retains debugging and permissive SELinux.
 
-## Componentes identificados
+## Identified components
 
-| Archivo | Identificación |
+| Component | Identification |
 |---|---|
 | `trial-recovery-v12.img` | MD5 `de1b01995022f1ae2819d135b0d51d69`; SHA-256 `4c5fe84a7973e47b297b72afedd4abe5e7bebee52bff0c395ffa3ebe7bba0419` |
 | `rayo81-system.raw.img` | MD5 `ac1bc01a07c33e93ff079063bd647acf` |
-| SurfaceFlinger activo | MD5 `ab536d6a6826341488f51b65ee0e31c0` |
-| Adaptador HWC activo | MD5 `5b414cb2fa1666325aa1a6d10f2f0015` |
-| Animación Oreo correcta | MD5 `cb105e7eebf180da65221738ed4dd2b8` |
-| Recovery original | MD5 `b32f971e7dfce13c708d264c6221844d` |
-| Kernel conservado | SHA-256 `e98f7640163344ccc5ae196310a4d3d03738adcbd29d055a3e66f1256ce6af94` |
+| Active SurfaceFlinger | MD5 `ab536d6a6826341488f51b65ee0e31c0` |
+| Active HWC adapter | MD5 `5b414cb2fa1666325aa1a6d10f2f0015` |
+| Correct Oreo animation | MD5 `cb105e7eebf180da65221738ed4dd2b8` |
+| Stock recovery | MD5 `b32f971e7dfce13c708d264c6221844d` |
+| Preserved kernel | SHA-256 `e98f7640163344ccc5ae196310a4d3d03738adcbd29d055a3e66f1256ce6af94` |
 
-La sensibilidad del puntero está en 2; el valor anterior 0 se guardó para restaurarlo. No se activó el perfil de animaciones a escala 0,5. No se instalaron servicios de Google.
-
+Pointer speed is 2; previous value 0 was saved. The 0.5 animation-scale profile was not enabled. Google services were not installed.

@@ -1,46 +1,52 @@
-# Rayo S1 — Android 8.1 experimental
+# Rayo S1 — experimental Android 8.1
 
-Adaptación de AOSP `android-8.1.0_r81` para **esta unidad Canon Rayo S1**, RK3128 ARMv7, Mali-400 y aproximadamente 1 GB de RAM. Incluye el launcher Rayo Dark, adaptación del compositor Rockchip, HwBinder, correcciones de entrada y conectividad, herramientas y documentación para continuar en otra PC.
+AOSP `android-8.1.0_r81` adaptation for **this Canon Rayo S1 unit**: RK3128 ARMv7, Mali-400, and approximately 1 GB RAM. Includes Rayo Dark TV, the Rockchip compositor adapter, HwBinder, input and connectivity fixes, tools, and documentation for continuing on another PC.
 
-**Estado comprobado el 9 de noviembre de 2026:** Android 8.1 arranca en el equipo, proyecta el menú con colores correctos, funcionan los botones integrados y Wi-Fi con internet. El usuario confirmó una mejora clara del cursor tras corregir la inicialización de DispSync. Aurora Store 4.8.4 está instalada. Bluetooth, audio, aceleración de vídeo y pruebas prolongadas siguen pendientes.
+**Verified on November 9, 2026:** Android 8.1 boots, projects the menu with correct colors, and supports the integrated buttons and Wi-Fi with internet access. The user confirmed clearly improved cursor response after the DispSync initialization fix. Aurora Store 4.8.4 is installed. Bluetooth, audio, hardware video decoding, and extended stability testing remain pending.
 
-Es una **prueba en la partición recovery con sistema y datos privados en userdata**. No se sustituyeron boot ni system originales. Que ADB identifique el ensayo como `recovery` es normal: usa el adbd estático de la recuperación original. Para identificar el Android activo, consultar `ro.build.version.release`.
+The experiment uses the **recovery partition, a system image file, and private trial data on userdata**. Original boot and system partitions remain preserved. ADB reports `recovery` because the trial uses the original recovery's static adbd; identify the running Android through `ro.build.version.release`.
 
-## Organización
+## Repository language
 
-| Ruta | Contenido |
+Documentation, development notes, new code comments, and the project foundation are maintained in **English**. Existing OEM identifiers, artifact names, and external interfaces retain their exact spelling. Conversation with the owner may remain in Spanish. This policy does not change the device UI language.
+
+## Layout
+
+| Path | Contents |
 |---|---|
-| `work/android81/device/` | Configuración del producto, adaptadores gráficos y pruebas nativas |
-| `work/android81/hwbinder-module/` | Módulo Binder adaptado y comprobaciones de ABI |
-| `work/android81/trial-root-v01/` | Fuentes/configuración del ramdisk más reciente; los binarios van en el kit local |
-| `work/android81/*.py`, `*.sh`, `*.ps1` | Herramientas y experimentos históricos, conservados para investigación |
-| `work/rayo-tv/` | Fuentes y recursos de Rayo Dark TV |
-| `work/rayo-launcher/`, `work/rayo-helper/` | Launcher inicial e inspector |
-| `manifests/`, `patches/` | Revisiones y cambios para reconstruir AOSP |
-| `tools/` | Entradas portables para esta carpeta y otra PC |
-| `docs/` | Estado actual, construcción, restauración y traslado |
-| `local/` | Copias completas, firmware, archivo AOSP y caché Linux; **fuera de Git** |
+| `work/android81/device/` | Product configuration, graphics adapters, native probes |
+| `work/android81/hwbinder-module/` | Adapted Binder module and ABI checks |
+| `work/android81/trial-root-v01/` | Latest ramdisk source/configuration; binaries are in the private kit |
+| `work/android81/*.py`, `*.sh`, `*.ps1` | Historical tools and experiments retained for investigation |
+| `work/rayo-tv/` | Rayo Dark TV sources and resources |
+| `work/rayo-launcher/`, `work/rayo-helper/` | Initial launcher and inspector |
+| `assets/branding/` | Owner-provided logo source |
+| `manifests/`, `patches/` | Pinned revisions and AOSP changes |
+| `tools/` | Portable entry points |
+| `docs/` | Current status, build, recovery, portability, and upgrade assessment |
+| `local/` | Complete backups, firmware, AOSP volume, Linux cache, private keys; **excluded from Git** |
 
-## Empezar en otra PC
+## Continue on another PC
 
-1. Clonar este repositorio privado con la cuenta autorizada.
-2. Instalar Git, GitHub CLI, Python 3 y Android Platform Tools. Para compilar: WSL2/Ubuntu, SDK/NDK y Java; ver [BUILD.md](docs/BUILD.md).
-3. Recuperar el **kit de dispositivo** de la release privada con `powershell -File tools/download-device-kit.ps1` o copiar la carpeta `local/` de la PC original. El kit lleva archivos específicos de esta unidad; no está dentro del historial Git.
-4. Ejecutar `powershell -File tools/rayo.ps1 -Action Doctor` y después `-Action Status` con el proyector conectado.
-5. Leer [STATUS.md](docs/STATUS.md), [RECOVERY.md](docs/RECOVERY.md) y [PORTABILITY.md](docs/PORTABILITY.md) antes de una escritura.
+1. Clone this private repository using an authorized account.
+2. Install Git, GitHub CLI, Python 3, and Android Platform Tools. Building also requires WSL2/Ubuntu, SDK/NDK, and Java; see [BUILD.md](docs/BUILD.md).
+3. Download the device kit using `powershell -File tools/download-device-kit.ps1`, or transfer `local/` from the original PC. Device-specific binaries are release assets rather than Git history.
+4. Run `powershell -File tools/rayo.ps1 -Action Doctor`, then `-Action Status` with the projector connected.
+5. Read [STATUS.md](docs/STATUS.md), [RECOVERY.md](docs/RECOVERY.md), and [PORTABILITY.md](docs/PORTABILITY.md) before writing anything.
 
-Para iniciar el ensayo conocido desde Android original, una vez disponible el kit: `powershell -File tools/rayo.ps1 -Action StartTrial`. La herramienta comprueba la versión y los archivos del ensayo existentes antes de escribir únicamente recovery. No instala por defecto un sistema nuevo ni borra datos.
+To start the known trial from stock Android with the kit available: `powershell -File tools/rayo.ps1 -Action StartTrial`. This checks the version and existing trial files before writing only recovery. It does not initialize a new system or erase user data by default.
 
-## Información esencial
+## Essential references
 
-- [Estado y pendientes actuales](docs/STATUS.md).
-- [Guía de construcción](docs/BUILD.md).
-- [Respaldo y recuperación](docs/RECOVERY.md).
-- [Cómo llevar todo a otra PC](docs/PORTABILITY.md).
-- [Procedencia y licencias](docs/THIRD_PARTY.md).
-- [Instrucciones para agentes](AGENTS.md), con entrada adicional [agent.md](agent.md).
+- [Current status and pending validation](docs/STATUS.md)
+- [Build instructions](docs/BUILD.md)
+- [Backup and recovery](docs/RECOVERY.md)
+- [Moving to another PC](docs/PORTABILITY.md)
+- [Upgrade feasibility and hardware limits](docs/UPGRADE_FEASIBILITY.md)
+- [Provenance and licenses](docs/THIRD_PARTY.md)
+- [Migration verification](docs/VALIDATION.md)
+- [Agent instructions](AGENTS.md), also linked from [agent.md](agent.md)
 
-Los scripts antiguos conservan rutas de la sesión original y no son la entrada recomendada en otra PC. Usar `tools/` y las guías; consultar los antiguos como registro del trabajo. Los informes en `docs/history/` describen fases anteriores y no sustituyen `docs/STATUS.md`.
+Legacy scripts retain original-session absolute paths. Prefer `tools/` and the current guides; consult legacy scripts as historical records. Reports in `docs/history/` describe earlier stages and do not supersede `docs/STATUS.md`.
 
-No se distribuye esto como firmware estable ni como imagen universal para otros equipos RK3128. No hay servicios de Google integrados. Las imágenes originales, binarios del fabricante, APK y claves locales se mantienen separados del código versionado.
-
+This is experimental firmware for this unit, not a stable or universal RK3128 ROM. Google services are not integrated. Original firmware, proprietary binaries, APKs, and signing keys are kept separate from versioned source.

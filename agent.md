@@ -1,4 +1,5 @@
-# Entrada para agentes
+# Agent entry point
 
-Las instrucciones vigentes están en [AGENTS.md](AGENTS.md). Leer también [docs/STATUS.md](docs/STATUS.md) y [docs/RECOVERY.md](docs/RECOVERY.md) antes de continuar. Este archivo existe con el nombre solicitado; AGENTS.md es la entrada reconocida por las herramientas de agentes.
+The active instructions are in [AGENTS.md](AGENTS.md). Read [docs/STATUS.md](docs/STATUS.md) and [docs/RECOVERY.md](docs/RECOVERY.md) before continuing. This filename is retained as requested; AGENTS.md is the conventional agent instruction entry point.
 
+All maintained documentation and new development text must be in English. Conversation with the owner may remain in Spanish.
