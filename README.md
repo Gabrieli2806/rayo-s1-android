@@ -46,6 +46,7 @@ To start the known trial from stock Android with the kit available: `powershell 
 - [Upgrade feasibility and hardware limits](docs/UPGRADE_FEASIBILITY.md)
 - [Android 12 TV source audit and porting requirements](docs/ANDROID12_TV_ASSESSMENT.md)
 - [Hardware validation and v14 integration](docs/DEVICE_VALIDATION.md)
+- [Previous-system backup and proposed primary boot](docs/PRIMARY_BOOT_PLAN.md)
 - [Provenance and licenses](docs/THIRD_PARTY.md)
 - [Migration verification](docs/VALIDATION.md)
 - [Agent instructions](AGENTS.md), also linked from [agent.md](agent.md)

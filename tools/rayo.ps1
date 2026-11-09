@@ -64,6 +64,10 @@ function Assert-RayoRemoteMd5([string]$Remote,[string]$Expected){
 }
 if($Action -eq 'BootOriginal'){
     if($rayoVersion -eq '7.1.2'){Write-Output 'Original Android is already running';return}
+    $rayoPreviousBoot=(Invoke-RayoRoot @('md5sum','/dev/block/platform/1021c000.rksdmmc/by-name/boot')) -join "`n"
+    if($rayoPreviousBoot -notmatch '^a42af2dbc934f2fc77bff14de619f116\s'){
+        throw 'Normal boot no longer points to the previous Android. Review PRIMARY_BOOT_PLAN.md and restore the verified previous boot before requesting it.'
+    }
     Invoke-RayoAdb @('-s',$rayoSerial,'shell','setprop','sys.powerctl','reboot') | Out-Host
     return
 }
