@@ -9,3 +9,5 @@
 - Caché Linux: gzip completo descomprimido y CRC verificado, 39.330.508.800 bytes. Un lector WSL/DrvFS falló con E/S; la verificación completa desde Windows fue correcta. Si ocurre al trasladar, copiar el archivo a ext4 nativo antes de extraerlo.
 
 No se ejecutaron escrituras ni reinicios del proyector durante esta migración. La validez del respaldo no sustituye las pruebas de hardware pendientes en STATUS.md. La reconstrucción completa de AOSP no se repitió: se verificaron fuentes/parches y reproducción del empaquetado conocido.
+
+El volumen copiado completó e2fsck -fn sin errores (cinco fases, sin modificaciones). Se comprobó un clon nuevo de GitHub y la release publicada: su SHA-256 remoto coincide con el descriptor local del kit.
