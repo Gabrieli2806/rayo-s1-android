@@ -24,6 +24,8 @@ The private release `previous-main-7.1.2` contains `rayo-s1-previous-main-7.1.2.
 
 This is not a full eMMC dump. In particular, do not restore misc routinely: it was captured while the recovery-slot trial was active. No MaskROM/physical recovery guarantee is implied.
 
+A separate read-only e2fsck 1.47 inspection reported only an unset padding area at the end of the inode bitmap. The raw snapshot was not repaired or changed: it intentionally matches the source partition byte for byte, including that metadata condition. Transfer/hash verification must not be described as a clean-filesystem result.
+
 ## Concrete proposed installation
 
 The conservative proposal makes the existing 8.1 runtime the normal startup while **retaining the 7.1.2 system partition and its userdata**. It does not erase 7.1.2, repartition, wipe data, or write kernel/bootloader/resource. Runtime behavior remains the tested file-backed v14 system plus overlay/private data; this is not a newly integrated monolithic system image.
@@ -36,4 +38,4 @@ The conservative proposal makes the existing 8.1 runtime the normal startup whil
 
 Factory boot and recovery use identical kernel bytes and load addresses: kernel 0x60408000, ramdisk 0x62000000, second block 0x60f00000, tags 0x60088000, image page size 16,384 bytes. The proposed boot candidate is byte-identical to verified recovery v14, SHA-256 `9e7c48594fae621e74a37ea4bd427fa3284f0ab578cbf8ff94187bb654278c2d`. These checks reduce differences; they do not prove normal boot or independent physical rescue.
 
-`python tools/main-boot.py --action plan` performs inspection without writes. The install action requires `--action install-experimental --accept-experimental` and a published backup. Its restore action writes only the verified previous boot image and requests no reboot. Those actions have not been executed during preparation. See RECOVERY.md for the tested recovery boundaries.
+`python tools/main-boot.py --action plan` performs inspection without writes. The install action requires `--action install-experimental --accept-experimental` and a published backup. `--action restore-previous-boot --execute` writes only the verified previous boot image and requests no reboot. Restoration accepts the identified 8.1 runtime or the identified original recovery with root ADB and matching original recovery hash; it does not establish a physical way to enter recovery. Those write actions have not been executed during preparation. See RECOVERY.md for the tested recovery boundaries.

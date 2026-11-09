@@ -31,17 +31,28 @@ def main():
     parser.add_argument('--action', choices=['plan', 'install-experimental', 'restore-previous-boot'], default='plan')
     parser.add_argument('--accept-experimental', action='store_true',
                         help='Explicitly accept the documented incomplete stability validation')
+    parser.add_argument('--execute', action='store_true', help='Explicitly execute a previous-boot restoration')
     args = parser.parse_args()
     adb = shutil.which('adb')
     if not adb:
         raise SystemExit('Install Android Platform Tools')
-    prefix = [adb, '-s', '0123456789ABCDEF']
+    devices = subprocess.check_output([adb, 'devices'], text=True)
+    connected = [line.split()[0] for line in devices.splitlines()[1:]
+                 if len(line.split()) >= 2 and line.split()[0] in ('0123456789ABCDEF', '3GKL2KGCA400000000')
+                 and line.split()[1] in ('device', 'recovery')]
+    if len(connected) != 1:
+        raise SystemExit('Exactly one known, authorized Rayo session must be connected')
+    prefix = [adb, '-s', connected[0]]
 
     def shell(*command):
         return subprocess.check_output(prefix+['shell']+list(command), text=True, timeout=180).strip()
 
-    if shell('getprop', 'ro.build.version.release') != '8.1.0' or shell('getprop', 'ro.rayo.trial') != '1':
-        raise SystemExit('Requires the identified running 8.1 trial')
+    version = shell('getprop', 'ro.build.version.release')
+    trial = version == '8.1.0' and shell('getprop', 'ro.rayo.trial') == '1'
+    rescue = (args.action == 'restore-previous-boot' and connected[0] == '0123456789ABCDEF'
+              and version in ('', '7.1.2') and shell('uname', '-r') == '3.10.104')
+    if not trial and not rescue:
+        raise SystemExit('Requires the identified 8.1 runtime or original recovery for restoration')
     if shell('id', '-u') != '0':
         raise SystemExit('Requires trial root')
     previous, old_data = checked_file('original/boot.img', OLD_BOOT)
@@ -58,6 +69,8 @@ def main():
         raise SystemExit('Factory kernel payload changed')
     boot_md5 = shell('md5sum', BOOT).split()[0]
     recovery_md5 = shell('md5sum', RECOVERY).split()[0]
+    if rescue and recovery_md5 != OLD_RECOVERY:
+        raise SystemExit('Rescue session does not have the verified original recovery')
     if boot_md5 not in (OLD_BOOT, V14) or recovery_md5 not in (OLD_RECOVERY, V14):
         raise SystemExit('Unexpected installed boot/recovery state')
     plan = {
@@ -74,8 +87,10 @@ def main():
     print(json.dumps(plan, indent=2), flush=True)
     if args.action == 'plan':
         return
-    if not args.accept_experimental:
-        parser.error('Write actions require --accept-experimental after reviewing the plan')
+    if args.action == 'install-experimental' and not args.accept_experimental:
+        parser.error('Installation requires --accept-experimental after reviewing the plan')
+    if args.action == 'restore-previous-boot' and not args.execute:
+        parser.error('Restoration requires explicit --execute')
 
     def write_image(path, target, expected):
         remote = '/data/local/tmp/rayo-main-boot-operation.img'
