@@ -91,16 +91,19 @@ if($Action -eq 'StartTrial' -and $rayoVersion -eq '8.1.0'){
     Write-Output 'Android 8.1 trial is already running';return
 }
 if($Action -eq 'StartTrial'){
-    $rayoImage=Assert-RayoFile 'boot/trial-recovery-v12.img'
+    $rayoImage=Assert-RayoFile 'boot/trial-recovery-v14.img'
     Assert-RayoRemoteMd5 '/data/local/tmp/rayo81-system.raw.img' 'ac1bc01a07c33e93ff079063bd647acf'
     Assert-RayoRemoteMd5 '/data/rayo81-trial/data/local/tmp/rayo-live/lib/libsurfaceflinger.so' 'ab536d6a6826341488f51b65ee0e31c0'
     Assert-RayoRemoteMd5 '/data/rayo81-trial/data/local/tmp/rayo-live/lib/hw/hwcomposer.rk30board.so' '5b414cb2fa1666325aa1a6d10f2f0015'
+    Assert-RayoRemoteMd5 '/data/rayo81-trial/data/local/tmp/rayo-live/vendor/lib/libbt-vendor.so' 'a098a2c5f41758f00198e25fe6550c1a'
+    Assert-RayoRemoteMd5 '/data/rayo81-trial/data/local/tmp/rayo-live/vendor/lib/libtg.so' '727917f74ddb111c7aea0b16733127e9'
+    Assert-RayoRemoteMd5 '/data/rayo81-trial/data/local/tmp/rayo-live/etc/media_codecs.xml' '0014166bd070664d7df9da0f4016c61a'
 }elseif($Action -eq 'RestoreOriginalRecovery'){
     $rayoImage=Assert-RayoFile 'original/recovery.img'
 }else{throw 'Unsupported action'}
 if((Get-Item $rayoImage).Length -ne 33554432){throw 'Recovery must be exactly 32 MiB'}
 $rayoMd5=(Get-FileHash $rayoImage -Algorithm MD5).Hash.ToLower()
-if($Action -eq 'StartTrial' -and $rayoMd5 -ne 'de1b01995022f1ae2819d135b0d51d69'){throw 'Unexpected trial recovery image'}
+if($Action -eq 'StartTrial' -and $rayoMd5 -ne '7a3ac489b05f0f2e9cde16280551511a'){throw 'Unexpected trial recovery image'}
 if($Action -eq 'RestoreOriginalRecovery' -and $rayoMd5 -ne 'b32f971e7dfce13c708d264c6221844d'){throw 'Unexpected original recovery image'}
 Invoke-RayoAdb @('-s',$rayoSerial,'push',$rayoImage,'/data/local/tmp/rayo-recovery-candidate.img') | Out-Host
 Assert-RayoRemoteMd5 '/data/local/tmp/rayo-recovery-candidate.img' $rayoMd5

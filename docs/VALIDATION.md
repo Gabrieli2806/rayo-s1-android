@@ -11,3 +11,7 @@
 - A fresh GitHub clone was checked. The published release asset's remote SHA-256 matches the local descriptor.
 
 No projector writes or reboots were performed during migration. Backup validation does not replace pending hardware tests in STATUS.md. A complete AOSP rebuild was not repeated; source patches and known recovery packaging were verified.
+
+## Subsequent hardware work, after migration
+
+Later work did write/read back recovery v13 and v14 and perform recovery-slot reboots; the no-write statement above applies only to the migration phase. v13 revealed a radio-HAL capability race. v14 corrected startup ordering, and a fresh full boot had correct radio UIDs/capabilities, validated Wi-Fi internet, Bluetooth ON, and owner-confirmed Rockchip AVC/AAC projection/audio. Original boot/system/kernel remained preserved. Pairing and extended stability are still pending. See DEVICE_VALIDATION.md.

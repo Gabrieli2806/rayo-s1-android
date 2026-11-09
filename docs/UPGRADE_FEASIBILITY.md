@@ -1,6 +1,6 @@
 # Newer Android feasibility and hardware limits
 
-Assessment date: November 9, 2026. This is a research plan, not evidence that a newer Android release boots on this unit. Android 8.1 v12 remains the only verified newer-Android checkpoint.
+Assessment date: November 9, 2026. This is a research plan, not evidence that a newer Android release boots on this unit. Android 8.1 is the only verified newer platform; v14 is the current checkpoint. The subsequent [Android 12 TV assessment](ANDROID12_TV_ASSESSMENT.md) contains actual source/runtime findings, without claiming a working 12 port.
 
 ## Current upstream versus this board
 

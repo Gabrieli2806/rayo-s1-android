@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <!-- Start the framework Bluetooth service; pairing remains a separate test. -->
+    <feature name="android.hardware.bluetooth" />
+    <feature name="android.hardware.bluetooth_le" />
+</permissions>

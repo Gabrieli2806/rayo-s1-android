@@ -38,3 +38,13 @@ Successful compilation does not establish working projection, responsiveness, or
 ## Reproduce the known recovery
 
 Extract `local/device-kit/runtime/trial-root-v12.tar.gz` into a Linux directory using tar, preserving symlinks. Run `python3 tools/pack-recovery.py --ramdisk <directory> --output <new-image.img>`. The default base is `local/device-kit/original/recovery.img`. The tool rejects an unexpected base and refuses to overwrite an existing output. This ramdisk must reproduce the v12 SHA-256 in STATUS.md. Packing does not write to the projector.
+
+## Current v14 integration
+
+Install NDK 25.2.9519653 and run `tools/build-radio-tools.ps1`. Then `bash tools/prepare-trial-recovery.sh v14` extracts the preserved v12 ramdisk into a new Linux staging directory, copies the current init configuration and helper, and packs a new image without flashing. Existing outputs are never overwritten. To reproduce the released image exactly, extract the kit's `runtime/trial-root-v14.tar.gz` and pass that to the packer; compare against the v14 SHA-256 in STATUS.md.
+
+`tools/patch-bt-vendor.py --input <factory-libbt-vendor.so> --output <new-file>` accepts only the specific original SHA-256. The patched file needs libtg.so; `build-radio-tools.ps1` links it with libdl as a retained dependency. Keep factory bytes separately. Original bcm40183b2.hcd and the original Rockchip OMX/VPU libraries come from this unit's private backup, never from another TV-box image.
+
+The product tree now declares the Bluetooth features, media XML, and a libtg build target. A full AOSP rebuild still requires the separate proprietary-component/ramdisk integration documented above; adding these declarations does not itself reconstruct the final overlay. No full AOSP rebuild was repeated for v14. Tested components were built with the recorded NDK and integrated into the isolated trial.
+
+The active XML enables the stock AVC component plus software fallbacks; `media_codecs.software.xml` preserves the software-only baseline. Source includes retain their AOSP notices. Other hardware codec formats remain undeclared until tested.

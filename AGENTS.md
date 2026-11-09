@@ -32,6 +32,9 @@ Read `docs/STATUS.md`, `docs/RECOVERY.md`, and `docs/PORTABILITY.md` first. The 
 - Wi-Fi requires original `fw_RK903_ag.bin`, AP6330 configuration, HAL NET_ADMIN/NET_RAW capabilities, and wpa_supplicant started on wlan0. The userdata-backed trial needs the documented limited capability treatment.
 - Boot images use Rockchip's extended SHA-1 and a gzip ramdisk padded to four-byte length. Generic Android packaging must preserve these requirements.
 - Normal 7.1.2 boot automatically restores stock recovery. Stop `flash_recovery`, write and verify trial recovery, then reboot directly into recovery.
+- Current checkpoint is v14. Stop wifi_hal_legacy/bluetooth-1-0 before applying limited executable file capabilities, and start them only after permissions/capabilities are ready. v13 exposed a boot race: already-running HALs did not inherit newly assigned file capabilities.
+- Bluetooth uses the exact factory-library import patch and libtg.so null-timer guard, original bcm40183b2.hcd, feature declarations, and UID bluetooth with NET_ADMIN. Preserve the factory library separately. Do not restore the temporary root/LD_PRELOAD diagnostic as the production path.
+- The Rockchip AVC sample was physically confirmed after reboot, with OMX.rk.video_decoder.avc selected in logs. Do not generalize this to every codec, resolution, DRM service, or prolonged playback. Bluetooth ON/discovery is not pairing verification.
 
 ## Validation
 
@@ -40,3 +43,5 @@ Back up and checksum components before replacing them. Stop consumers before ove
 ## Handoff
 
 Prefer portable `tools/` entry points. Historical copies may contain original absolute paths. AOSP and Linux caches are in `local/`; pinned manifests support fresh source downloads. Transfer `local/secrets/` privately to update the installed launcher with the same signing identity. Read `docs/UPGRADE_FEASIBILITY.md` before proposing newer Android versions; none beyond 8.1 is verified on this unit.
+
+The owner requested Android 12 TV if adaptation is modest. The source/runtime audit in `docs/ANDROID12_TV_ASSESSMENT.md` found substantial work. Do not claim an Android 12 build or port exists, flash ADT-3/TV-box images, or treat the bounded source-audit lock as a full platform manifest.

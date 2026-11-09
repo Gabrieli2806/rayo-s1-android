@@ -6,7 +6,7 @@ Canon Rayo S1: RK3128 quad-core Cortex-A7 ARMv7, approximately 1 GB RAM, 8 GB eM
 
 ## Current trial
 
-AOSP Android 8.1.0 `android-8.1.0_r81`, product `rayos1_oreo-userdebug`. Experimental v12 ramdisk in recovery; 445,988,864-byte system image file on userdata; additional changes in a private overlay. Launcher: `local.rayo.launcher/.MainActivity`.
+AOSP Android 8.1.0 `android-8.1.0_r81`, product `rayos1_oreo-userdebug`. Experimental v14 ramdisk in recovery; 445,988,864-byte system image file on userdata; additional changes in a private overlay. Launcher: `local.rayo.launcher/.MainActivity`. Kit v0.2 captures this state; kit v0.1 preserves the earlier v12 checkpoint.
 
 ```text
 normal userdata /data/local/tmp/rayo81-system.raw.img
@@ -27,21 +27,32 @@ Original boot and system partitions are preserved. Normal boot remains 7.1.2 and
 - Wi-Fi enabled, connected, and internet validated; also confirmed by the owner.
 - Battery level and charging state readable; battery runtime is not validated.
 - SmartTube 32.71 and Aurora Store 4.8.4 installed. Aurora opens; downloading/installing an app through it remains untested.
+- Speaker audio physically confirmed with a generated 440 Hz tone.
+- Six-second 640×360 AVC/AAC motion/color sample physically confirmed with sound. Runtime selected OMX.rk.video_decoder.avc, not the software fallback. Also confirmed after the full v14 reboot.
+- Bluetooth framework/HAL integrated, firmware loaded, ON automatically after v14 reboot; owner confirmed nearby devices appear. HAL remains UID 1002 with only NET_ADMIN; no temporary root HAL remains.
+- Wi-Fi automatically reconnected with Android-validated internet after v14 reboot. HAL UID 1010 retained NET_ADMIN/NET_RAW. No manual post-boot capability repair was used for the successful v14 test.
 
 ## Pending
 
-Bluetooth is not fully integrated: its main Android service and tests are missing. Audio, microphone, hardware video decoding/playback, battery runtime, load temperature, suspend, and extended use remain unverified. Do not claim final stability or a working Android version beyond 8.1. The build retains debugging and permissive SELinux.
+Bluetooth pairing/reconnect/HID/A2DP/BLE and power behavior remain untested; the owner had no accessory available. Microphone, broader video formats/resolutions, HD/long playback, seeking, SmartTube playback, protected streaming, battery runtime, load temperature, suspend, and extended use remain unverified. Do not claim final stability or a working Android version beyond 8.1. The build retains debugging and permissive SELinux.
 
 ## Identified components
 
 | Component | Identification |
 |---|---|
-| `trial-recovery-v12.img` | MD5 `de1b01995022f1ae2819d135b0d51d69`; SHA-256 `4c5fe84a7973e47b297b72afedd4abe5e7bebee52bff0c395ffa3ebe7bba0419` |
+| `trial-recovery-v14.img` | MD5 `7a3ac489b05f0f2e9cde16280551511a`; SHA-256 `9e7c48594fae621e74a37ea4bd427fa3284f0ab578cbf8ff94187bb654278c2d` |
+| Earlier `trial-recovery-v12.img` | MD5 `de1b01995022f1ae2819d135b0d51d69`; SHA-256 `4c5fe84a7973e47b297b72afedd4abe5e7bebee52bff0c395ffa3ebe7bba0419` |
 | `rayo81-system.raw.img` | MD5 `ac1bc01a07c33e93ff079063bd647acf` |
 | Active SurfaceFlinger | MD5 `ab536d6a6826341488f51b65ee0e31c0` |
 | Active HWC adapter | MD5 `5b414cb2fa1666325aa1a6d10f2f0015` |
 | Correct Oreo animation | MD5 `cb105e7eebf180da65221738ed4dd2b8` |
 | Stock recovery | MD5 `b32f971e7dfce13c708d264c6221844d` |
 | Preserved kernel | SHA-256 `e98f7640163344ccc5ae196310a4d3d03738adcbd29d055a3e66f1256ce6af94` |
+| Patched BT vendor library | MD5 `a098a2c5f41758f00198e25fe6550c1a`; SHA-256 `eae7d30b7ef73a7471c505085980b6b8a5e955e2fac238e8e6960dc5e83d0e0f` |
+| Active libtg.so | MD5 `727917f74ddb111c7aea0b16733127e9` |
+| Stock video plugin libstagefrighthw.so | MD5 `a63974573f2eebaa48445ff606643376` |
+| Active codec configuration | MD5 `0014166bd070664d7df9da0f4016c61a` |
 
 Pointer speed is 2; previous value 0 was saved. The 0.5 animation-scale profile was not enabled. Google services were not installed.
+
+One post-v14 diagnostic snapshot reported about 621,468 KiB available including reclaimable cache, with 182,984 KiB immediately free. This is a point-in-time measurement, not an app workload benchmark. See DEVICE_VALIDATION.md for integration details and ANDROID12_TV_ASSESSMENT.md for the separate Android 12 research result.

@@ -26,6 +26,9 @@ on post-fs
     exec u:r:init:s0 root root -- /sbin/busybox sh /sbin/rayo-overlay.sh
     restorecon_recursive /vendor/bin /vendor/lib /vendor/etc
     restorecon_recursive /system/lib /system/etc
+    # Keep radio HALs stopped until executable capabilities and node ownership are ready.
+    stop wifi_hal_legacy
+    stop bluetooth-1-0
     insmod /drmboot.ko
     insmod /sbin/rayo_hwbinder.ko armed=1
     wait /dev/hwbinder 5
@@ -33,6 +36,7 @@ on post-fs
     chmod 0666 /dev/hwbinder
     chmod 0666 /dev/vndbinder
     exec u:r:init:s0 root root -- /sbin/rayo-wifi-caps --apply
+    exec u:r:init:s0 root root -- /sbin/rayo-wifi-caps --apply-bluetooth
 
 on post-fs-data
     mkdir /data/misc/bluedroid 0770 bluetooth bluetooth
@@ -44,6 +48,19 @@ on post-fs-data
     chown wifi wifi /sys/module/bcmdhd/parameters/firmware_path
     chmod 0660 /dev/ttyS0
     chown bluetooth bluetooth /dev/ttyS0
+    setprop ro.bt.bdaddr_path /data/misc/bluetooth/bdaddr
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chown bluetooth bluetooth /proc/bluetooth/sleep/lpm
+    chown bluetooth bluetooth /proc/bluetooth/sleep/btwrite
+    chmod 0660 /proc/bluetooth/sleep/lpm
+    chmod 0660 /proc/bluetooth/sleep/btwrite
+    chown bluetooth bluetooth /dev/vendor_storage
+    chown bluetooth bluetooth /dev/vflash
+    chmod 0660 /dev/vendor_storage
+    chmod 0660 /dev/vflash
+    start wifi_hal_legacy
+    start bluetooth-1-0
 
 on boot
     setprop sys.usb.configfs 0

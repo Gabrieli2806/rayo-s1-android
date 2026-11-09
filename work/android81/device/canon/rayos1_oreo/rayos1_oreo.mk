@@ -32,7 +32,14 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.mapper@2.0-impl \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service libcompiler_rt \
-    android.hardware.keymaster@3.0-impl android.hardware.keymaster@3.0-service
+    android.hardware.keymaster@3.0-impl android.hardware.keymaster@3.0-service libtg
+
+PRODUCT_COPY_FILES += \
+    device/canon/rayos1_oreo/permissions/android.hardware.bluetooth.xml:system/etc/permissions/android.hardware.bluetooth.xml \
+    device/canon/rayos1_oreo/media/media_codecs.xml:system/etc/media_codecs.xml \
+    device/canon/rayos1_oreo/media/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
+    device/canon/rayos1_oreo/media/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml \
+    device/canon/rayos1_oreo/media/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml
 
 PRODUCT_SYSTEM_SERVER_APPS += FusedLocation InputDevices KeyChain
 PRODUCT_PROPERTY_OVERRIDES += \

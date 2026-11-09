@@ -29,6 +29,8 @@ Base: `/dev/block/platform/1021c000.rksdmmc/by-name/`.
 
 These addresses are records for this unit, not automatic detection for other devices.
 
+Current trial checkpoint is v14 in private kit v0.2. Earlier v12 remains in kit v0.1. To roll back the whole runtime, restore its matching overlay as well as recovery; changing only recovery does not restore libraries/configuration stored on userdata. Preserve current runtime before rollback and do not erase trial application data.
+
 ## Return to stock boot
 
 In the trial with serial `0123456789ABCDEF`, the verified command is `adb -s 0123456789ABCDEF shell setprop sys.powerctl reboot`. Legacy recovery adbd's `adb reboot` may wait indefinitely; this alone does not prove a device hang.

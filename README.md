@@ -2,7 +2,7 @@
 
 AOSP `android-8.1.0_r81` adaptation for **this Canon Rayo S1 unit**: RK3128 ARMv7, Mali-400, and approximately 1 GB RAM. Includes Rayo Dark TV, the Rockchip compositor adapter, HwBinder, input and connectivity fixes, tools, and documentation for continuing on another PC.
 
-**Verified on November 9, 2026:** Android 8.1 boots, projects the menu with correct colors, and supports the integrated buttons and Wi-Fi with internet access. The user confirmed clearly improved cursor response after the DispSync initialization fix. Aurora Store 4.8.4 is installed. Bluetooth, audio, hardware video decoding, and extended stability testing remain pending.
+**Verified on November 9, 2026, checkpoint v14:** Android 8.1 boots, projects correctly, supports the integrated buttons, and reconnects Wi-Fi with validated internet. The owner confirmed speaker audio and a projected AVC/AAC sample using the Rockchip decoder after a complete reboot. Bluetooth enables automatically and the owner confirmed nearby devices appear; pairing remains untested because no accessory was available. Aurora Store 4.8.4 is installed. Extended stability, power, and broader media validation remain pending.
 
 The experiment uses the **recovery partition, a system image file, and private trial data on userdata**. Original boot and system partitions remain preserved. ADB reports `recovery` because the trial uses the original recovery's static adbd; identify the running Android through `ro.build.version.release`.
 
@@ -20,6 +20,7 @@ Documentation, development notes, new code comments, and the project foundation 
 | `work/android81/*.py`, `*.sh`, `*.ps1` | Historical tools and experiments retained for investigation |
 | `work/rayo-tv/` | Rayo Dark TV sources and resources |
 | `work/rayo-launcher/`, `work/rayo-helper/` | Initial launcher and inspector |
+| `work/rayo-validation/`, `work/probes/` | Hardware validation app and bounded native probes |
 | `assets/branding/` | Owner-provided logo source |
 | `manifests/`, `patches/` | Pinned revisions and AOSP changes |
 | `tools/` | Portable entry points |
@@ -43,6 +44,8 @@ To start the known trial from stock Android with the kit available: `powershell 
 - [Backup and recovery](docs/RECOVERY.md)
 - [Moving to another PC](docs/PORTABILITY.md)
 - [Upgrade feasibility and hardware limits](docs/UPGRADE_FEASIBILITY.md)
+- [Android 12 TV source audit and porting requirements](docs/ANDROID12_TV_ASSESSMENT.md)
+- [Hardware validation and v14 integration](docs/DEVICE_VALIDATION.md)
 - [Provenance and licenses](docs/THIRD_PARTY.md)
 - [Migration verification](docs/VALIDATION.md)
 - [Agent instructions](AGENTS.md), also linked from [agent.md](agent.md)
@@ -50,3 +53,5 @@ To start the known trial from stock Android with the kit available: `powershell 
 Legacy scripts retain original-session absolute paths. Prefer `tools/` and the current guides; consult legacy scripts as historical records. Reports in `docs/history/` describe earlier stages and do not supersede `docs/STATUS.md`.
 
 This is experimental firmware for this unit, not a stable or universal RK3128 ROM. Google services are not integrated. Original firmware, proprietary binaries, APKs, and signing keys are kept separate from versioned source.
+
+The current private kit is `device-kit-v0.2` (v14). The original v12 kit remains available as `device-kit-v0.1`; preserve both. If an older `local/device-kit` exists, retain it under a different name before downloading the new kit. Android 12 TV has been investigated, not built or installed; the audit found a substantial board/kernel/graphics port rather than a small firmware swap.
