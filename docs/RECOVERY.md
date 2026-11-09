@@ -33,7 +33,7 @@ Current trial checkpoint is v14 in private kit v0.2. Earlier v12 remains in kit 
 
 ## Return to stock boot
 
-In the trial with serial `0123456789ABCDEF`, the verified command is `adb -s 0123456789ABCDEF shell setprop sys.powerctl reboot`. Legacy recovery adbd's `adb reboot` may wait indefinitely; this alone does not prove a device hang.
+After normal-boot promotion, `adb -s 0123456789ABCDEF shell setprop sys.powerctl reboot` restarts 8.1. It no longer returns to 7.1.2. First restore the verified previous boot using `python tools/main-boot.py --action restore-previous-boot --execute`, then request normal reboot. This post-promotion restore path is prepared, not yet tested. Original recovery is independently restored; physical emergency entry remains unproven. Legacy static adbd's `adb reboot` may wait indefinitely; this alone does not prove a device hang.
 
 Normal Android may restore stock recovery through `install-recovery.sh`. Check version, completed boot, and recovery MD5; do not assume trial recovery remains installed after normal boot.
 

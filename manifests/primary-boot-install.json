@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-09",
+  "owner_accepted_experimental_default": true,
+  "normal_boot_verified": true,
+  "android": "8.1.0",
+  "ro_bootmode": "emmc",
+  "boot_md5": "7a3ac489b05f0f2e9cde16280551511a",
+  "recovery_md5": "b32f971e7dfce13c708d264c6221844d",
+  "candidate_sha256": "9e7c48594fae621e74a37ea4bd427fa3284f0ab578cbf8ff94187bb654278c2d",
+  "previous_main_backup_release": "previous-main-7.1.2",
+  "previous_system_preserved": true,
+  "userdata_erased": false,
+  "wifi_internet_validated": true,
+  "bluetooth_on": true,
+  "owner_confirmed_projection_audio_video_controls": true,
+  "stability": "Experimental; basic tests passed, not final stable",
+  "pending": [
+    "cold power-on",
+    "extended use",
+    "pairing",
+    "power/suspend/thermal validation",
+    "independent physical rescue entry"
+  ]
+}

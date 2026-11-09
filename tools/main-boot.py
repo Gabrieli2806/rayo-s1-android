@@ -75,13 +75,14 @@ def main():
         raise SystemExit('Unexpected installed boot/recovery state')
     plan = {
         'status': 'Experimental; not a final stable release',
+        'primary_boot_configured': boot_md5 == V14 and recovery_md5 == OLD_RECOVERY,
         'current_boot_md5': boot_md5, 'current_recovery_md5': recovery_md5,
         'candidate_sha256': V14_SHA,
         'install_writes': ['recovery: original independent recovery', 'boot: v14 normal-boot candidate'],
         'preserved': ['previous 7.1.2 system partition', 'kernel partition', 'bootloader', 'resource', 'userdata'],
         'runtime': 'Existing v14 file-backed system and private trial data; no wipe',
         'rollback': 'Restore the verified previous boot image; system remains on device',
-        'pending': ['normal-boot installation test', 'independent physical rescue entry',
+        'pending': ['independent physical rescue entry',
                     'extended use', 'Bluetooth pairing', 'power/suspend/thermal validation'],
     }
     print(json.dumps(plan, indent=2), flush=True)

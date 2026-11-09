@@ -1,10 +1,10 @@
 # Main-boot proposal and previous-system backup
 
-Date: November 9, 2026. **Prepared, not installed. The unit still uses its previous 7.1.2 boot partition and v14 through recovery.**
+Date: November 9, 2026. **Installed and verified: v14 is now the normal boot image; original independent recovery is restored. The previous 7.1.2 system partition is retained.**
 
 ## Stability boundary and authorization
 
-The owner asked to replace the previous system if v14 was stable. Core projection/input/Wi-Fi/audio and the Rockchip AVC sample have passed, with Bluetooth ON/discovery, but extended use, pairing, suspend/power, thermal behavior, and independent physical emergency entry remain unverified. This is still an experimental checkpoint. The conditional request is not treated as unconditional acceptance of those limitations. Do not mark the primary installation complete or write boot unless the owner explicitly accepts using the experimental checkpoint as the default, or the required stability gate is actually satisfied.
+The owner initially conditioned replacement on stability. After the remaining limitations were explained and the backup/proposal were complete, the owner explicitly accepted making experimental 8.1 the default. The guarded installation was then executed. Do not request the same acceptance again for this completed change. Core projection/input/Wi-Fi/audio and the Rockchip AVC sample passed, with Bluetooth ON/discovery; extended use, pairing, suspend/power, thermal behavior, cold-start validation, and independent physical emergency entry remain pending. This is not a final stable release.
 
 ## Previous Android 7.1.2 preserved
 
@@ -26,16 +26,28 @@ This is not a full eMMC dump. In particular, do not restore misc routinely: it w
 
 A separate read-only e2fsck 1.47 inspection reported only an unset padding area at the end of the inode bitmap. The raw snapshot was not repaired or changed: it intentionally matches the source partition byte for byte, including that metadata condition. Transfer/hash verification must not be described as a clean-filesystem result.
 
-## Concrete proposed installation
+## Installed configuration and procedure
 
-The conservative proposal makes the existing 8.1 runtime the normal startup while **retaining the 7.1.2 system partition and its userdata**. It does not erase 7.1.2, repartition, wipe data, or write kernel/bootloader/resource. Runtime behavior remains the tested file-backed v14 system plus overlay/private data; this is not a newly integrated monolithic system image.
+The installed configuration makes the existing 8.1 runtime the normal startup while **retaining the 7.1.2 system partition and its userdata**. It does not erase 7.1.2, repartition, wipe data, or write kernel/bootloader/resource. Runtime behavior remains the tested file-backed v14 system plus overlay/private data; this is not a newly integrated monolithic system image.
 
 1. Require the previous-main private release to be published with matching SHA-256.
 2. Check identity/root, current boot/recovery hashes, v14 graphics/Bluetooth/media components, local factory fallback images, image length, factory kernel payload, and boot load addresses.
 3. Restore independent original Android recovery and verify its partition readback.
-4. Write the v14 candidate to boot, verify readback, and request normal boot. This selection path itself still requires device testing; recovery-slot success is not represented as normal-boot proof.
+4. Write the v14 candidate to boot, verify readback, and request normal boot. This was completed and tested; recovery-slot success was not substituted for the normal-boot test.
 5. Verify physical projection, boot completion, Wi-Fi internet, Bluetooth, cursor/buttons, and hardware sample playback. If the normal boot fails, restore the previous verified boot through available ADB/recovery/Loader access; do not improvise writes to other partitions.
 
 Factory boot and recovery use identical kernel bytes and load addresses: kernel 0x60408000, ramdisk 0x62000000, second block 0x60f00000, tags 0x60088000, image page size 16,384 bytes. The proposed boot candidate is byte-identical to verified recovery v14, SHA-256 `9e7c48594fae621e74a37ea4bd427fa3284f0ab578cbf8ff94187bb654278c2d`. These checks reduce differences; they do not prove normal boot or independent physical rescue.
 
-`python tools/main-boot.py --action plan` performs inspection without writes. The install action requires `--action install-experimental --accept-experimental` and a published backup. `--action restore-previous-boot --execute` writes only the verified previous boot image and requests no reboot. Restoration accepts the identified 8.1 runtime or the identified original recovery with root ADB and matching original recovery hash; it does not establish a physical way to enter recovery. Those write actions have not been executed during preparation. See RECOVERY.md for the tested recovery boundaries.
+`python tools/main-boot.py --action plan` performs inspection without writes. The install action requires `--action install-experimental --accept-experimental` and a published backup. It was executed after the owner's acceptance. `--action restore-previous-boot --execute` writes only the verified previous boot image and requests no reboot; this restore action has not been tested following promotion. Restoration accepts the identified 8.1 runtime or the identified original recovery with root ADB and matching original recovery hash; it does not establish a physical way to enter recovery. See RECOVERY.md for the tested recovery boundaries.
+
+## Actual installation results
+
+- Boot written/read back: MD5 `7a3ac489b05f0f2e9cde16280551511a` (v14).
+- Recovery written/read back: MD5 `b32f971e7dfce13c708d264c6221844d` (original).
+- Normal reboot requested; Android 8.1.0 returned with sys.boot_completed=1 and ro.bootmode=emmc.
+- The static recovery-derived adbd still advertises recovery and serial 0123456789ABCDEF. That is not evidence of recovery-slot boot: original recovery is restored and cannot run this full 8.1 system.
+- Wi-Fi had Android-validated internet and Bluetooth was ON.
+- The Rockchip-decoded AVC/AAC clip completed; the owner confirmed projection/colors/sound/panel all worked after normal boot.
+- Previous system, userdata, kernel, bootloader, and resource were not overwritten. No original-system deletion or partition resizing was performed.
+
+The owner asked when the old system could be deleted. No deletion is authorized or scheduled here: first validate sustained operation and independent recovery. Merely clearing the separate system partition would not enlarge userdata. A future integrated-system/storage-layout change is a separate operation.

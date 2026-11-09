@@ -2,11 +2,11 @@
 
 ## Hardware
 
-Canon Rayo S1: RK3128 quad-core Cortex-A7 ARMv7, approximately 1 GB RAM, 8 GB eMMC, Mali-400, AP6330 Wi-Fi/Bluetooth. The factory Linux 3.10.104 kernel is preserved. Stock Android 7.1.2 remains available through normal boot.
+Canon Rayo S1: RK3128 quad-core Cortex-A7 ARMv7, approximately 1 GB RAM, 8 GB eMMC, Mali-400, AP6330 Wi-Fi/Bluetooth. The factory Linux 3.10.104 kernel is preserved. Android 8.1 v14 is the normal boot. The previous Android 7.1.2 system is preserved and can be used again by restoring its verified boot image.
 
 ## Current trial
 
-AOSP Android 8.1.0 `android-8.1.0_r81`, product `rayos1_oreo-userdebug`. Experimental v14 ramdisk in recovery; 445,988,864-byte system image file on userdata; additional changes in a private overlay. Launcher: `local.rayo.launcher/.MainActivity`. Kit v0.2 captures this state; kit v0.1 preserves the earlier v12 checkpoint.
+AOSP Android 8.1.0 `android-8.1.0_r81`, product `rayos1_oreo-userdebug`. Experimental v14 image in boot; original independent recovery restored; 445,988,864-byte system image file on userdata; additional changes in a private overlay. Launcher: `local.rayo.launcher/.MainActivity`. Kit v0.2 captures this state; kit v0.1 preserves the earlier v12 checkpoint.
 
 ```text
 normal userdata /data/local/tmp/rayo81-system.raw.img
@@ -15,7 +15,7 @@ normal userdata /data/rayo81-trial/cache/       -> trial /cache
 trial /data/local/tmp/rayo-live/               -> active libraries/configuration
 ```
 
-Original boot and system partitions are preserved. Normal boot remains 7.1.2 and may restore stock recovery.
+The previous system partition is preserved; boot now contains v14. Original independent recovery is restored. Normal reboot starts 8.1. Returning to 7.1.2 requires restoring the verified previous boot first. The owner explicitly accepted this experimental default and confirmed the post-installation physical checks. See PRIMARY_BOOT_PLAN.md and manifests/primary-boot-install.json.
 
 ## Verified on the device
 
@@ -56,3 +56,7 @@ Bluetooth pairing/reconnect/HID/A2DP/BLE and power behavior remain untested; the
 Pointer speed is 2; previous value 0 was saved. The 0.5 animation-scale profile was not enabled. Google services were not installed.
 
 One post-v14 diagnostic snapshot reported about 621,468 KiB available including reclaimable cache, with 182,984 KiB immediately free. This is a point-in-time measurement, not an app workload benchmark. See DEVICE_VALIDATION.md for integration details and ANDROID12_TV_ASSESSMENT.md for the separate Android 12 research result.
+
+## Normal-boot promotion
+
+Boot v14 and original recovery were written/read back and a normal reboot completed Android 8.1.0 (ro.bootmode=emmc). Wi-Fi internet and Bluetooth ON were verified. The owner confirmed the repeated hardware-decoded video, sound, colors, and panel. Cold power-on, long-use validation, pairing and independent physical rescue are still pending. The previous 7.1.2 system was not erased.

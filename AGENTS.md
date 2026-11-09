@@ -10,7 +10,7 @@ Read `docs/STATUS.md`, `docs/RECOVERY.md`, and `docs/PORTABILITY.md` first. The 
 
 - Work inside this repository. Keep binaries, dumps, credentials, backups, and large files in Git-ignored `local/` or `outputs/`.
 - User authorization and conversation preferences take precedence. Do not request repeated confirmation for already authorized work; complete checks and prepare reviewable changes.
-- Do not treat boot, system, uboot, trust, kernel, or resource as routine test partitions. The known experiment uses recovery and private files on userdata. Permanent installation requires a specific plan and recovery checks.
+- Do not treat boot, system, uboot, trust, kernel, or resource as routine test partitions. Current v14 uses normal boot and private files on userdata, with original independent recovery restored. The previous system is retained. Further permanent/system-layout changes require their own plan and recovery checks.
 - Never erase or format storage as a diagnostic step. Review image, paths, and context before running historical flashing scripts.
 - Never upload signing keys, passwords, Wi-Fi credentials, tokens, or account files to Git, tracked logs, or releases.
 
@@ -32,7 +32,7 @@ Read `docs/STATUS.md`, `docs/RECOVERY.md`, and `docs/PORTABILITY.md` first. The 
 - Wi-Fi requires original `fw_RK903_ag.bin`, AP6330 configuration, HAL NET_ADMIN/NET_RAW capabilities, and wpa_supplicant started on wlan0. The userdata-backed trial needs the documented limited capability treatment.
 - Boot images use Rockchip's extended SHA-1 and a gzip ramdisk padded to four-byte length. Generic Android packaging must preserve these requirements.
 - Normal 7.1.2 boot automatically restores stock recovery. Stop `flash_recovery`, write and verify trial recovery, then reboot directly into recovery.
-- Current checkpoint is v14. Stop wifi_hal_legacy/bluetooth-1-0 before applying limited executable file capabilities, and start them only after permissions/capabilities are ready. v13 exposed a boot race: already-running HALs did not inherit newly assigned file capabilities.
+- Current checkpoint is v14, promoted to normal boot after explicit acceptance of its experimental status. Normal reboot now starts 8.1, not 7.1.2. To return to 7.1.2 restore its verified boot image first; see PRIMARY_BOOT_PLAN.md. Do not ask for repeated acceptance of the completed promotion. Stop wifi_hal_legacy/bluetooth-1-0 before applying limited executable file capabilities, and start them only after permissions/capabilities are ready. v13 exposed a boot race: already-running HALs did not inherit newly assigned file capabilities.
 - Bluetooth uses the exact factory-library import patch and libtg.so null-timer guard, original bcm40183b2.hcd, feature declarations, and UID bluetooth with NET_ADMIN. Preserve the factory library separately. Do not restore the temporary root/LD_PRELOAD diagnostic as the production path.
 - The Rockchip AVC sample was physically confirmed after reboot, with OMX.rk.video_decoder.avc selected in logs. Do not generalize this to every codec, resolution, DRM service, or prolonged playback. Bluetooth ON/discovery is not pairing verification.
 

@@ -4,7 +4,7 @@ AOSP `android-8.1.0_r81` adaptation for **this Canon Rayo S1 unit**: RK3128 ARMv
 
 **Verified on November 9, 2026, checkpoint v14:** Android 8.1 boots, projects correctly, supports the integrated buttons, and reconnects Wi-Fi with validated internet. The owner confirmed speaker audio and a projected AVC/AAC sample using the Rockchip decoder after a complete reboot. Bluetooth enables automatically and the owner confirmed nearby devices appear; pairing remains untested because no accessory was available. Aurora Store 4.8.4 is installed. Extended stability, power, and broader media validation remain pending.
 
-The experiment uses the **recovery partition, a system image file, and private trial data on userdata**. Original boot and system partitions remain preserved. ADB reports `recovery` because the trial uses the original recovery's static adbd; identify the running Android through `ro.build.version.release`.
+**Android 8.1 v14 is now the normal startup.** It uses the tested system image file, overlay, and private data on userdata. The previous 7.1.2 system partition remains preserved and the original independent recovery is restored. The previous boot/system are backed up in the private `previous-main-7.1.2` release. ADB still reports `recovery` because of its static recovery-derived adbd; identify Android and boot configuration rather than inferring the selected partition from that banner.
 
 ## Repository language
 
