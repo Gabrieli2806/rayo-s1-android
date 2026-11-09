@@ -10,7 +10,7 @@ Las herramientas antiguas de esta rama necesitan el Python 2.7.5 y JDK 8 que inc
 
 Con el volumen copiado: `bash tools/mount-aosp.sh`; después establecer `RAYO_AOSP_DIR` a `<repo>/local/aosp-volume/aosp`.
 
-Sin volumen: preparar un directorio en un filesystem Linux sensible a mayúsculas, instalar la herramienta oficial `repo`, inicializar el manifiesto AOSP con la etiqueta `android-8.1.0_r81` y sincronizar. Comparar las revisiones con `manifests/aosp-android-8.1.0_r81.xml`. No sincronizar directamente en un directorio NTFS normal.
+Sin volumen: preparar un directorio en un filesystem Linux sensible a mayúsculas, instalar la herramienta oficial `repo`, inicializar el manifiesto AOSP con la etiqueta `android-8.1.0_r81` y sincronizar. Para fijar las revisiones exactas antes de sincronizar, copiar `manifests/aosp-android-8.1.0_r81.xml` del proyecto como `.repo/manifests/rayo-pinned.xml` y seleccionar ese manifiesto con `repo init -m rayo-pinned.xml`. El remoto relativo `..` corresponde al manifiesto oficial `https://android.googlesource.com/platform/manifest`. No sincronizar directamente en un directorio NTFS normal.
 
 Los parches por proyecto se guardan en `patches/aosp/`, con una serie JSON. `python3 tools/apply-aosp-patches.py --aosp "$RAYO_AOSP_DIR"` comprueba si cada parche está pendiente o ya aplicado. No fuerza cambios cuando una fuente difiere.
 
@@ -35,3 +35,7 @@ Se usó código público Rockchip 3.10 y un backport Binder de LineageOS. Las re
 
 Las pruebas en hardware se realizan después, conservando los componentes conocidos y registrando resultados. Compilar correctamente no demuestra proyección, fluidez ni conectividad.
 
+
+## Empaquetar el recovery conocido
+
+Extraer `local/device-kit/runtime/trial-root-v12.tar.gz` en un directorio Linux con tar, conservando enlaces simbólicos. Ejecutar `python3 tools/pack-recovery.py --ramdisk <directorio> --output <imagen-nueva.img>`. El original se toma de `local/device-kit/original/recovery.img`. La herramienta rechaza otra imagen base y no sobrescribe el destino. La salida de este ramdisk debe coincidir con el SHA-256 v12 de STATUS.md. No escribe en el proyector.
