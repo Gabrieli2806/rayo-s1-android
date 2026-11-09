@@ -1,0 +1,50 @@
+[
+  {
+    "project": "platform/art",
+    "path": "art",
+    "base_revision": "019baa4e67376ffd1968ee3c5e9b9a0008cfc014",
+    "patch": "art.patch"
+  },
+  {
+    "project": "platform/frameworks/native",
+    "path": "frameworks/native",
+    "base_revision": "5dd8c54fe37a50f4cbf2769176509e90ef42ddf0",
+    "patch": "frameworks__native.patch"
+  },
+  {
+    "project": "platform/hardware/interfaces",
+    "path": "hardware/interfaces",
+    "base_revision": "706a84a7a7d9c5dcd2b651f608c14143e191aaef",
+    "patch": "hardware__interfaces.patch"
+  },
+  {
+    "project": "platform/prebuilts/clang/host/linux-x86",
+    "path": "prebuilts/clang/host/linux-x86",
+    "base_revision": "ce80566d209ef0fba56e5bd4cc4cf11435f83a71",
+    "patch": "prebuilts__clang__host__linux-x86.patch"
+  },
+  {
+    "project": "platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9",
+    "path": "prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9",
+    "base_revision": "c9c4fb77a024d2610f83e54e536c99a964ea85ab",
+    "patch": "prebuilts__gcc__linux-x86__aarch64__aarch64-linux-android-4.9.patch"
+  },
+  {
+    "project": "platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9",
+    "path": "prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9",
+    "base_revision": "43bf3bf040b873cb1334cdc0687a03d8d6f4b1c8",
+    "patch": "prebuilts__gcc__linux-x86__arm__arm-linux-androideabi-4.9.patch"
+  },
+  {
+    "project": "platform/prebuilts/gcc/linux-x86/mips/mips64el-linux-android-4.9",
+    "path": "prebuilts/gcc/linux-x86/mips/mips64el-linux-android-4.9",
+    "base_revision": "388fdc4995d374d76a0c4b292afabac91638e134",
+    "patch": "prebuilts__gcc__linux-x86__mips__mips64el-linux-android-4.9.patch"
+  },
+  {
+    "project": "platform/prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9",
+    "path": "prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9",
+    "base_revision": "a57c546eec04da569ddd24dd72b0d57feb95845a",
+    "patch": "prebuilts__gcc__linux-x86__x86__x86_64-linux-android-4.9.patch"
+  }
+]

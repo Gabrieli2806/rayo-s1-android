@@ -1,0 +1,72 @@
+[
+  {
+    "image": "boot",
+    "page_size": 16384,
+    "addresses": {
+      "kernel": 1614839808,
+      "ramdisk": 1644167168,
+      "second": 1626341376,
+      "tags": 1611169792
+    },
+    "sections": {
+      "kernel": {
+        "offset": 16384,
+        "size": 7988024,
+        "sha256": "e98f7640163344ccc5ae196310a4d3d03738adcbd29d055a3e66f1256ce6af94"
+      },
+      "ramdisk": {
+        "offset": 8011776,
+        "size": 1475412,
+        "sha256": "b897bf6bc2a548b59d496c4c7feede53000b977ae7a8f034231966874c052b06"
+      },
+      "second": {
+        "offset": 9502720,
+        "size": 5615104,
+        "sha256": "c5000165c3cb489bbab8055fa5c643f34100441b40845216a10dae87abbcfe64"
+      }
+    },
+    "payload_end": 15122432,
+    "partition_size": 33554432,
+    "dt_size": 0,
+    "os_version": 235147540,
+    "header_id_sha1": "8eb8f522343ec102ff4c04eb9d0da5a6766c914a",
+    "calculated_sha1": "9ed1dcafbea02ce5f9c08b0c12f5b760ecf86f70",
+    "trailer_first_nonzero": null,
+    "trailer_prefix": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "image": "recovery",
+    "page_size": 16384,
+    "addresses": {
+      "kernel": 1614839808,
+      "ramdisk": 1644167168,
+      "second": 1626341376,
+      "tags": 1611169792
+    },
+    "sections": {
+      "kernel": {
+        "offset": 16384,
+        "size": 7988024,
+        "sha256": "e98f7640163344ccc5ae196310a4d3d03738adcbd29d055a3e66f1256ce6af94"
+      },
+      "ramdisk": {
+        "offset": 8011776,
+        "size": 4993828,
+        "sha256": "53a9128c6235b28f0992aad5c2136f29150ccfe40c05cd5ac91b539fcc4482c4"
+      },
+      "second": {
+        "offset": 13008896,
+        "size": 5615104,
+        "sha256": "c5000165c3cb489bbab8055fa5c643f34100441b40845216a10dae87abbcfe64"
+      }
+    },
+    "payload_end": 18628608,
+    "partition_size": 33554432,
+    "dt_size": 0,
+    "os_version": 235147540,
+    "header_id_sha1": "9f4b6ca8950022f66100486ae96987bbe4bd2160",
+    "calculated_sha1": "2b0cdceced07d2b5a958bf912a16228872d8ed09",
+    "trailer_first_nonzero": null,
+    "trailer_prefix": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  }
+]

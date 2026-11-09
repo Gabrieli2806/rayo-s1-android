@@ -1,0 +1,17 @@
+diff --git a/graphics/allocator/2.0/default/Gralloc0Allocator.cpp b/graphics/allocator/2.0/default/Gralloc0Allocator.cpp
+index 3b62bb3..95f07c4 100644
+--- a/graphics/allocator/2.0/default/Gralloc0Allocator.cpp
++++ b/graphics/allocator/2.0/default/Gralloc0Allocator.cpp
+@@ -119,7 +119,11 @@ Error Gralloc0Allocator::allocateOne(const IMapper::BufferDescriptorInfo& info,
+     buffer_handle_t buffer = nullptr;
+     int stride = 0;
+     int result = mDevice->alloc(mDevice, info.width, info.height,
+-                                static_cast<int>(info.format), info.usage,
++                                static_cast<int>(info.format),
++                                // Rayo trial: factory framebuffer handles cannot
++                                // be imported across HIDL processes. Allocate a
++                                // regular GPU buffer; framebuffer HAL copies it.
++                                info.usage & ~static_cast<uint64_t>(GRALLOC_USAGE_HW_FB),
+                                 &buffer, &stride);
+     if (result) {
+         switch (result) {

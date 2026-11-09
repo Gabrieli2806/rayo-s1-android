@@ -1,0 +1,15 @@
+{
+  "compared_types": 164,
+  "identical_types": 163,
+  "differences": [
+    {
+      "name": "super_block",
+      "stock_size": 640,
+      "candidate_size": 640,
+      "changed_members": [
+        "s_stack_depth"
+      ]
+    }
+  ],
+  "limit": "DWARF layout agreement is a compatibility check, not proof that all configuration, code, exported symbols, or runtime behavior match."
+}

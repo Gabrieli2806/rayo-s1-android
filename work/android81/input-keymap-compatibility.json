@@ -1,0 +1,350 @@
+[
+  {
+    "file": "20050030_pwm.kl",
+    "line": 5,
+    "entry": "key 116   POWER             WAKE",
+    "key_supported": true,
+    "unknown_flags": [
+      "WAKE"
+    ]
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 17,
+    "entry": "key 143   NOTIFICATION      WAKE",
+    "key_supported": true,
+    "unknown_flags": [
+      "WAKE"
+    ]
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 19,
+    "entry": "key 388   TV_KEYMOUSE_MODE_SWITCH",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 20,
+    "entry": "key 400   TV_MEDIA_MULT_BACKWARD",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 21,
+    "entry": "key 401   TV_MEDIA_MULT_FORWARD",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 22,
+    "entry": "key 402   TV_MEDIA_PLAY_PAUSE",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 23,
+    "entry": "key 64    TV_MEDIA_PLAY",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 24,
+    "entry": "key 65    TV_MEDIA_PAUSE",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 25,
+    "entry": "key 66    TV_MEDIA_STOP",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 26,
+    "entry": "key 67    TV_MEDIA_REWIND",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 27,
+    "entry": "key 68    TV_MEDIA_FAST_FORWARD",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 28,
+    "entry": "key 87    TV_MEDIA_PREVIOUS",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 29,
+    "entry": "key 88    TV_MEDIA_NEXT",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 69,
+    "entry": "key 750    AA",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 70,
+    "entry": "key 249    BB",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 71,
+    "entry": "key 250    CC",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 72,
+    "entry": "key 251    DD",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 73,
+    "entry": "key 252    EE",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 74,
+    "entry": "key 253    FF",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 75,
+    "entry": "key 254    GG",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 76,
+    "entry": "key 255    HH",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 77,
+    "entry": "key 256    II",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 78,
+    "entry": "key 257    JJ",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 79,
+    "entry": "key 258    KK",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 80,
+    "entry": "key 259    LL",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 81,
+    "entry": "key 260    MM",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 82,
+    "entry": "key 261    NN",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 83,
+    "entry": "key 262    OO",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 84,
+    "entry": "key 263    PP",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 85,
+    "entry": "key 264    QQ",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 86,
+    "entry": "key 265    RR",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 87,
+    "entry": "key 266    SS",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 88,
+    "entry": "key 267    TT",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 89,
+    "entry": "key 268    UU",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 90,
+    "entry": "key 269    VV",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 91,
+    "entry": "key 270    WW",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 92,
+    "entry": "key 271    XX",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 93,
+    "entry": "key 748    YY",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 94,
+    "entry": "key 749    ZZ",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 120,
+    "entry": "key 583        PRJ_KEY_POWER      WAKE",
+    "key_supported": false,
+    "unknown_flags": [
+      "WAKE"
+    ]
+  },
+  {
+    "file": "20050030_pwm.kl",
+    "line": 121,
+    "entry": "key 584        PRJ_POWER_WAKE      WAKE",
+    "key_supported": false,
+    "unknown_flags": [
+      "WAKE"
+    ]
+  },
+  {
+    "file": "ff420030_pwm.kl",
+    "line": 19,
+    "entry": "key 388   TV_KEYMOUSE_MODE_SWITCH",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "ff680030_pwm.kl",
+    "line": 19,
+    "entry": "key 388   TV_KEYMOUSE_MODE_SWITCH",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "Generic.kl",
+    "line": 412,
+    "entry": "key 584        PRJ_TEMP_WARNING     ",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "Generic.kl",
+    "line": 413,
+    "entry": "key 585        PRJ_TEMP_SHUTDOWN   ",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "Generic.kl",
+    "line": 415,
+    "entry": "key 586        ENCRYPTION ",
+    "key_supported": false,
+    "unknown_flags": []
+  },
+  {
+    "file": "rk29-keypad.kl",
+    "line": 18,
+    "entry": "key 583        PRJ_KEY_POWER      WAKE",
+    "key_supported": false,
+    "unknown_flags": [
+      "WAKE"
+    ]
+  },
+  {
+    "file": "rk29-keypad.kl",
+    "line": 19,
+    "entry": "key 584        PRJ_POWER_WAKE      WAKE",
+    "key_supported": false,
+    "unknown_flags": [
+      "WAKE"
+    ]
+  }
+]

@@ -1,0 +1,9077 @@
+{
+  "list_head": {
+    "size": 8,
+    "members": {
+      "next": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prev": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "hlist_head": {
+    "size": 4,
+    "members": {
+      "first": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "hlist_node": {
+    "size": 8,
+    "members": {
+      "next": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pprev": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "callback_head": {
+    "size": 8,
+    "members": {
+      "next": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "func": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "miscdevice": {
+    "size": 36,
+    "members": {
+      "minor": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fops": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "this_device": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nodename": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mode": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "file_operations": {
+    "size": 112,
+    "members": {
+      "owner": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "llseek": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "read": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "aio_read": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "aio_write": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "readdir": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "iterate": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "poll": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unlocked_ioctl": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compat_ioctl": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "open": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flush": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "release": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fsync": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "aio_fsync": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fasync": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lock": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sendpage": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_unmapped_area": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "check_flags": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flock": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "splice_write": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "splice_read": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "setlease": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fallocate": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show_fdinfo": {
+        "offset": 108,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "device": {
+    "size": 376,
+    "members": {
+      "parent": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "p": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kobj": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "init_name": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "type": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mutex": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bus": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "driver": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "platform_data": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "power": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pm_domain": {
+        "offset": 268,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pins": {
+        "offset": 272,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dma_mask": {
+        "offset": 276,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "coherent_dma_mask": {
+        "offset": 280,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dma_parms": {
+        "offset": 288,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dma_pools": {
+        "offset": 292,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dma_mem": {
+        "offset": 300,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cma_area": {
+        "offset": 304,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "archdata": {
+        "offset": 308,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "of_node": {
+        "offset": 316,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "acpi_node": {
+        "offset": 320,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "devt": {
+        "offset": 320,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "id": {
+        "offset": 324,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "devres_lock": {
+        "offset": 328,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "devres_head": {
+        "offset": 332,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "knode_class": {
+        "offset": 340,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "class": {
+        "offset": 356,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "groups": {
+        "offset": 360,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "release": {
+        "offset": 364,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "iommu_group": {
+        "offset": 368,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "resource": {
+    "size": 28,
+    "members": {
+      "start": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "end": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sibling": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "child": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "lock_class_key": {
+    "size": 0,
+    "members": {}
+  },
+  "kobj_ns_type_operations": {
+    "size": 20,
+    "members": {
+      "type": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "grab_current_ns": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "netlink_ns": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "initial_ns": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drop_ns": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "timespec": {
+    "size": 8,
+    "members": {
+      "tv_sec": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tv_nsec": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "restart_block": {
+    "size": 40,
+    "members": {
+      "fn": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "vfp_hard_struct": {
+    "size": 280,
+    "members": {
+      "fpregs": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fpexc": {
+        "offset": 256,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fpscr": {
+        "offset": 260,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fpinst": {
+        "offset": 264,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fpinst2": {
+        "offset": 268,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu": {
+        "offset": 272,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "vfp_state": {
+    "size": 280,
+    "members": {
+      "hard": {
+        "offset": null,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fp_hard_struct": {
+    "size": 140,
+    "members": {
+      "save": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fp_soft_struct": {
+    "size": 140,
+    "members": {
+      "save": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fp_state": {
+    "size": 140,
+    "members": {
+      "hard": {
+        "offset": null,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "soft": {
+        "offset": null,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "outer_cache_fns": {
+    "size": 36,
+    "members": {
+      "inv_range": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "clean_range": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flush_range": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flush_all": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inv_all": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "disable": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sync": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_debug": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "cpu_context_save": {
+    "size": 48,
+    "members": {
+      "r4": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "r5": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "r6": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "r7": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "r8": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "r9": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sl": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fp": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sp": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pc": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "extra": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "thread_info": {
+    "size": 568,
+    "members": {
+      "flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "preempt_count": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "addr_limit": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "task": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exec_domain": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_domain": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_context": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "syscall": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "used_cp": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tp_value": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fpstate": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vfpstate": {
+        "offset": 248,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "restart_block": {
+        "offset": 528,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "task_struct": {
+    "size": 1344,
+    "members": {
+      "state": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stack": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "usage": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ptrace": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wake_entry": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "on_cpu": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "on_rq": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prio": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "static_prio": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "normal_prio": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rt_priority": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sched_class": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "se": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rt": {
+        "offset": 400,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sched_task_group": {
+        "offset": 436,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fpu_counter": {
+        "offset": 440,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "policy": {
+        "offset": 444,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_cpus_allowed": {
+        "offset": 448,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpus_allowed": {
+        "offset": 452,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu_read_lock_nesting": {
+        "offset": 456,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu_read_unlock_special": {
+        "offset": 460,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu_node_entry": {
+        "offset": 464,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu_blocked_node": {
+        "offset": 472,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sched_info": {
+        "offset": 480,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tasks": {
+        "offset": 512,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pushable_tasks": {
+        "offset": 520,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mm": {
+        "offset": 540,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "active_mm": {
+        "offset": 544,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "brk_randomized": {
+        "offset": 548,
+        "bit_size": 1,
+        "bit_offset": 31
+      },
+      "rss_stat": {
+        "offset": 552,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exit_state": {
+        "offset": 568,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exit_code": {
+        "offset": 572,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exit_signal": {
+        "offset": 576,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pdeath_signal": {
+        "offset": 580,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "jobctl": {
+        "offset": 584,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "personality": {
+        "offset": 588,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "did_exec": {
+        "offset": 592,
+        "bit_size": 1,
+        "bit_offset": 31
+      },
+      "in_execve": {
+        "offset": 592,
+        "bit_size": 1,
+        "bit_offset": 30
+      },
+      "in_iowait": {
+        "offset": 592,
+        "bit_size": 1,
+        "bit_offset": 29
+      },
+      "sched_reset_on_fork": {
+        "offset": 592,
+        "bit_size": 1,
+        "bit_offset": 28
+      },
+      "sched_contributes_to_load": {
+        "offset": 592,
+        "bit_size": 1,
+        "bit_offset": 27
+      },
+      "atomic_flags": {
+        "offset": 596,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pid": {
+        "offset": 600,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tgid": {
+        "offset": 604,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "real_parent": {
+        "offset": 608,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent": {
+        "offset": 612,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "children": {
+        "offset": 616,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sibling": {
+        "offset": 624,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_leader": {
+        "offset": 632,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ptraced": {
+        "offset": 636,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ptrace_entry": {
+        "offset": 644,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pids": {
+        "offset": 652,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thread_group": {
+        "offset": 688,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thread_node": {
+        "offset": 696,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vfork_done": {
+        "offset": 704,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_child_tid": {
+        "offset": 708,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "clear_child_tid": {
+        "offset": 712,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "utime": {
+        "offset": 716,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stime": {
+        "offset": 720,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "utimescaled": {
+        "offset": 724,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stimescaled": {
+        "offset": 728,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gtime": {
+        "offset": 732,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_power": {
+        "offset": 736,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prev_cputime": {
+        "offset": 744,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nvcsw": {
+        "offset": 752,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nivcsw": {
+        "offset": 756,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_time": {
+        "offset": 760,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "real_start_time": {
+        "offset": 768,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "min_flt": {
+        "offset": 776,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "maj_flt": {
+        "offset": 780,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cputime_expires": {
+        "offset": 784,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_timers": {
+        "offset": 800,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "real_cred": {
+        "offset": 824,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cred": {
+        "offset": 828,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "comm": {
+        "offset": 832,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "link_count": {
+        "offset": 848,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "total_link_count": {
+        "offset": 852,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sysvsem": {
+        "offset": 856,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_switch_count": {
+        "offset": 860,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thread": {
+        "offset": 864,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fs": {
+        "offset": 1004,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "files": {
+        "offset": 1008,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nsproxy": {
+        "offset": 1012,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "signal": {
+        "offset": 1016,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sighand": {
+        "offset": 1020,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "blocked": {
+        "offset": 1024,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "real_blocked": {
+        "offset": 1032,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "saved_sigmask": {
+        "offset": 1040,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pending": {
+        "offset": 1048,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sas_ss_sp": {
+        "offset": 1064,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sas_ss_size": {
+        "offset": 1068,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "notifier": {
+        "offset": 1072,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "notifier_data": {
+        "offset": 1076,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "notifier_mask": {
+        "offset": 1080,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "task_works": {
+        "offset": 1084,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "audit_context": {
+        "offset": 1088,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "loginuid": {
+        "offset": 1092,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sessionid": {
+        "offset": 1096,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "seccomp": {
+        "offset": 1100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent_exec_id": {
+        "offset": 1108,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "self_exec_id": {
+        "offset": 1112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "alloc_lock": {
+        "offset": 1116,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pi_lock": {
+        "offset": 1120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pi_waiters": {
+        "offset": 1124,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pi_blocked_on": {
+        "offset": 1132,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "journal_info": {
+        "offset": 1136,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bio_list": {
+        "offset": 1140,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "plug": {
+        "offset": 1144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "reclaim_state": {
+        "offset": 1148,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "backing_dev_info": {
+        "offset": 1152,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "io_context": {
+        "offset": 1156,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ptrace_message": {
+        "offset": 1160,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_siginfo": {
+        "offset": 1164,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ioac": {
+        "offset": 1168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mems_allowed": {
+        "offset": 1168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mems_allowed_seq": {
+        "offset": 1172,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpuset_mem_spread_rotor": {
+        "offset": 1176,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpuset_slab_spread_rotor": {
+        "offset": 1180,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cgroups": {
+        "offset": 1184,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cg_list": {
+        "offset": 1188,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "robust_list": {
+        "offset": 1196,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pi_state_list": {
+        "offset": 1200,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pi_state_cache": {
+        "offset": 1208,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "perf_event_ctxp": {
+        "offset": 1212,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "perf_event_mutex": {
+        "offset": 1220,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "perf_event_list": {
+        "offset": 1244,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu": {
+        "offset": 1252,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "splice_pipe": {
+        "offset": 1260,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "task_frag": {
+        "offset": 1264,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_dirtied": {
+        "offset": 1272,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_dirtied_pause": {
+        "offset": 1276,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dirty_paused_when": {
+        "offset": 1280,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "timer_slack_ns": {
+        "offset": 1284,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "default_timer_slack_ns": {
+        "offset": 1288,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "trace": {
+        "offset": 1292,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "trace_recursion": {
+        "offset": 1296,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "memcg_batch": {
+        "offset": 1300,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "memcg_kmem_skip_account": {
+        "offset": 1316,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "memcg_oom": {
+        "offset": 1320,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ptrace_bp_refcnt": {
+        "offset": 1336,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "__raw_tickets": {
+    "size": 4,
+    "members": {
+      "owner": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "next": {
+        "offset": 2,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "raw_spinlock": {
+    "size": 4,
+    "members": {
+      "raw_lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "spinlock": {
+    "size": 4,
+    "members": {}
+  },
+  "debug_info": {
+    "size": 128,
+    "members": {
+      "hbp": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "thread_struct": {
+    "size": 140,
+    "members": {
+      "address": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "trap_no": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "error_code": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "debug": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "seqcount": {
+    "size": 4,
+    "members": {
+      "sequence": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kstat": {
+    "size": 80,
+    "members": {
+      "ino": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mode": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nlink": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uid": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gid": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rdev": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "size": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "atime": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mtime": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ctime": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "blksize": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "blocks": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "attribute": {
+    "size": 8,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mode": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "attribute_group": {
+    "size": 12,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "is_visible": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "attrs": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kobject": {
+    "size": 36,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "entry": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kset": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ktype": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sd": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kref": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "state_initialized": {
+        "offset": 32,
+        "bit_size": 1,
+        "bit_offset": 31
+      },
+      "state_in_sysfs": {
+        "offset": 32,
+        "bit_size": 1,
+        "bit_offset": 30
+      },
+      "state_add_uevent_sent": {
+        "offset": 32,
+        "bit_size": 1,
+        "bit_offset": 29
+      },
+      "state_remove_uevent_sent": {
+        "offset": 32,
+        "bit_size": 1,
+        "bit_offset": 28
+      },
+      "uevent_suppress": {
+        "offset": 32,
+        "bit_size": 1,
+        "bit_offset": 27
+      }
+    }
+  },
+  "bin_attribute": {
+    "size": 28,
+    "members": {
+      "attr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "size": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "private": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "read": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "file": {
+    "size": 152,
+    "members": {
+      "f_u": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_path": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_inode": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_op": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_lock": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_count": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_flags": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_mode": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_pos": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_owner": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_cred": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_ra": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_version": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_security": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "private_data": {
+        "offset": 124,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_ep_links": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_tfile_llink": {
+        "offset": 136,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "f_mapping": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "vm_area_struct": {
+    "size": 88,
+    "members": {
+      "vm_start": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_end": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_next": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_prev": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_rb": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rb_subtree_gap": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_mm": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_page_prot": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_flags": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "shared": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "anon_vma_chain": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "anon_vma": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_ops": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_pgoff": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_file": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_private_data": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sysfs_ops": {
+    "size": 12,
+    "members": {
+      "show": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "store": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "namespace": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mutex": {
+    "size": 24,
+    "members": {
+      "count": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_lock": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_list": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "owner": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "spin_mlock": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kref": {
+    "size": 4,
+    "members": {
+      "refcount": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "__wait_queue_head": {
+    "size": 12,
+    "members": {
+      "lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "task_list": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kset": {
+    "size": 52,
+    "members": {
+      "list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list_lock": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kobj": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uevent_ops": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kobj_type": {
+    "size": 20,
+    "members": {
+      "release": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sysfs_ops": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "default_attrs": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "child_ns_type": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "namespace": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kobj_uevent_env": {
+    "size": 2184,
+    "members": {
+      "envp": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "envp_idx": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "buf": {
+        "offset": 132,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "buflen": {
+        "offset": 2180,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kset_uevent_ops": {
+    "size": 12,
+    "members": {
+      "filter": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uevent": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "klist_node": {
+    "size": 16,
+    "members": {
+      "n_klist": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "n_node": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "n_ref": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "cpumask": {
+    "size": 4,
+    "members": {
+      "bits": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "seq_file": {
+    "size": 80,
+    "members": {
+      "buf": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "size": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "from": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "count": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "index": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "read_pos": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "version": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lock": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "op": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "poll_event": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "private": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "seq_operations": {
+    "size": 16,
+    "members": {
+      "start": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stop": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "next": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dev_pin_info": {
+    "size": 16,
+    "members": {
+      "p": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "default_state": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sleep_state": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "idle_state": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "ktime": {
+    "size": 8,
+    "members": {
+      "tv64": {
+        "offset": null,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "timer_list": {
+    "size": 52,
+    "members": {
+      "entry": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "expires": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "base": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "function": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "data": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "slack": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_pid": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_site": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_comm": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "work_struct": {
+    "size": 16,
+    "members": {
+      "data": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "entry": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "func": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "completion": {
+    "size": 16,
+    "members": {
+      "done": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "pm_message": {
+    "size": 4,
+    "members": {
+      "event": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dev_pm_ops": {
+    "size": 92,
+    "members": {
+      "prepare": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "complete": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspend": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "freeze": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thaw": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "poweroff": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "restore": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspend_late": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume_early": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "freeze_late": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thaw_early": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "poweroff_late": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "restore_early": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspend_noirq": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume_noirq": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "freeze_noirq": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thaw_noirq": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "poweroff_noirq": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "restore_noirq": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "runtime_suspend": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "runtime_resume": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "runtime_idle": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "pm_subsys_data": {
+    "size": 16,
+    "members": {
+      "lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "refcount": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "clock_list": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dev_pm_info": {
+    "size": 180,
+    "members": {
+      "power_state": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "can_wakeup": {
+        "offset": 4,
+        "bit_size": 1,
+        "bit_offset": 31
+      },
+      "async_suspend": {
+        "offset": 4,
+        "bit_size": 1,
+        "bit_offset": 30
+      },
+      "is_prepared": {
+        "offset": 4,
+        "bit_size": 1,
+        "bit_offset": 5
+      },
+      "is_suspended": {
+        "offset": 4,
+        "bit_size": 1,
+        "bit_offset": 4
+      },
+      "ignore_children": {
+        "offset": 4,
+        "bit_size": 1,
+        "bit_offset": 3
+      },
+      "early_init": {
+        "offset": 4,
+        "bit_size": 1,
+        "bit_offset": 2
+      },
+      "lock": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "entry": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "completion": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wakeup": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wakeup_path": {
+        "offset": 40,
+        "bit_size": 1,
+        "bit_offset": 7
+      },
+      "syscore": {
+        "offset": 40,
+        "bit_size": 1,
+        "bit_offset": 6
+      },
+      "suspend_timer": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "timer_expires": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "work": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_queue": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "usage_count": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "child_count": {
+        "offset": 132,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "disable_depth": {
+        "offset": 136,
+        "bit_size": 3,
+        "bit_offset": 29
+      },
+      "idle_notification": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 28
+      },
+      "request_pending": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 27
+      },
+      "deferred_resume": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 26
+      },
+      "run_wake": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 25
+      },
+      "runtime_auto": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 24
+      },
+      "no_callbacks": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 23
+      },
+      "irq_safe": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 22
+      },
+      "use_autosuspend": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 21
+      },
+      "timer_autosuspends": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 20
+      },
+      "memalloc_noio": {
+        "offset": 136,
+        "bit_size": 1,
+        "bit_offset": 19
+      },
+      "request": {
+        "offset": 140,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "runtime_status": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "runtime_error": {
+        "offset": 148,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "autosuspend_delay": {
+        "offset": 152,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_busy": {
+        "offset": 156,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "active_jiffies": {
+        "offset": 160,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspended_jiffies": {
+        "offset": 164,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "accounting_timestamp": {
+        "offset": 168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "subsys_data": {
+        "offset": 172,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qos": {
+        "offset": 176,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "wakeup_source": {
+    "size": 136,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "entry": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lock": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "timer": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "timer_expires": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "total_time": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "max_time": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_time": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_prevent_time": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prevent_sleep_time": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "event_count": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "active_count": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "relax_count": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "expire_count": {
+        "offset": 124,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wakeup_count": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "active": {
+        "offset": 132,
+        "bit_size": 1,
+        "bit_offset": 7
+      },
+      "autosleep_enabled": {
+        "offset": 132,
+        "bit_size": 1,
+        "bit_offset": 6
+      }
+    }
+  },
+  "dev_pm_domain": {
+    "size": 96,
+    "members": {
+      "ops": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "detach": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "cpu_user_fns": {
+    "size": 8,
+    "members": {
+      "cpu_clear_user_highpage": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_copy_user_highpage": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "page": {
+    "size": 32,
+    "members": {
+      "flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mapping": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "free_area": {
+    "size": 52,
+    "members": {
+      "free_list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_free": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "zone_padding": {
+    "size": 0,
+    "members": {
+      "x": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "zone_reclaim_stat": {
+    "size": 16,
+    "members": {
+      "recent_rotated": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "recent_scanned": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "lruvec": {
+    "size": 60,
+    "members": {
+      "lists": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "reclaim_stat": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "zone": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "zone": {
+    "size": 960,
+    "members": {
+      "watermark": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "percpu_drift_mark": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lowmem_reserve": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dirty_balance_reserve": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pageset": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lock": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "all_unreclaimable": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compact_blockskip_flush": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compact_cached_free_pfn": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compact_cached_migrate_pfn": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free_area": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pageblock_flags": {
+        "offset": 628,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compact_considered": {
+        "offset": 632,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compact_defer_shift": {
+        "offset": 636,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compact_order_failed": {
+        "offset": 640,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "_pad1_": {
+        "offset": 704,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lru_lock": {
+        "offset": 704,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lruvec": {
+        "offset": 708,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pages_scanned": {
+        "offset": 768,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 772,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_stat": {
+        "offset": 776,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inactive_ratio": {
+        "offset": 888,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "_pad2_": {
+        "offset": 896,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_table": {
+        "offset": 896,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_table_hash_nr_entries": {
+        "offset": 900,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_table_bits": {
+        "offset": 904,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "zone_pgdat": {
+        "offset": 908,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "zone_start_pfn": {
+        "offset": 912,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "spanned_pages": {
+        "offset": 916,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "present_pages": {
+        "offset": 920,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "managed_pages": {
+        "offset": 924,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 928,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "per_cpu_pages": {
+    "size": 36,
+    "members": {
+      "count": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "high": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "batch": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lists": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "per_cpu_pageset": {
+    "size": 68,
+    "members": {
+      "pcp": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stat_threshold": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vm_stat_diff": {
+        "offset": 37,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "pglist_data": {
+    "size": 3008,
+    "members": {
+      "node_zones": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_zonelists": {
+        "offset": 2880,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_zones": {
+        "offset": 2916,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_mem_map": {
+        "offset": 2920,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_page_cgroup": {
+        "offset": 2924,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bdata": {
+        "offset": 2928,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_start_pfn": {
+        "offset": 2932,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_present_pages": {
+        "offset": 2936,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_spanned_pages": {
+        "offset": 2940,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_id": {
+        "offset": 2944,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "reclaim_nodes": {
+        "offset": 2948,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kswapd_wait": {
+        "offset": 2952,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pfmemalloc_wait": {
+        "offset": 2964,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kswapd": {
+        "offset": 2976,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kswapd_max_order": {
+        "offset": 2980,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "classzone_idx": {
+        "offset": 2984,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "zoneref": {
+    "size": 8,
+    "members": {
+      "zone": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "zone_idx": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "zonelist": {
+    "size": 36,
+    "members": {
+      "zlcache_ptr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "_zonerefs": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "rw_semaphore": {
+    "size": 16,
+    "members": {
+      "activity": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_lock": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_list": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dev_archdata": {
+    "size": 8,
+    "members": {
+      "dma_ops": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "iommu": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dma_map_ops": {
+    "size": 64,
+    "members": {
+      "alloc": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_sgtable": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "map_page": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unmap_page": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "map_sg": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unmap_sg": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sync_single_for_cpu": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sync_single_for_device": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sync_sg_for_cpu": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sync_sg_for_device": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mapping_error": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dma_supported": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_dma_mask": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "is_phys": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "bus_attribute": {
+    "size": 16,
+    "members": {
+      "attr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "store": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "bus_type": {
+    "size": 64,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_name": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_root": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bus_attrs": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_attrs": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drv_attrs": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "match": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uevent": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "probe": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "remove": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "shutdown": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspend": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pm": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "iommu_ops": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "p": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lock_key": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "device_attribute": {
+    "size": 16,
+    "members": {
+      "attr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "store": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "driver_attribute": {
+    "size": 16,
+    "members": {
+      "attr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "store": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "device_driver": {
+    "size": 60,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bus": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "owner": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mod_name": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suppress_bind_attrs": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "of_match_table": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "acpi_match_table": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "probe": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "remove": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "shutdown": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspend": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "groups": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pm": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "p": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "device_type": {
+    "size": 24,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "groups": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uevent": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "devnode": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "release": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pm": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "of_device_id": {
+    "size": 196,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "type": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "compatible": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "data": {
+        "offset": 192,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "acpi_device_id": {
+    "size": 16,
+    "members": {
+      "id": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "driver_data": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "class": {
+    "size": 64,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "owner": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "class_attrs": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_attrs": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_bin_attrs": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_kobj": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_uevent": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "devnode": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "class_release": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dev_release": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suspend": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resume": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ns_type": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "namespace": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pm": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "p": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "class_attribute": {
+    "size": 20,
+    "members": {
+      "attr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "store": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "namespace": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "device_dma_parameters": {
+    "size": 8,
+    "members": {
+      "max_segment_size": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "segment_boundary_mask": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "acpi_dev_node": {
+    "size": 0,
+    "members": {}
+  },
+  "hlist_bl_head": {
+    "size": 4,
+    "members": {
+      "first": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "hlist_bl_node": {
+    "size": 8,
+    "members": {
+      "next": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pprev": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "qstr": {
+    "size": 16,
+    "members": {
+      "name": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dentry": {
+    "size": 136,
+    "members": {
+      "d_flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_seq": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_hash": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_parent": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_name": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_inode": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_iname": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_count": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_lock": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_op": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_sb": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_time": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_fsdata": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_lru": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_child": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_subdirs": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_u": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "inode": {
+    "size": 344,
+    "members": {
+      "i_mode": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_opflags": {
+        "offset": 2,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_uid": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_gid": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_flags": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_acl": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_default_acl": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_op": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_sb": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mapping": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_security": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_ino": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_rdev": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_size": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_atime": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mtime": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_ctime": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_lock": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_bytes": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_blkbits": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_blocks": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_size_seqcount": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_state": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mutex": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dirtied_when": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_hash": {
+        "offset": 148,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_wb_list": {
+        "offset": 156,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_lru": {
+        "offset": 164,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_sb_list": {
+        "offset": 172,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_version": {
+        "offset": 192,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_count": {
+        "offset": 200,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_dio_count": {
+        "offset": 204,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_writecount": {
+        "offset": 208,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_fop": {
+        "offset": 212,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_flock": {
+        "offset": 216,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_data": {
+        "offset": 220,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_devices": {
+        "offset": 316,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_generation": {
+        "offset": 328,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_fsnotify_mask": {
+        "offset": 332,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_fsnotify_marks": {
+        "offset": 336,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_private": {
+        "offset": 340,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dentry_operations": {
+    "size": 64,
+    "members": {
+      "d_revalidate": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_weak_revalidate": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_hash": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_compare": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_delete": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_release": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_prune": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_iput": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_dname": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_automount": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_manage": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_canonical_path": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "super_block": {
+    "size": 640,
+    "members": {
+      "s_list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_dev": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_blocksize_bits": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_blocksize": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_maxbytes": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_type": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_op": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_op": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_qcop": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_export_op": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_flags": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_magic": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_root": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_umount": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_count": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_active": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_security": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_xattr": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_inodes": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_anon": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_mounts": {
+        "offset": 108,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_dentry_lru": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_nr_dentry_unused": {
+        "offset": 124,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_inode_lru_lock": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_inode_lru": {
+        "offset": 132,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_nr_inodes_unused": {
+        "offset": 140,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_bdev": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_bdi": {
+        "offset": 148,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_mtd": {
+        "offset": 152,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_instances": {
+        "offset": 156,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_dquot": {
+        "offset": 168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_writers": {
+        "offset": 368,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_id": {
+        "offset": 496,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_uuid": {
+        "offset": 528,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_fs_info": {
+        "offset": 544,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_max_links": {
+        "offset": 548,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_mode": {
+        "offset": 552,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_time_gran": {
+        "offset": 556,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_vfs_rename_mutex": {
+        "offset": 560,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_subtype": {
+        "offset": 584,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_options": {
+        "offset": 588,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_d_op": {
+        "offset": 592,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cleancache_poolid": {
+        "offset": 596,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_shrink": {
+        "offset": 600,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_remove_count": {
+        "offset": 624,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_readonly_remount": {
+        "offset": 628,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_dio_done_wq": {
+        "offset": 632,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "path": {
+    "size": 8,
+    "members": {
+      "mnt": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dentry": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "llist_node": {
+    "size": 4,
+    "members": {
+      "next": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "radix_tree_root": {
+    "size": 12,
+    "members": {
+      "height": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gfp_mask": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rnode": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "rb_node": {
+    "size": 12,
+    "members": {
+      "__rb_parent_color": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rb_right": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rb_left": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "rb_root": {
+    "size": 4,
+    "members": {
+      "rb_node": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "upid": {
+    "size": 16,
+    "members": {
+      "nr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ns": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pid_chain": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "pid": {
+    "size": 44,
+    "members": {
+      "count": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "level": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tasks": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "numbers": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "pid_link": {
+    "size": 12,
+    "members": {
+      "node": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pid": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kernel_cap_struct": {
+    "size": 8,
+    "members": {
+      "cap": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fiemap_extent": {
+    "size": 56,
+    "members": {
+      "fe_logical": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fe_physical": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fe_length": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fe_reserved64": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fe_flags": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fe_reserved": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "shrink_control": {
+    "size": 8,
+    "members": {
+      "gfp_mask": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_to_scan": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "shrinker": {
+    "size": 24,
+    "members": {
+      "shrink": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "seeks": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "batch": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_in_batch": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "block_device": {
+    "size": 140,
+    "members": {
+      "bd_dev": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_openers": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_inode": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_super": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_mutex": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_inodes": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_claiming": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_holder": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_holders": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_write_holder": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_holder_disks": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_contains": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_block_size": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_part": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_part_count": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_invalidated": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_disk": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_queue": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_list": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_private": {
+        "offset": 108,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_fsfreeze_count": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bd_fsfreeze_mutex": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "iattr": {
+    "size": 56,
+    "members": {
+      "ia_valid": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_mode": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_uid": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_gid": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_size": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_atime": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_mtime": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_ctime": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ia_file": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "percpu_counter": {
+    "size": 32,
+    "members": {
+      "lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "count": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "counters": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fs_disk_quota": {
+    "size": 112,
+    "members": {
+      "d_version": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_flags": {
+        "offset": 1,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_fieldmask": {
+        "offset": 2,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_id": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_blk_hardlimit": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_blk_softlimit": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_ino_hardlimit": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_ino_softlimit": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_bcount": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_icount": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_itimer": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_btimer": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_iwarns": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_bwarns": {
+        "offset": 66,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_padding2": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_rtb_hardlimit": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_rtb_softlimit": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_rtbcount": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_rtbtimer": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_rtbwarns": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_padding3": {
+        "offset": 102,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "d_padding4": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fs_qfilestat": {
+    "size": 24,
+    "members": {
+      "qfs_ino": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qfs_nblks": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qfs_nextents": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fs_quota_stat": {
+    "size": 80,
+    "members": {
+      "qs_version": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_flags": {
+        "offset": 2,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_pad": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_uquota": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_gquota": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_incoredqs": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_btimelimit": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_itimelimit": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_rtbtimelimit": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_bwarnlimit": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qs_iwarnlimit": {
+        "offset": 74,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dquot": {
+    "size": 168,
+    "members": {
+      "dq_hash": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_inuse": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_free": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_dirty": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_lock": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_count": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_wait_unused": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_sb": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_id": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_off": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_flags": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dq_dqb": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "if_dqinfo": {
+    "size": 24,
+    "members": {
+      "dqi_bgrace": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_igrace": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_flags": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_valid": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kqid": {
+    "size": 8,
+    "members": {
+      "type": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mem_dqblk": {
+    "size": 64,
+    "members": {
+      "dqb_bhardlimit": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_bsoftlimit": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_curspace": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_rsvspace": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_ihardlimit": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_isoftlimit": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_curinodes": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_btime": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqb_itime": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mem_dqinfo": {
+    "size": 56,
+    "members": {
+      "dqi_format": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_fmt_id": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_dirty_list": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_flags": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_bgrace": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_igrace": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_maxblimit": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_maxilimit": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqi_priv": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "quota_format_type": {
+    "size": 16,
+    "members": {
+      "qf_fmt_id": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qf_ops": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qf_owner": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "qf_next": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dqstats": {
+    "size": 288,
+    "members": {
+      "stat": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "counter": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "quota_format_ops": {
+    "size": 28,
+    "members": {
+      "check_quota_file": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "read_file_info": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write_file_info": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free_file_info": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "read_dqblk": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "commit_dqblk": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "release_dqblk": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dquot_operations": {
+    "size": 32,
+    "members": {
+      "write_dquot": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "alloc_dquot": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "destroy_dquot": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "acquire_dquot": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "release_dquot": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mark_dirty": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write_info": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_reserved_space": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "quotactl_ops": {
+    "size": 40,
+    "members": {
+      "quota_on": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "quota_on_meta": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "quota_off": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "quota_sync": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_info": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_info": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_dqblk": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_dqblk": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_xstate": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_xstate": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "quota_info": {
+    "size": 200,
+    "members": {
+      "flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqio_mutex": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqonoff_mutex": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dqptr_sem": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "files": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "info": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ops": {
+        "offset": 192,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "address_space_operations": {
+    "size": 76,
+    "members": {
+      "writepage": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "readpage": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "writepages": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "set_page_dirty": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "readpages": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write_begin": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write_end": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bmap": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "invalidatepage": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "releasepage": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "freepage": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "direct_IO": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_xip_mem": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "migratepage": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "launder_page": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "is_partially_uptodate": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "error_remove_page": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "swap_activate": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "swap_deactivate": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "address_space": {
+    "size": 96,
+    "members": {
+      "host": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "page_tree": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tree_lock": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mmap_writable": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mmap": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mmap_nonlinear": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mmap_mutex": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nrpages": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "writeback_index": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "a_ops": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "backing_dev_info": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "private_lock": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "private_list": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "private_data": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "inode_operations": {
+    "size": 128,
+    "members": {
+      "lookup": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "follow_link": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "permission": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_acl": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "readlink": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "put_link": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "create": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "link": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unlink": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "symlink": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mkdir": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rmdir": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mknod": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rename": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "setattr": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "getattr": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "setxattr": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "getxattr": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "listxattr": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "removexattr": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fiemap": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "update_time": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "atomic_open": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "file_lock": {
+    "size": 112,
+    "members": {
+      "fl_next": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_link": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_block": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_owner": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_flags": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_type": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_pid": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_nspid": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_wait": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_file": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_start": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_end": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_fasync": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_break_time": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_downgrade_time": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_ops": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_lmops": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_u": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fown_struct": {
+    "size": 24,
+    "members": {
+      "lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pid": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pid_type": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uid": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "euid": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "signum": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "file_ra_state": {
+    "size": 32,
+    "members": {
+      "start": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "size": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "async_size": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ra_pages": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap_miss": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prev_pos": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "cred": {
+    "size": 124,
+    "members": {
+      "usage": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uid": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gid": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "suid": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sgid": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "euid": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "egid": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fsuid": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fsgid": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "securebits": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cap_inheritable": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cap_permitted": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cap_effective": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cap_bset": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cap_ambient": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "jit_keyring": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "session_keyring": {
+        "offset": 84,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "process_keyring": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thread_keyring": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "request_key_auth": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "security": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "user": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "user_ns": {
+        "offset": 108,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_info": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rcu": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "file_lock_operations": {
+    "size": 8,
+    "members": {
+      "fl_copy_lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fl_release_private": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "lock_manager_operations": {
+    "size": 20,
+    "members": {
+      "lm_compare_owner": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lm_notify": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lm_grant": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lm_break": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lm_change": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "nfs_lock_info": {
+    "size": 16,
+    "members": {
+      "state": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "owner": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "nfs4_lock_info": {
+    "size": 4,
+    "members": {
+      "owner": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fasync_struct": {
+    "size": 28,
+    "members": {
+      "fa_lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "magic": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fa_fd": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fa_next": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fa_file": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fa_rcu": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sb_writers": {
+    "size": 128,
+    "members": {
+      "counter": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "frozen": {
+        "offset": 108,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_unfrozen": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "file_system_type": {
+    "size": 28,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fs_flags": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mount": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kill_sb": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "owner": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "next": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fs_supers": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_lock_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_umount_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_vfs_rename_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "s_writers_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_lock_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mutex_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "i_mutex_dir_key": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "super_operations": {
+    "size": 80,
+    "members": {
+      "alloc_inode": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "destroy_inode": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dirty_inode": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "write_inode": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drop_inode": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "evict_inode": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "put_super": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sync_fs": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "freeze_fs": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unfreeze_fs": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "statfs": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "remount_fs": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "umount_begin": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show_options": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show_devname": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show_path": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show_stats": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bdev_try_to_free_page": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_cached_objects": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free_cached_objects": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "fiemap_extent_info": {
+    "size": 16,
+    "members": {
+      "fi_flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fi_extents_mapped": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fi_extents_max": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fi_extents_start": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dir_context": {
+    "size": 16,
+    "members": {
+      "actor": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pos": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mm_struct": {
+    "size": 408,
+    "members": {
+      "mmap": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mm_rb": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap_cache": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_unmapped_area": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unmap_area": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap_base": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap_legacy_base": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "task_size": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cached_hole_size": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free_area_cache": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "highest_vm_end": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pgd": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mm_users": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mm_count": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "map_count": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "page_table_lock": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmap_sem": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mmlist": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "hiwater_rss": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "hiwater_vm": {
+        "offset": 92,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "total_vm": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "locked_vm": {
+        "offset": 100,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pinned_vm": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "shared_vm": {
+        "offset": 108,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exec_vm": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stack_vm": {
+        "offset": 116,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "def_flags": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_ptes": {
+        "offset": 124,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_code": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "end_code": {
+        "offset": 132,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_data": {
+        "offset": 136,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "end_data": {
+        "offset": 140,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_brk": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "brk": {
+        "offset": 148,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_stack": {
+        "offset": 152,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "arg_start": {
+        "offset": 156,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "arg_end": {
+        "offset": 160,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "env_start": {
+        "offset": 164,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "env_end": {
+        "offset": 168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "saved_auxv": {
+        "offset": 172,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rss_stat": {
+        "offset": 340,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "binfmt": {
+        "offset": 352,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_vm_mask_var": {
+        "offset": 356,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "context": {
+        "offset": 360,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 376,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "core_state": {
+        "offset": 380,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ioctx_lock": {
+        "offset": 384,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ioctx_list": {
+        "offset": 388,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "owner": {
+        "offset": 392,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exe_file": {
+        "offset": 396,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tlb_flush_pending": {
+        "offset": 400,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uprobes_state": {
+        "offset": 401,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "uprobes_state": {
+    "size": 0,
+    "members": {}
+  },
+  "kmem_cache": {
+    "size": 116,
+    "members": {
+      "cpu_slab": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "min_partial": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "size": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "object_size": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "offset": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_partial": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "oo": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "max": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "min": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "allocflags": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "refcount": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ctor": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inuse": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "align": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "reserved": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kobj": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "page_frag": {
+    "size": 8,
+    "members": {
+      "page": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "offset": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "size": {
+        "offset": 6,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "vm_operations_struct": {
+    "size": 24,
+    "members": {
+      "open": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "close": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "fault": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "page_mkwrite": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "access": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "remap_pages": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "core_thread": {
+    "size": 8,
+    "members": {
+      "task": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "next": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "core_state": {
+    "size": 28,
+    "members": {
+      "nr_threads": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dumper": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "startup": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "task_rss_stat": {
+    "size": 16,
+    "members": {
+      "events": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "count": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mm_rss_stat": {
+    "size": 12,
+    "members": {
+      "count": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sysv_sem": {
+    "size": 4,
+    "members": {
+      "undo_list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sigval": {
+    "size": 4,
+    "members": {
+      "sival_int": {
+        "offset": null,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sival_ptr": {
+        "offset": null,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "siginfo": {
+    "size": 128,
+    "members": {
+      "si_signo": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "si_errno": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "si_code": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "_sifields": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "user_struct": {
+    "size": 64,
+    "members": {
+      "__count": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "processes": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "files": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sigpending": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inotify_watches": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inotify_devs": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "epoll_watches": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "locked_shm": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unix_inflight": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pipe_bufs": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uid_keyring": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "session_keyring": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uidhash_node": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uid": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "locked_vm": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sigpending": {
+    "size": 16,
+    "members": {
+      "list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "signal": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sigaction": {
+    "size": 20,
+    "members": {
+      "sa_handler": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sa_flags": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sa_restorer": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sa_mask": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "k_sigaction": {
+    "size": 20,
+    "members": {
+      "sa": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "seccomp": {
+    "size": 8,
+    "members": {
+      "mode": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "filter": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "plist_head": {
+    "size": 8,
+    "members": {
+      "node_list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "plist_node": {
+    "size": 20,
+    "members": {
+      "prio": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prio_list": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "node_list": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "rlimit": {
+    "size": 8,
+    "members": {
+      "rlim_cur": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rlim_max": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "timerqueue_node": {
+    "size": 24,
+    "members": {
+      "node": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "expires": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "timerqueue_head": {
+    "size": 8,
+    "members": {
+      "head": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "next": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "hrtimer": {
+    "size": 72,
+    "members": {
+      "node": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "_softexpires": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "function": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "base": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "state": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_pid": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_site": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "start_comm": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "hrtimer_clock_base": {
+    "size": 56,
+    "members": {
+      "cpu_base": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "index": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "clockid": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "active": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "resolution": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get_time": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "softirq_time": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "offset": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "hrtimer_cpu_base": {
+    "size": 280,
+    "members": {
+      "lock": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "active_bases": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "clock_was_set": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "expires_next": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "hres_active": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "hang_detected": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_events": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_retries": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_hangs": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "max_hang_time": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "clock_base": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "task_io_accounting": {
+    "size": 0,
+    "members": {}
+  },
+  "key": {
+    "size": 92,
+    "members": {
+      "usage": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "serial": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "type": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sem": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "user": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "security": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_used_at": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "uid": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gid": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "perm": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "quotalen": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "datalen": {
+        "offset": 70,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "description": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "type_data": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "payload": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "group_info": {
+    "size": 140,
+    "members": {
+      "usage": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ngroups": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nblocks": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "small_block": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "blocks": {
+        "offset": 140,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sighand_struct": {
+    "size": 1300,
+    "members": {
+      "count": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "action": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "siglock": {
+        "offset": 1284,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "signalfd_wqh": {
+        "offset": 1288,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "cpu_itimer": {
+    "size": 16,
+    "members": {
+      "expires": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "incr": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "error": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "incr_error": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "cputime": {
+    "size": 8,
+    "members": {
+      "utime": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stime": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "task_cputime": {
+    "size": 16,
+    "members": {
+      "utime": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stime": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sum_exec_runtime": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "thread_group_cputimer": {
+    "size": 24,
+    "members": {
+      "cputime": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "running": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "lock": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "signal_struct": {
+    "size": 576,
+    "members": {
+      "sigcnt": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "live": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_threads": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "thread_head": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_chldexit": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "curr_target": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "shared_pending": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_exit_code": {
+        "offset": 52,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "notify_count": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_exit_task": {
+        "offset": 60,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_stop_count": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 68,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "is_child_subreaper": {
+        "offset": 72,
+        "bit_size": 1,
+        "bit_offset": 31
+      },
+      "has_child_subreaper": {
+        "offset": 72,
+        "bit_size": 1,
+        "bit_offset": 30
+      },
+      "posix_timer_id": {
+        "offset": 76,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "posix_timers": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "real_timer": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "leader_pid": {
+        "offset": 160,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "it_real_incr": {
+        "offset": 168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "it": {
+        "offset": 176,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cputimer": {
+        "offset": 208,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cputime_expires": {
+        "offset": 232,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cpu_timers": {
+        "offset": 248,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tty_old_pgrp": {
+        "offset": 272,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "leader": {
+        "offset": 276,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tty": {
+        "offset": 280,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "utime": {
+        "offset": 284,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "stime": {
+        "offset": 288,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cutime": {
+        "offset": 292,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cstime": {
+        "offset": 296,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gtime": {
+        "offset": 300,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cgtime": {
+        "offset": 304,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prev_cputime": {
+        "offset": 308,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nvcsw": {
+        "offset": 316,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nivcsw": {
+        "offset": 320,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cnvcsw": {
+        "offset": 324,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cnivcsw": {
+        "offset": 328,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "min_flt": {
+        "offset": 332,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "maj_flt": {
+        "offset": 336,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cmin_flt": {
+        "offset": 340,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cmaj_flt": {
+        "offset": 344,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inblock": {
+        "offset": 348,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "oublock": {
+        "offset": 352,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cinblock": {
+        "offset": 356,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "coublock": {
+        "offset": 360,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "maxrss": {
+        "offset": 364,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cmaxrss": {
+        "offset": 368,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ioac": {
+        "offset": 372,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sum_sched_runtime": {
+        "offset": 376,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rlim": {
+        "offset": 384,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "audit_tty": {
+        "offset": 512,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "audit_tty_log_passwd": {
+        "offset": 516,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tty_audit_buf": {
+        "offset": 520,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_rwsem": {
+        "offset": 524,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "oom_flags": {
+        "offset": 540,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "oom_score_adj": {
+        "offset": 544,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "oom_score_adj_min": {
+        "offset": 546,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cred_guard_mutex": {
+        "offset": 548,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sched_info": {
+    "size": 32,
+    "members": {
+      "pcount": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "run_delay": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_arrival": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_queued": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "load_weight": {
+    "size": 8,
+    "members": {
+      "weight": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "inv_weight": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sched_avg": {
+    "size": 40,
+    "members": {
+      "runnable_avg_sum": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "runnable_avg_period": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "last_runnable_update": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "decay_count": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "load_avg_contrib": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "load_avg_ratio": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "usage_avg_sum": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sched_statistics": {
+    "size": 216,
+    "members": {
+      "wait_start": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_max": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_count": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "wait_sum": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "iowait_count": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "iowait_sum": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sleep_start": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sleep_max": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sum_sleep_runtime": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "block_start": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "block_max": {
+        "offset": 80,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exec_max": {
+        "offset": 88,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "slice_max": {
+        "offset": 96,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_migrations_cold": {
+        "offset": 104,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_failed_migrations_affine": {
+        "offset": 112,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_failed_migrations_running": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_failed_migrations_hot": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_forced_migrations": {
+        "offset": 136,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_sync": {
+        "offset": 152,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_migrate": {
+        "offset": 160,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_local": {
+        "offset": 168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_remote": {
+        "offset": 176,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_affine": {
+        "offset": 184,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_affine_attempts": {
+        "offset": 192,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_passive": {
+        "offset": 200,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_wakeups_idle": {
+        "offset": 208,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sched_entity": {
+    "size": 344,
+    "members": {
+      "load": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "run_node": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "group_node": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "on_rq": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exec_start": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sum_exec_runtime": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "vruntime": {
+        "offset": 48,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "prev_sum_exec_runtime": {
+        "offset": 56,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_migrations": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "statistics": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent": {
+        "offset": 288,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "cfs_rq": {
+        "offset": 292,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "my_q": {
+        "offset": 296,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "avg": {
+        "offset": 304,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sched_rt_entity": {
+    "size": 36,
+    "members": {
+      "run_list": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "timeout": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "watchdog_stamp": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "time_slice": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "back": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "parent": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "rt_rq": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "my_q": {
+        "offset": 32,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "memcg_batch_info": {
+    "size": 16,
+    "members": {
+      "do_batch": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "memcg": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nr_pages": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "memsw_nr_pages": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "memcg_oom_info": {
+    "size": 16,
+    "members": {
+      "memcg": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gfp_mask": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "order": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "may_oom": {
+        "offset": 12,
+        "bit_size": 1,
+        "bit_offset": 31
+      }
+    }
+  },
+  "cpu_tlb_fns": {
+    "size": 12,
+    "members": {
+      "flush_user_range": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flush_kern_range": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tlb_flags": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "vm_fault": {
+    "size": 16,
+    "members": {
+      "flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "pgoff": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "virtual_address": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "page": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kmem_cache_cpu": {
+    "size": 16,
+    "members": {
+      "freelist": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tid": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "page": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "partial": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kmem_cache_order_objects": {
+    "size": 4,
+    "members": {
+      "x": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "dma_attrs": {
+    "size": 4,
+    "members": {
+      "flags": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "scatterlist": {
+    "size": 16,
+    "members": {
+      "page_link": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "offset": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "length": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "dma_address": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "sg_table": {
+    "size": 12,
+    "members": {
+      "sgl": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "nents": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "orig_nents": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "tagRKNAND_SYS_STORGAE": {
+    "size": 520,
+    "members": {
+      "tag": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "len": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "data": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "tagBOOT_CONFIG_INFO": {
+    "size": 512,
+    "members": {
+      "bootTag": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bootLen": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bootMedia": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "BootPart": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "secureBootEn": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sdPartOffset": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sdSysPartOffset": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sys_reserved": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "hash": {
+        "offset": 508,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "tagDRM_KEY_INFO": {
+    "size": 512,
+    "members": {
+      "drmtag": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drmLen": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "keyBoxEnable": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drmKeyLen": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "publicKeyLen": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "secureBootLock": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "secureBootLockKey": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "reserved0": {
+        "offset": 28,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drmKey": {
+        "offset": 64,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "reserved2": {
+        "offset": 192,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "publicKey": {
+        "offset": 256,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kernel_symbol": {
+    "size": 8,
+    "members": {
+      "value": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "bug_entry": {
+    "size": 12,
+    "members": {
+      "bug_addr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "file": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "line": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "flags": {
+        "offset": 10,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "elf32_sym": {
+    "size": 16,
+    "members": {
+      "st_name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "st_value": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "st_size": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "st_info": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "st_other": {
+        "offset": 13,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "st_shndx": {
+        "offset": 14,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kernel_param_ops": {
+    "size": 12,
+    "members": {
+      "set": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "get": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kernel_param": {
+    "size": 16,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ops": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "perm": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "level": {
+        "offset": 10,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kparam_string": {
+    "size": 8,
+    "members": {
+      "maxlen": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "string": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "kparam_array": {
+    "size": 20,
+    "members": {
+      "max": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "elemsize": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "ops": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "elem": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "static_key": {
+    "size": 4,
+    "members": {
+      "enabled": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "tracepoint_func": {
+    "size": 8,
+    "members": {
+      "func": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "data": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "tracepoint": {
+    "size": 20,
+    "members": {
+      "name": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "key": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "regfunc": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "unregfunc": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "funcs": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mod_arch_specific": {
+    "size": 28,
+    "members": {
+      "unwind": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "module_kobject": {
+    "size": 48,
+    "members": {
+      "kobj": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mod": {
+        "offset": 36,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "drivers_dir": {
+        "offset": 40,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mp": {
+        "offset": 44,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "module": {
+    "size": 360,
+    "members": {
+      "state": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "list": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "name": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "mkobj": {
+        "offset": 72,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "modinfo_attrs": {
+        "offset": 120,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "version": {
+        "offset": 124,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "srcversion": {
+        "offset": 128,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "holders_dir": {
+        "offset": 132,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "syms": {
+        "offset": 136,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "crcs": {
+        "offset": 140,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_syms": {
+        "offset": 144,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kp": {
+        "offset": 148,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_kp": {
+        "offset": 152,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_gpl_syms": {
+        "offset": 156,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gpl_syms": {
+        "offset": 160,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gpl_crcs": {
+        "offset": 164,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gpl_future_syms": {
+        "offset": 168,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "gpl_future_crcs": {
+        "offset": 172,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_gpl_future_syms": {
+        "offset": 176,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_exentries": {
+        "offset": 180,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "extable": {
+        "offset": 184,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "init": {
+        "offset": 188,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "module_init": {
+        "offset": 192,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "module_core": {
+        "offset": 196,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "init_size": {
+        "offset": 200,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "core_size": {
+        "offset": 204,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "init_text_size": {
+        "offset": 208,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "core_text_size": {
+        "offset": 212,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "init_ro_size": {
+        "offset": 216,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "core_ro_size": {
+        "offset": 220,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "arch": {
+        "offset": 224,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "taints": {
+        "offset": 252,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_bugs": {
+        "offset": 256,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bug_list": {
+        "offset": 260,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "bug_table": {
+        "offset": 268,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "kallsyms": {
+        "offset": 272,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "core_kallsyms": {
+        "offset": 276,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "sect_attrs": {
+        "offset": 288,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "notes_attrs": {
+        "offset": 292,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "args": {
+        "offset": 296,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "percpu": {
+        "offset": 300,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "percpu_size": {
+        "offset": 304,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_tracepoints": {
+        "offset": 308,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "tracepoints_ptrs": {
+        "offset": 312,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_trace_bprintk_fmt": {
+        "offset": 316,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "trace_bprintk_fmt_start": {
+        "offset": 320,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "trace_events": {
+        "offset": 324,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_trace_events": {
+        "offset": 328,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "source_list": {
+        "offset": 332,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "target_list": {
+        "offset": 340,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "waiter": {
+        "offset": 348,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "exit": {
+        "offset": 352,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "refptr": {
+        "offset": 356,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "module_attribute": {
+    "size": 28,
+    "members": {
+      "attr": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "show": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "store": {
+        "offset": 12,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "setup": {
+        "offset": 16,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "test": {
+        "offset": 20,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "free": {
+        "offset": 24,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "module_ref": {
+    "size": 8,
+    "members": {
+      "incs": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "decs": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  },
+  "mod_kallsyms": {
+    "size": 12,
+    "members": {
+      "symtab": {
+        "offset": 0,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "num_symtab": {
+        "offset": 4,
+        "bit_size": null,
+        "bit_offset": null
+      },
+      "strtab": {
+        "offset": 8,
+        "bit_size": null,
+        "bit_offset": null
+      }
+    }
+  }
+}

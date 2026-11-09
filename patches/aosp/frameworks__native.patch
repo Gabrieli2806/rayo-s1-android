@@ -1,0 +1,30 @@
+diff --git a/services/surfaceflinger/DisplayHardware/HWComposer_hwc1.cpp b/services/surfaceflinger/DisplayHardware/HWComposer_hwc1.cpp
+index dcb2913..9f6a0c0 100644
+--- a/services/surfaceflinger/DisplayHardware/HWComposer_hwc1.cpp
++++ b/services/surfaceflinger/DisplayHardware/HWComposer_hwc1.cpp
+@@ -148,8 +148,9 @@ HWComposer::HWComposer(
+             mHwc->registerProcs(mHwc, &mCBContext->procs);
+         }
+ 
+-        // don't need a vsync thread if we have a hardware composer
+-        needVSyncThread = false;
++        // Rayo legacy HWC: the debug fallback must create its timing thread
++        // even while the factory compositor continues handling composition.
++        needVSyncThread = mDebugForceFakeVSync;
+         // always turn vsync off when we start
+         eventControl(HWC_DISPLAY_PRIMARY, HWC_EVENT_VSYNC, 0);
+ 
+diff --git a/services/surfaceflinger/SurfaceFlinger_hwc1.cpp b/services/surfaceflinger/SurfaceFlinger_hwc1.cpp
+index b28fe68..6cf298a 100644
+--- a/services/surfaceflinger/SurfaceFlinger_hwc1.cpp
++++ b/services/surfaceflinger/SurfaceFlinger_hwc1.cpp
+@@ -178,6 +178,9 @@ SurfaceFlinger::SurfaceFlinger()
+     maxFrameBufferAcquiredBuffers = getInt64< ISurfaceFlingerConfigs,
+             &ISurfaceFlingerConfigs::maxFrameBufferAcquiredBuffers>(2);
+ 
++    // The legacy HWC1 path must initialize DispSync just like HWC2.
++    mPrimaryDispSync.init(hasSyncFramework, dispSyncPresentTimeOffset);
++
+     char value[PROPERTY_VALUE_MAX];
+ 
+     property_get("ro.bq.gpu_to_cpu_unsupported", value, "0");

@@ -1,0 +1,2 @@
+# No format, resize, encryption, or stock system/data mount entries.
+/dev/block/loop7 /system ext4 ro,noatime wait

@@ -1,0 +1,18 @@
+{
+  "aosp_tag": "android-8.1.0_r81",
+  "blobs": [
+    "lib/egl/libGLES_mali.so",
+    "lib/hw/gralloc.rk30board.so",
+    "lib/hw/hwcomposer.rk30board.so",
+    "lib/libion.so",
+    "lib/hw/audio.primary.rk30board.so",
+    "lib/libaudioroute.so",
+    "vendor/lib/libbt-vendor.so"
+  ],
+  "limits": [
+    "No stock system-partition replacement",
+    "Private trial userdata",
+    "Wi-Fi/Bluetooth/audio not yet validated in the complete OS",
+    "Legacy hardware video decoding not integrated"
+  ]
+}

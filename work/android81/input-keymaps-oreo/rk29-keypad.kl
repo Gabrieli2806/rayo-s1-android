@@ -1,0 +1,19 @@
+key 59    MENU
+key 102   HOME
+key 114   VOLUME_DOWN
+key 115   VOLUME_UP
+key 116   POWER
+key 143   NOTIFICATION
+key 158   BACK
+key 212   CAMERA
+key 217   SEARCH
+key 103   DPAD_UP
+key 104   PAGE_UP
+key 105   DPAD_LEFT
+key 106   DPAD_RIGHT
+key 107   MOVE_END
+key 108   DPAD_DOWN
+key 109   PAGE_DOWN
+key 232   DPAD_CENTER
+# OEM key omitted pending explicit integration: key 583        PRJ_KEY_POWER      WAKE
+# OEM key omitted pending explicit integration: key 584        PRJ_POWER_WAKE      WAKE

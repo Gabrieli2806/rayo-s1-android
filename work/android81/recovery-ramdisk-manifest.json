@@ -1,0 +1,1094 @@
+[
+  {
+    "path": "acct",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "bugreports",
+    "mode": 41380,
+    "uid": 0,
+    "gid": 0,
+    "size": 50
+  },
+  {
+    "path": "charger",
+    "mode": 41380,
+    "uid": 0,
+    "gid": 0,
+    "size": 13
+  },
+  {
+    "path": "config",
+    "mode": 16704,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "d",
+    "mode": 41380,
+    "uid": 0,
+    "gid": 0,
+    "size": 17
+  },
+  {
+    "path": "data",
+    "mode": 16889,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "default.prop",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6193
+  },
+  {
+    "path": "dev",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "drmboot.ko",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 138393
+  },
+  {
+    "path": "etc",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "etc/recovery.emmc.fstab",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 2498
+  },
+  {
+    "path": "etc/recovery.fstab",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 2277
+  },
+  {
+    "path": "etc/recovery.nvme.fstab",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 2724
+  },
+  {
+    "path": "file_contexts.bin",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 102034
+  },
+  {
+    "path": "fstab.rk30board.bootmode.emmc",
+    "mode": 33184,
+    "uid": 0,
+    "gid": 0,
+    "size": 2153
+  },
+  {
+    "path": "fstab.rk30board.bootmode.unknown",
+    "mode": 33184,
+    "uid": 0,
+    "gid": 0,
+    "size": 2084
+  },
+  {
+    "path": "init",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 806816
+  },
+  {
+    "path": "init.bootmode.unknown.rc",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 146
+  },
+  {
+    "path": "init.rc",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 4973
+  },
+  {
+    "path": "mnt",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "oem",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "proc",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "property_contexts",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5021
+  },
+  {
+    "path": "res",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "res/images",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "res/images/erasing_text.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 31323
+  },
+  {
+    "path": "res/images/error_text.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 22467
+  },
+  {
+    "path": "res/images/font.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 14431
+  },
+  {
+    "path": "res/images/icon_error.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 19306
+  },
+  {
+    "path": "res/images/installing_security_text.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 74376
+  },
+  {
+    "path": "res/images/installing_text.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 66242
+  },
+  {
+    "path": "res/images/loop00000.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5900
+  },
+  {
+    "path": "res/images/loop00001.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5873
+  },
+  {
+    "path": "res/images/loop00002.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5854
+  },
+  {
+    "path": "res/images/loop00003.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5924
+  },
+  {
+    "path": "res/images/loop00004.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5981
+  },
+  {
+    "path": "res/images/loop00005.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6052
+  },
+  {
+    "path": "res/images/loop00006.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6096
+  },
+  {
+    "path": "res/images/loop00007.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6126
+  },
+  {
+    "path": "res/images/loop00008.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6132
+  },
+  {
+    "path": "res/images/loop00009.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6179
+  },
+  {
+    "path": "res/images/loop00010.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6078
+  },
+  {
+    "path": "res/images/loop00011.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6167
+  },
+  {
+    "path": "res/images/loop00012.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6079
+  },
+  {
+    "path": "res/images/loop00013.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6147
+  },
+  {
+    "path": "res/images/loop00014.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6052
+  },
+  {
+    "path": "res/images/loop00015.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6089
+  },
+  {
+    "path": "res/images/loop00016.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6069
+  },
+  {
+    "path": "res/images/loop00017.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6040
+  },
+  {
+    "path": "res/images/loop00018.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6055
+  },
+  {
+    "path": "res/images/loop00019.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5923
+  },
+  {
+    "path": "res/images/loop00020.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5831
+  },
+  {
+    "path": "res/images/loop00021.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5844
+  },
+  {
+    "path": "res/images/loop00022.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5839
+  },
+  {
+    "path": "res/images/loop00023.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5865
+  },
+  {
+    "path": "res/images/loop00024.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5789
+  },
+  {
+    "path": "res/images/loop00025.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5779
+  },
+  {
+    "path": "res/images/loop00026.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5819
+  },
+  {
+    "path": "res/images/loop00027.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5763
+  },
+  {
+    "path": "res/images/loop00028.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5769
+  },
+  {
+    "path": "res/images/loop00029.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5932
+  },
+  {
+    "path": "res/images/loop00030.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5973
+  },
+  {
+    "path": "res/images/loop00031.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5904
+  },
+  {
+    "path": "res/images/loop00032.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5872
+  },
+  {
+    "path": "res/images/loop00033.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5843
+  },
+  {
+    "path": "res/images/loop00034.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5903
+  },
+  {
+    "path": "res/images/loop00035.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6000
+  },
+  {
+    "path": "res/images/loop00036.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6023
+  },
+  {
+    "path": "res/images/loop00037.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6057
+  },
+  {
+    "path": "res/images/loop00038.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6204
+  },
+  {
+    "path": "res/images/loop00039.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6265
+  },
+  {
+    "path": "res/images/loop00040.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6307
+  },
+  {
+    "path": "res/images/loop00041.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6420
+  },
+  {
+    "path": "res/images/loop00042.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6448
+  },
+  {
+    "path": "res/images/loop00043.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6411
+  },
+  {
+    "path": "res/images/loop00044.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6504
+  },
+  {
+    "path": "res/images/loop00045.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6384
+  },
+  {
+    "path": "res/images/loop00046.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6447
+  },
+  {
+    "path": "res/images/loop00047.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6437
+  },
+  {
+    "path": "res/images/loop00048.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6532
+  },
+  {
+    "path": "res/images/loop00049.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6424
+  },
+  {
+    "path": "res/images/loop00050.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6323
+  },
+  {
+    "path": "res/images/loop00051.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6327
+  },
+  {
+    "path": "res/images/loop00052.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6342
+  },
+  {
+    "path": "res/images/loop00053.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6263
+  },
+  {
+    "path": "res/images/loop00054.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6347
+  },
+  {
+    "path": "res/images/loop00055.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6277
+  },
+  {
+    "path": "res/images/loop00056.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6133
+  },
+  {
+    "path": "res/images/loop00057.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6103
+  },
+  {
+    "path": "res/images/loop00058.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6083
+  },
+  {
+    "path": "res/images/loop00059.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6014
+  },
+  {
+    "path": "res/images/loop00060.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5930
+  },
+  {
+    "path": "res/images/loop00061.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5902
+  },
+  {
+    "path": "res/images/loop00062.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5927
+  },
+  {
+    "path": "res/images/loop00063.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5952
+  },
+  {
+    "path": "res/images/loop00064.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5965
+  },
+  {
+    "path": "res/images/loop00065.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 6010
+  },
+  {
+    "path": "res/images/loop00066.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5918
+  },
+  {
+    "path": "res/images/loop00067.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5916
+  },
+  {
+    "path": "res/images/loop00068.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5976
+  },
+  {
+    "path": "res/images/loop00069.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5941
+  },
+  {
+    "path": "res/images/loop00070.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5948
+  },
+  {
+    "path": "res/images/loop00071.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5867
+  },
+  {
+    "path": "res/images/loop00072.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5777
+  },
+  {
+    "path": "res/images/loop00073.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5757
+  },
+  {
+    "path": "res/images/loop00074.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5602
+  },
+  {
+    "path": "res/images/loop00075.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5468
+  },
+  {
+    "path": "res/images/loop00076.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5507
+  },
+  {
+    "path": "res/images/loop00077.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5417
+  },
+  {
+    "path": "res/images/loop00078.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5415
+  },
+  {
+    "path": "res/images/loop00079.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5430
+  },
+  {
+    "path": "res/images/loop00080.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5478
+  },
+  {
+    "path": "res/images/loop00081.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5633
+  },
+  {
+    "path": "res/images/loop00082.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5706
+  },
+  {
+    "path": "res/images/loop00083.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5783
+  },
+  {
+    "path": "res/images/loop00084.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5750
+  },
+  {
+    "path": "res/images/loop00085.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5778
+  },
+  {
+    "path": "res/images/loop00086.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5782
+  },
+  {
+    "path": "res/images/loop00087.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5927
+  },
+  {
+    "path": "res/images/loop00088.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5882
+  },
+  {
+    "path": "res/images/loop00089.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5992
+  },
+  {
+    "path": "res/images/loop00090.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 5900
+  },
+  {
+    "path": "res/images/no_command_text.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 36416
+  },
+  {
+    "path": "res/images/progress_empty.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 113
+  },
+  {
+    "path": "res/images/progress_fill.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 113
+  },
+  {
+    "path": "res/images/stage_empty.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 322
+  },
+  {
+    "path": "res/images/stage_fill.png",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 258
+  },
+  {
+    "path": "res/keys",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 1400
+  },
+  {
+    "path": "rk30xxnand_ko.ko",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 148936
+  },
+  {
+    "path": "sbin",
+    "mode": 16872,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "sbin/adbd",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 720864
+  },
+  {
+    "path": "sbin/busybox",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 887456
+  },
+  {
+    "path": "sbin/e2fsck",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 469816
+  },
+  {
+    "path": "sbin/healthd",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 531976
+  },
+  {
+    "path": "sbin/mkdosfs",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 75520
+  },
+  {
+    "path": "sbin/mkfs.f2fs",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 228636
+  },
+  {
+    "path": "sbin/recovery",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 992560
+  },
+  {
+    "path": "sbin/resize2fs",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 268648
+  },
+  {
+    "path": "sbin/sh",
+    "mode": 33256,
+    "uid": 0,
+    "gid": 0,
+    "size": 194244
+  },
+  {
+    "path": "sbin/ueventd",
+    "mode": 41448,
+    "uid": 0,
+    "gid": 0,
+    "size": 7
+  },
+  {
+    "path": "sbin/watchdogd",
+    "mode": 41448,
+    "uid": 0,
+    "gid": 0,
+    "size": 7
+  },
+  {
+    "path": "sdcard",
+    "mode": 16895,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "seapp_contexts",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 758
+  },
+  {
+    "path": "selinux_version",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 78
+  },
+  {
+    "path": "sepolicy",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 204460
+  },
+  {
+    "path": "service_contexts",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 11409
+  },
+  {
+    "path": "storage",
+    "mode": 16873,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "sys",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "system",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "system/bin",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "system/bin/busybox",
+    "mode": 33261,
+    "uid": 0,
+    "gid": 0,
+    "size": 887456
+  },
+  {
+    "path": "system/bin/sh",
+    "mode": 33261,
+    "uid": 0,
+    "gid": 0,
+    "size": 194244
+  },
+  {
+    "path": "tmp",
+    "mode": 16877,
+    "uid": 0,
+    "gid": 0,
+    "size": 0
+  },
+  {
+    "path": "ueventd.rc",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 4902
+  },
+  {
+    "path": "ueventd.rk30board.rc",
+    "mode": 33188,
+    "uid": 0,
+    "gid": 0,
+    "size": 32935
+  },
+  {
+    "path": "vendor",
+    "mode": 41380,
+    "uid": 0,
+    "gid": 0,
+    "size": 14
+  }
+]

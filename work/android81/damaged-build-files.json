@@ -1,0 +1,1017 @@
+[
+  {
+    "path": "target/common/obj/APPS/CaptivePortalLogin_intermediates/classes.jack",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/HTMLViewer_intermediates/classes.jack",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/WallpaperBackup_intermediates/classes.jack",
+    "bytes": 15201,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/APPS/WallpaperBackup_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/CompanionDeviceManager_intermediates/classes.jack",
+    "bytes": 45183,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/APPS/CompanionDeviceManager_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/BluetoothMidiService_intermediates/classes.jack",
+    "bytes": 44303,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/APPS/BluetoothMidiService_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/DownloadProviderUi_intermediates/classes.jack",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/CertInstaller_intermediates/classes.jack",
+    "bytes": 90787,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/APPS/CertInstaller_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/APPS/ExtShared_intermediates/classes.jack",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/latinime-common_intermediates/classes.jack",
+    "bytes": 117464,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sdk_v8_intermediates/classes.jack",
+    "bytes": 9928193,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/core-all_intermediates/classes.jack",
+    "bytes": 19038794,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/libphonenumber-platform_intermediates/classes.jack",
+    "bytes": 2094823,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/core-libart_intermediates/classes.jack",
+    "bytes": 6711495,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/legacy-test_intermediates/javalib.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/legacy-test_intermediates/classes.jack",
+    "bytes": 77438,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/legacy-test_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/volley_intermediates/classes.jack",
+    "bytes": 209167,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/services.coverage_intermediates/classes.jack",
+    "bytes": 10908,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/ims-common_intermediates/javalib.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/ims-common_intermediates/classes.jack",
+    "bytes": 184378,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/ims-common_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.vibrator-V1.0-java-constants_intermediates/classes.jack",
+    "bytes": 8475,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sap-api-java-static_intermediates/classes.jack",
+    "bytes": 120853,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes2.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework_intermediates/javalib.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes-full-debug.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.jack",
+    "bytes": 42424743,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/icu4j_intermediates/classes.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/jacoco-asm_intermediates/classes.jack",
+    "bytes": 922045,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.usb-V1.1-java-constants_intermediates/classes.jack",
+    "bytes": 7006,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/guava_intermediates/classes.jack",
+    "bytes": 5163996,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.thermal-V1.0-java-constants_intermediates/classes.jack",
+    "bytes": 7006,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sdk_v14_intermediates/classes.jack",
+    "bytes": 19480124,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.wifi-V1.0-java-constants_intermediates/classes.jack",
+    "bytes": 6949,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.tv.input-V1.0-java-constants_intermediates/classes.jack",
+    "bytes": 5859,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hidl.base-V1.0-java-static_intermediates/classes.jack",
+    "bytes": 25560,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/okhttp_intermediates/classes.jack",
+    "bytes": 935521,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/libprotobuf-java-nano_intermediates/classes.jack",
+    "bytes": 116696,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sdk_v9_intermediates/classes.jack",
+    "bytes": 11255771,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/core-oj_intermediates/classes.jack",
+    "bytes": 12303575,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/bluetooth.mapsapi_intermediates/classes.jack",
+    "bytes": 66934,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/apptoolkit-lifecycle-runtime_intermediates/classes.jack",
+    "bytes": 29761,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sdk_v17_intermediates/classes.jack",
+    "bytes": 20128999,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/jacocoagent_intermediates/classes.jack",
+    "bytes": 1328879,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/jsr305_intermediates/classes.jack",
+    "bytes": 54138,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/hamcrest_intermediates/classes.jack",
+    "bytes": 109498,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/libprotobuf-java-micro_intermediates/classes.jack",
+    "bytes": 43059,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/voip-common_intermediates/javalib.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/voip-common_intermediates/classes.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/voip-common_intermediates/classes-full-debug.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/voip-common_intermediates/classes.jack",
+    "bytes": 323792,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/voip-common_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/bouncycastle-nojarjar_intermediates/classes.jack",
+    "bytes": 3533451,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android-common_intermediates/classes.jack",
+    "bytes": 326047,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/junit_intermediates/classes.jack",
+    "bytes": 842065,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/framework-protos_intermediates/classes.jack",
+    "bytes": 396544,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.vibrator-V1.1-java-constants_intermediates/classes.jack",
+    "bytes": 6929,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/ext_intermediates/classes.jack",
+    "bytes": 3961994,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/com.android.vcard_intermediates/classes.jack",
+    "bytes": 280263,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.health-V1.0-java-constants_intermediates/classes.jack",
+    "bytes": 5670,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/conscrypt_intermediates/classes.jack",
+    "bytes": 918405,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.test.mock_intermediates/classes.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.test.mock_intermediates/classes-full-debug.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sdk_v25_intermediates/classes.jack",
+    "bytes": 26848023,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hidl.base-V1.0-java_intermediates/javalib.jar",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hidl.base-V1.0-java_intermediates/classes.jack",
+    "bytes": 25541,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hidl.base-V1.0-java_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/time_zone_distro_intermediates/classes.jack",
+    "bytes": 27022,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/org.apache.http.legacy_intermediates/classes.jack",
+    "bytes": 776291,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/org.apache.http.legacy.boot_intermediates/classes.jack",
+    "bytes": 1370158,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/sdk_v21_intermediates/classes.jack",
+    "bytes": 23420884,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/bouncycastle_intermediates/classes.jack",
+    "bytes": 3569573,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/services.net_intermediates/classes.jack",
+    "bytes": 400164,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/apptoolkit-lifecycle-common_intermediates/classes.jack",
+    "bytes": 36940,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/android.hardware.usb-V1.0-java-constants_intermediates/classes.jack",
+    "bytes": 10101,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/apache-xml_intermediates/classes.jack",
+    "bytes": 2869151,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/javax.obex_intermediates/classes.jack",
+    "bytes": 111093,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/javax.obex_intermediates/classes.dex",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/inputmethod-common_intermediates/classes.jack",
+    "bytes": 16716,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/common/obj/JAVA_LIBRARIES/apptoolkit-arch-core-common_intermediates/classes.jack",
+    "bytes": 33346,
+    "prefix": "504b030414000808"
+  },
+  {
+    "path": "target/product/rayos1_oreo/system/app/BluetoothMidiService/BluetoothMidiService.apk",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/product/rayos1_oreo/system/app/CertInstaller/CertInstaller.apk",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/product/rayos1_oreo/system/app/WallpaperBackup/WallpaperBackup.apk",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/product/rayos1_oreo/obj/APPS/WallpaperBackup_intermediates/package.apk",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/product/rayos1_oreo/obj/APPS/BluetoothMidiService_intermediates/package.apk",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "target/product/rayos1_oreo/obj/APPS/CertInstaller_intermediates/package.apk",
+    "bytes": 0,
+    "prefix": ""
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/canned_fs_config.o",
+    "bytes": 11689,
+    "prefix": "6486120000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/strdup8to16.o",
+    "bytes": 8551,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/socket_inaddr_any_server_windows.o",
+    "bytes": 4930,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/sched_policy.o",
+    "bytes": 4130,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/socket_network_client_windows.o",
+    "bytes": 5707,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/fs_config.o",
+    "bytes": 30674,
+    "prefix": "6486130000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/hashmap.o",
+    "bytes": 29064,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/open_memstream.o",
+    "bytes": 521,
+    "prefix": "6486060000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/strlcpy.o",
+    "bytes": 3027,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/sockets_windows.o",
+    "bytes": 6156,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/record_stream.o",
+    "bytes": 8167,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/iosched_policy.o",
+    "bytes": 2589,
+    "prefix": "64860c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/sockets.o",
+    "bytes": 3653,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/native_handle.o",
+    "bytes": 7680,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/strdup16to8.o",
+    "bytes": 5959,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/load_file.o",
+    "bytes": 4135,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/config_utils.o",
+    "bytes": 13878,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/dlmalloc_stubs.o",
+    "bytes": 3752,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_64_static/obj/system/core/libcutils/threads.o",
+    "bytes": 5339,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/canned_fs_config.o",
+    "bytes": 9502,
+    "prefix": "4c010e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/strdup8to16.o",
+    "bytes": 6686,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/socket_inaddr_any_server_windows.o",
+    "bytes": 4452,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/sched_policy.o",
+    "bytes": 3862,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/socket_network_client_windows.o",
+    "bytes": 4721,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/fs_config.o",
+    "bytes": 26086,
+    "prefix": "4c010f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/hashmap.o",
+    "bytes": 20223,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/open_memstream.o",
+    "bytes": 509,
+    "prefix": "4c01060000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/strlcpy.o",
+    "bytes": 2673,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/sockets_windows.o",
+    "bytes": 5352,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/record_stream.o",
+    "bytes": 5968,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/iosched_policy.o",
+    "bytes": 2263,
+    "prefix": "4c010a0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/sockets.o",
+    "bytes": 3619,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/native_handle.o",
+    "bytes": 5740,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/strdup16to8.o",
+    "bytes": 4852,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/load_file.o",
+    "bytes": 3470,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/config_utils.o",
+    "bytes": 9817,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/dlmalloc_stubs.o",
+    "bytes": 3107,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libcutils/libcutils/windows_x86_static/obj/system/core/libcutils/threads.o",
+    "bytes": 4279,
+    "prefix": "4c010a0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/FileMap.o",
+    "bytes": 11523,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/Static.o",
+    "bytes": 4695,
+    "prefix": "6486110000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/StrongPointer.o",
+    "bytes": 2622,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/Timers.o",
+    "bytes": 3675,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/Unicode.o",
+    "bytes": 38523,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/Printer.o",
+    "bytes": 68744,
+    "prefix": "64863e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/String16.o",
+    "bytes": 89002,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/String8.o",
+    "bytes": 106664,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/NativeHandle.o",
+    "bytes": 18044,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/SystemClock.o",
+    "bytes": 4286,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/Tokenizer.o",
+    "bytes": 54805,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/CallStack.o",
+    "bytes": 113712,
+    "prefix": "6486340000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/misc.o",
+    "bytes": 4838,
+    "prefix": "64860c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/RefBase.o",
+    "bytes": 47524,
+    "prefix": "6486120000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/JenkinsHash.o",
+    "bytes": 9718,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/StopWatch.o",
+    "bytes": 9141,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/PropertyMap.o",
+    "bytes": 114520,
+    "prefix": "64863a0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/Threads.o",
+    "bytes": 77284,
+    "prefix": "64861d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/VectorImpl.o",
+    "bytes": 89339,
+    "prefix": "6486150000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_64_static/obj/system/core/libutils/SharedBuffer.o",
+    "bytes": 19363,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/FileMap.o",
+    "bytes": 10399,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/Static.o",
+    "bytes": 3943,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/StrongPointer.o",
+    "bytes": 2666,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/Timers.o",
+    "bytes": 3489,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/Unicode.o",
+    "bytes": 30055,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/Printer.o",
+    "bytes": 60258,
+    "prefix": "4c012c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/String16.o",
+    "bytes": 76900,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/String8.o",
+    "bytes": 90819,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/NativeHandle.o",
+    "bytes": 17097,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/SystemClock.o",
+    "bytes": 3794,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/Tokenizer.o",
+    "bytes": 51145,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/CallStack.o",
+    "bytes": 100691,
+    "prefix": "4c01220000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/misc.o",
+    "bytes": 4739,
+    "prefix": "4c010a0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/RefBase.o",
+    "bytes": 41037,
+    "prefix": "4c01100000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/JenkinsHash.o",
+    "bytes": 7861,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/StopWatch.o",
+    "bytes": 7963,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/PropertyMap.o",
+    "bytes": 96304,
+    "prefix": "4c01260000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/Threads.o",
+    "bytes": 64898,
+    "prefix": "4c01170000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/VectorImpl.o",
+    "bytes": 69280,
+    "prefix": "4c01130000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/libutils/libutils/windows_x86_static/obj/system/core/libutils/SharedBuffer.o",
+    "bytes": 17104,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/log_event_list.o",
+    "bytes": 20027,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/uio.o",
+    "bytes": 5213,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/config_read.o",
+    "bytes": 8366,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/log_ratelimit.o",
+    "bytes": 4843,
+    "prefix": "64860e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/stderr_write.o",
+    "bytes": 13754,
+    "prefix": "6486100000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/logger_read.o",
+    "bytes": 30885,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/logger_name.o",
+    "bytes": 4367,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/local_logger.o",
+    "bytes": 27756,
+    "prefix": "6486100000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/logprint.o",
+    "bytes": 57611,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/config_write.o",
+    "bytes": 8363,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/fake_log_device.o",
+    "bytes": 24288,
+    "prefix": "64860f0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/logger_write.o",
+    "bytes": 29770,
+    "prefix": "6486100000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/log_event_write.o",
+    "bytes": 4658,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/logger_lock.o",
+    "bytes": 2973,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_64_static/obj/system/core/liblog/fake_writer.o",
+    "bytes": 9658,
+    "prefix": "6486100000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/log_event_list.o",
+    "bytes": 17416,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/uio.o",
+    "bytes": 3877,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/config_read.o",
+    "bytes": 7477,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/log_ratelimit.o",
+    "bytes": 4408,
+    "prefix": "4c010c0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/stderr_write.o",
+    "bytes": 11044,
+    "prefix": "4c010e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/logger_read.o",
+    "bytes": 22982,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/logger_name.o",
+    "bytes": 3817,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/local_logger.o",
+    "bytes": 21970,
+    "prefix": "4c010e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/logprint.o",
+    "bytes": 45030,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/config_write.o",
+    "bytes": 7293,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/fake_log_device.o",
+    "bytes": 19979,
+    "prefix": "4c010d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/logger_write.o",
+    "bytes": 22348,
+    "prefix": "4c010e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/log_event_write.o",
+    "bytes": 3822,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/logger_lock.o",
+    "bytes": 2588,
+    "prefix": "4c010b0000000000"
+  },
+  {
+    "path": "soong/.intermediates/system/core/liblog/liblog/windows_x86_static/obj/system/core/liblog/fake_writer.o",
+    "bytes": 8165,
+    "prefix": "4c010e0000000000"
+  },
+  {
+    "path": "soong/.intermediates/external/compiler-rt/libcompiler_rt-extras/windows_x86_64_static/obj/external/compiler-rt/lib/builtins/mulodi4.o",
+    "bytes": 3381,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/external/compiler-rt/libcompiler_rt-extras/windows_x86_64_static/obj/external/compiler-rt/lib/builtins/comparedf2.o",
+    "bytes": 5834,
+    "prefix": "64860d0000000000"
+  },
+  {
+    "path": "soong/.intermediates/external/compiler-rt/libcompiler_rt-extras/windows_x86_static/obj/external/compiler-rt/lib/builtins/mulodi4.o",
+    "bytes": 3116,
+    "prefix": "4c010b0000000000"
+  }
+]

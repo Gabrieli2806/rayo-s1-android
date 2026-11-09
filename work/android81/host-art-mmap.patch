@@ -1,0 +1,19 @@
+diff --git a/runtime/mem_map.cc b/runtime/mem_map.cc
+index 7b41608..9eff6a7 100644
+--- a/runtime/mem_map.cc
++++ b/runtime/mem_map.cc
+@@ -906,6 +906,14 @@ void* MemMap::MapInternal(void* addr,
+                           int fd,
+                           off_t offset,
+                           bool low_4gb) {
++#if defined(__linux__) && !defined(__ANDROID__)
++  // Modern Linux hosts may treat an address as a placement hint. ART requires
++  // this exact address. NOREPLACE rejects conflicts without overwriting any
++  // mapping; never change the Android target's behavior or use MAP_FIXED here.
++  if (addr != nullptr && (flags & MAP_FIXED) == 0) {
++    flags |= 0x100000;  // Linux MAP_FIXED_NOREPLACE, absent in the old host sysroot.
++  }
++#endif
+ #ifdef __LP64__
+   // When requesting low_4g memory and having an expectation, the requested range should fit into
+   // 4GB.
