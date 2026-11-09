@@ -15,3 +15,5 @@ No projector writes or reboots were performed during migration. Backup validatio
 ## Subsequent hardware work, after migration
 
 Later work did write/read back recovery v13 and v14 and perform recovery-slot reboots; the no-write statement above applies only to the migration phase. v13 revealed a radio-HAL capability race. v14 corrected startup ordering, and a fresh full boot had correct radio UIDs/capabilities, validated Wi-Fi internet, Bluetooth ON, and owner-confirmed Rockchip AVC/AAC projection/audio. Original boot/system/kernel remained preserved. Pairing and extended stability are still pending. See DEVICE_VALIDATION.md.
+
+The v14 ramdisk was extracted from the new kit into a fresh native Linux directory and repacked independently. Its output reproduced SHA-256 `9e7c48594fae621e74a37ea4bd427fa3284f0ab578cbf8ff94187bb654278c2d` exactly. The new kit passed complete ZIP CRC checks and individual file hashing. The active Bluetooth compatibility library passed both invalid-null and valid-real-timer checks on the device. Source-audit snapshots were fetched again at their pinned commits and matched all 11 checksums.

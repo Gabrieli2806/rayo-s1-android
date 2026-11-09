@@ -63,6 +63,6 @@ if OUTPUT.stat().st_size >= 2*1024**3:
     raise SystemExit('Release asset exceeds 2 GiB')
 descriptor = {'release': 'device-kit-v0.2', 'asset': OUTPUT.name,
               'bytes': OUTPUT.stat().st_size, 'sha256': digest.hexdigest()}
-(ROOT/'manifests/device-kit.json').write_text(json.dumps(descriptor, indent=2)+'\n', encoding='utf-8')
-(ROOT/'local/portable/device-kit-v0.2-MANIFEST.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8')
+(ROOT/'manifests/device-kit.json').write_text(json.dumps(descriptor, indent=2)+'\n', encoding='utf-8', newline='\n')
+(ROOT/'local/portable/device-kit-v0.2-MANIFEST.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8', newline='\n')
 print('Verified device kit:', json.dumps(descriptor), flush=True)

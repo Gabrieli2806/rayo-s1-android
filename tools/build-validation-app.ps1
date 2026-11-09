@@ -33,5 +33,3 @@ if($LASTEXITCODE -ne 0){throw 'Validation app signing failed'}
 & (Join-Path $rayoBuildTools 'apksigner.bat') verify $rayoOutput
 if($LASTEXITCODE -ne 0){throw 'Validation app signature verification failed'}
 Write-Output $rayoOutput
-
-

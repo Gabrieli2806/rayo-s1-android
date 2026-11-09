@@ -32,6 +32,8 @@ The Bluetooth APK and HAL existed, but the framework feature declaration was abs
 
 The normal non-root HAL reached Bluetooth ON, and the owner confirmed nearby devices appeared. No accessory was available for pairing. Pairing, reconnect, HID input, A2DP audio, BLE behavior, low-power operation, and stability are not established merely by ON/discovery. Do not pair unknown devices or publish raw addresses/logs.
 
+The native `rayo-bt-timer-check` was run against the actual active libtg.so: null input returned EINVAL, while a real CLOCK_MONOTONIC/SIGEV_NONE timer was successfully armed, queried, and deleted. This verifies the compatibility function preserves valid timer behavior without using Bluetooth hardware or persistent storage.
+
 ## Persistence and recovery
 
 The first v13 reboot exposed a real race: HALs were already executing before their file capabilities were assigned. Wi-Fi/Bluetooth did not acquire those privileges until re-executed. v13 is not the release checkpoint.
