@@ -21,8 +21,13 @@ def main():
     parser.add_argument('--product-out', required=True, type=Path)
     parser.add_argument('--native-product-out', required=True, type=Path)
     parser.add_argument('--source', required=True, type=Path)
+    parser.add_argument('--graphics-probes', action='store_true', help='Include a private Mali closure and an offscreen EGL probe')
+    parser.add_argument('--graphics-services', action='store_true', help='Also stage explicitly triggered Binder/HIDL graphics services; no framework')
+    parser.add_argument('--surfaceflinger', action='store_true', help='Also stage explicitly triggered native composition test; no framework or apps')
     parser.add_argument('--reuse-system-candidate', type=Path, help='Reuse a checksum-verified filesystem only if every staged entry matches')
     args = parser.parse_args()
+    if args.surfaceflinger:
+        args.graphics_services = True
     if os.name != 'posix':
         raise SystemExit('Run on native Linux/WSL ext4 to preserve symlinks and metadata')
     product = args.product_out.resolve()
@@ -53,7 +58,7 @@ def main():
         if not original.is_file():
             raise SystemExit('Build/install the required source artifact first: '+str(original))
         actual = original.resolve(strict=True)
-        if not actual.is_relative_to(product):
+        if not actual.is_relative_to(product) and not actual.is_relative_to(args.native_product_out.resolve()):
             raise SystemExit('Unexpected external artifact symlink: '+str(original))
         destination = system/relative
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -73,6 +78,12 @@ def main():
     core = {'libc.so', 'libm.so', 'libdl.so', 'libdl_android.so'}
     for name in core:
         pending.append(copy('lib/bootstrap/'+name))
+    graphics = None
+    if args.graphics_probes or args.graphics_services:
+        from android12_graphics_root import augment
+        extra, graphics = augment(system, product, args.native_product_out, ROOT, work, copy, readelf,
+                                  args.graphics_services, args.surfaceflinger)
+        pending.extend(extra)
     if (system/'lib/bootstrap/libc.so').stat().st_size < 500000:
         raise SystemExit('Refusing a libc interface stub')
     while pending:
@@ -86,6 +97,8 @@ def main():
         for name in re.findall(r'\(NEEDED\).*?\[(.*?)\]', dynamic):
             relative = ('lib/bootstrap/' if name in core else 'lib/')+name
             original = source/relative
+            if not original.is_file():
+                original = source/'vendor'/relative
             if not original.is_file():
                 original = product/'recovery/root/system'/relative
             dependency = copy(relative, original)
@@ -119,7 +132,8 @@ def main():
     init.chmod(0o755)
     (ramdisk/'sbin').mkdir(exist_ok=True)
     with tarfile.open(ROOT/'local/device-kit/runtime/trial-root-v14.tar.gz') as archive:
-        for name in ('adbd', 'busybox'):
+        names = ('adbd', 'busybox', 'rayo_hwbinder.ko') if args.graphics_services else ('adbd', 'busybox')
+        for name in names:
             matches = [m for m in archive.getmembers() if m.name.lstrip('./') == 'sbin/'+name]
             if len(matches) != 1 or not matches[0].isfile():
                 raise SystemExit('Unexpected verified rescue archive layout')
@@ -137,8 +151,18 @@ def main():
     # as well as the annotated header selection for this minimal root.
     (system/'etc/init/hw').mkdir(parents=True, exist_ok=True)
     shutil.copyfile(rc, system/'etc/init/hw/init.rc')
+    # SecondStageMain automatically scans /system/etc/init; do not also import
+    # the graphics RC from the hardware RC and define its services twice.
     subprocess.run([str(host/'host_init_verifier'),
         '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'), str(rc)], check=True)
+    if args.graphics_services:
+        subprocess.run([str(host/'host_init_verifier'),
+            '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
+            str(system/'etc/init/rayo12.graphics.rc')], check=True)
+    if args.surfaceflinger:
+        subprocess.run([str(host/'host_init_verifier'),
+            '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
+            str(system/'etc/init/rayo12.surface.rc')], check=True)
     policy = (product/'system/vendor/etc/selinux/precompiled_sepolicy').read_bytes()
     magic, name_length = struct.unpack_from('<II', policy)
     version = struct.unpack_from('<I', policy, 8+name_length)[0]
@@ -209,6 +233,8 @@ def main():
         'physical_userdata': 'Readonly with noload; temporary data/cache use tmpfs',
         'watchdog': 'Unverified boot-time normal-reboot request after 180 seconds; no disarm path',
         'device_written': False}
+    if graphics:
+        manifest['graphics_probe'] = graphics
     (work/'MANIFEST.json').write_text(json.dumps(manifest, indent=2)+'\n')
     print('Offline diagnostic candidate:', work)
 

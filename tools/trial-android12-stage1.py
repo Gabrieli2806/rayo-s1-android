@@ -121,6 +121,10 @@ def main():
         checked('shell', 'stop', 'flash_recovery')
     written = False
     passed = False
+    graphics_ok = None
+    transport_ok = None
+    composer_ok = None
+    surface_ok = None
     returned = False
     restored = False
     observations = []
@@ -160,6 +164,61 @@ def main():
                               and storage_ok and data_ok and init_md5 == manifest['android12_init']['md5'])
                     seen_trial = True
                     observations.append({'stage1_passed': passed})
+                    if passed and manifest.get('graphics_probe'):
+                        graphics = command('shell', 'LD_CONFIG_FILE=/system/etc/ld.config.rayo12.txt',
+                                           'RAYO_USE_PLATFORM_EGL=1', '/system/bin/rayo12-gpu-probe', timeout=25)
+                        (logs/'graphics-stdout.txt').write_bytes(graphics.stdout)
+                        (logs/'graphics-stderr.txt').write_bytes(graphics.stderr)
+                        graphics_ok = graphics.returncode == 0 and b'GPU_PBUFFER_PASS' in graphics.stdout
+                        observations.append({'offscreen_graphics_passed': graphics_ok})
+                        print('Android 12 init-root offscreen EGL:', 'PASS' if graphics_ok else 'NOT PASSED', flush=True)
+                        if graphics_ok and manifest['graphics_probe'].get('services'):
+                            checked('shell', '/system/bin/setprop', 'sys.rayo12.graphics', 'start')
+                            time.sleep(8)
+                            listing = command('shell', 'LD_CONFIG_FILE=/system/etc/ld.config.rayo12.txt',
+                                              '/system/bin/rayo12-composer-probe', timeout=22)
+                            (logs/'graphics-services.txt').write_bytes(listing.stdout+listing.stderr)
+                            composer_ok = listing.returncode == 0 and b'COMPOSER_QUERY_PASS' in listing.stdout
+                            observations.append({'composer_query_passed': composer_ok})
+                            print('Android 12 composer query:', 'PASS' if composer_ok else 'NOT PASSED', flush=True)
+                            transport = command('shell', 'LD_CONFIG_FILE=/system/etc/ld.config.rayo12.txt',
+                                                '/system/bin/rayo12-graphicbuffer-probe', timeout=20)
+                            (logs/'graphics-transport.txt').write_bytes(transport.stdout+transport.stderr)
+                            transport_ok = transport.returncode == 0 and b'GRAPHICBUFFER_TRANSPORT_PASS' in transport.stdout
+                            observations.append({'graphics_transport_passed': transport_ok})
+                            late = command('shell', '/sbin/busybox', 'dmesg')
+                            (logs/'graphics-services-dmesg.txt').write_bytes(late.stdout+late.stderr)
+                            print('Android 12 allocator transport:', 'PASS' if transport_ok else 'NOT PASSED', flush=True)
+                            if composer_ok and transport_ok and manifest['graphics_probe'].get('surfaceflinger'):
+                                checked('shell', '/system/bin/setprop', 'sys.rayo12.surfaceflinger', 'start')
+                                time.sleep(6)
+                                for mode in ('--hw-rgba', '--hw-bgra', '--hw-rgba-no-fb'):
+                                    allocation = command('shell', 'LD_CONFIG_FILE=/system/etc/ld.config.rayo12.txt',
+                                        '/system/bin/rayo12-graphicbuffer-probe', mode, timeout=20)
+                                    (logs/('allocation'+mode+'.txt')).write_bytes(allocation.stdout+allocation.stderr)
+                                    observations.append({'allocation_mode': mode, 'exit_code': allocation.returncode})
+                                out_path = logs/'surface-stdout.txt'
+                                with out_path.open('wb') as stdout, (logs/'surface-stderr.txt').open('wb') as stderr:
+                                    child = subprocess.Popen(prefix+['shell', 'LD_CONFIG_FILE=/system/etc/ld.config.rayo12.txt',
+                                        '/system/bin/rayo12-surface-probe'], stdout=stdout, stderr=stderr)
+                                    limit = time.monotonic()+95
+                                    announced = False
+                                    while time.monotonic() < limit and child.poll() is None:
+                                        if not announced and b'SURFACE_BUFFER_POSTED' in out_path.read_bytes():
+                                            announced = True
+                                            print('The native color-pattern buffer was posted. Inspect physical projection now.', flush=True)
+                                            during = command('shell', '/system/bin/dumpsys', 'SurfaceFlinger', timeout=15)
+                                            (logs/'surfaceflinger-during-pattern.txt').write_bytes(during.stdout+during.stderr)
+                                        time.sleep(1)
+                                    if child.poll() is None:
+                                        child.kill()
+                                    child.wait(timeout=5)
+                                surface_ok = child.returncode == 0 and b'SURFACE_BUFFER_POSTED' in out_path.read_bytes()
+                                observations.append({'surface_buffer_posted': surface_ok, 'physical_projection_verified': False})
+                                snapshot = command('shell', '/system/bin/dumpsys', 'SurfaceFlinger', timeout=15)
+                                (logs/'surfaceflinger-dump.txt').write_bytes(snapshot.stdout+snapshot.stderr)
+                                logcat = command('shell', '/system/bin/logcat', '-d', '-b', 'all', timeout=15)
+                                (logs/'surfaceflinger-logcat.txt').write_bytes(logcat.stdout+logcat.stderr)
                     print('Readonly/init checks recorded. Waiting for bounded normal-boot return.', flush=True)
             if version.returncode == 0 and version.stdout.strip() == b'8.1.0':
                 boot_id = command('shell', 'cat', '/proc/sys/kernel/random/boot_id', timeout=5)
@@ -174,6 +233,23 @@ def main():
         if not returned:
             raise RuntimeError('Normal v14 did not return within the bounded observation period; retain logs and recover before further tests')
     finally:
+        # An optional diagnostic command may fail while the trial is still
+        # running. Keep observing the watchdog before attempting restoration.
+        if written and not returned:
+            fallback_deadline = time.monotonic()+240
+            while time.monotonic() < fallback_deadline:
+                version = command('shell', 'getprop', 'ro.build.version.release', timeout=5)
+                if version.returncode == 0 and version.stdout.strip() == b'8.1.0':
+                    boot_id = command('shell', 'cat', '/proc/sys/kernel/random/boot_id', timeout=5)
+                    done = command('shell', 'getprop', 'sys.boot_completed', timeout=5)
+                    if boot_id.returncode == 0 and boot_id.stdout.decode().strip() != before_boot and done.stdout.strip() == b'1':
+                        returned = True
+                        previous = command('exec-out', '/sbin/busybox', 'cat', '/proc/last_kmsg', timeout=20)
+                        if previous.returncode == 0:
+                            (logs/'last-kmsg.txt').write_bytes(previous.stdout)
+                        print('Normal v14 returned after an interrupted diagnostic.', flush=True)
+                        break
+                time.sleep(3)
         # Restore only with a verified normal v14 session; never guess an
         # unidentified boot/recovery environment's write paths.
         version = command('shell', 'getprop', 'ro.build.version.release', timeout=5)
@@ -187,10 +263,21 @@ def main():
             restored = True
             print('Original independent recovery restored and verified.', flush=True)
         (logs/'RESULT.json').write_text(json.dumps({'candidate': manifest, 'stage1_passed': passed,
+            'offscreen_graphics_passed': graphics_ok,
+            'graphics_transport_passed': transport_ok,
+            'composer_query_passed': composer_ok,
+            'surface_buffer_posted': surface_ok,
             'normal_v14_returned': returned, 'original_recovery_restored': restored,
             'observations': observations}, indent=2)+'\n')
-    print('Diagnostic result:', 'PASS' if passed and returned else 'NOT PASSED', 'Logs:', logs)
-    if not passed:
+    complete = passed and returned and restored and (not manifest.get('graphics_probe') or graphics_ok is True)
+    if manifest.get('graphics_probe', {}).get('services'):
+        complete = complete and transport_ok is True and composer_ok is True
+    if manifest.get('graphics_probe', {}).get('surfaceflinger'):
+        complete = complete and surface_ok is True
+    print('Programmatic diagnostic result:', 'PASS' if complete else 'NOT PASSED', 'Logs:', logs)
+    if manifest.get('graphics_probe', {}).get('surfaceflinger'):
+        print('Physical projection is a separate owner observation; transaction acceptance does not verify it.')
+    if not complete:
         raise SystemExit(2)
 
 

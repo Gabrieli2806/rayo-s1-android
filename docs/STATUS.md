@@ -4,6 +4,10 @@
 
 The full pinned Android 12 checkout and AOSP TV product file build completed. Cortex-A7/Binder32 native runtime libraries execute on this device's original kernel. Android 12 EGL/GLES offscreen rendering, local allocator/mapper and the new GraphicBuffer client using the existing 8.1 allocator transport passed; the factory HWC loaded without opening display hardware. The eighth temporary recovery-slot diagnostic passed the complete Android 12 init/USB gate using an opt-in synchronous FunctionFS transport: release 12 / SDK 31, UID 0, verified PID 1/init binary and readonly storage. The 180-second watchdog returned to v14 and original independent recovery was restored and hash-verified. Normal boot remains 8.1 v14. No full Android 12 framework/Google TV boot or physical Android 12 projection is verified. See [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md).
 
+The eleventh diagnostic also passed actual Android 12-root EGL, a new composer-client query of the factory-adapted 1280x720 display, and buffer allocation through the new allocator service. It used the unchanged v14 HwBinder module with all original kernel/layout guards. Normal v14 return and original recovery restoration were verified again. A separate SurfaceFlinger/color-layer candidate is prepared for native composition testing; it is not an installed TV ROM.
+
+Native SurfaceFlinger now starts on Mali-400 and a real RGBA test buffer can be queued. Physical projection has not passed: initial bufferless tests showed no image, and subsequent logs isolated failed `HW_FB` framebuffer-target allocation. Matched 1280x720 ION allocation without `HW_FB` passed. An explicitly selected consumer-usage adaptation is being built for the next test. The full framework, Google TV Home and Android 12 radios/media remain unverified; normal boot remains v14.
+
 ## Hardware
 
 Canon Rayo S1: RK3128 quad-core Cortex-A7 ARMv7, approximately 1 GB RAM, 8 GB eMMC, Mali-400, AP6330 Wi-Fi/Bluetooth. The factory Linux 3.10.104 kernel is preserved. Android 8.1 v14 is the normal boot. The previous Android 7.1.2 system is preserved and can be used again by restoring its verified boot image.

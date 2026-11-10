@@ -1,0 +1,31 @@
+# Opt-in native composition test. No zygote, framework, apps or radio startup.
+on property:sys.rayo12.surfaceflinger=start
+    setprop debug.renderengine.backend gles
+    setprop debug.sf.no_hw_vsync 0
+    setprop ro.rayo.graphics.ion_client_target true
+    setprop ro.logd.kernel false
+    setprop ro.logd.auditd false
+    start logd
+    start surfaceflinger
+
+service logd /system/bin/logd
+    user root
+    group root log readproc
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    setenv LD_CONFIG_FILE /system/etc/ld.config.rayo12.txt
+    socket logd stream 0666 logd logd
+    socket logdr seqpacket 0666 logd logd
+    socket logdw dgram 0222 logd logd
+    seclabel u:r:logd:s0
+    stdio_to_kmsg
+    disabled
+
+service surfaceflinger /system/bin/surfaceflinger
+    user root
+    group root system graphics readproc drmrpc
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    setenv LD_CONFIG_FILE /system/etc/ld.config.rayo12.txt
+    seclabel u:r:surfaceflinger:s0
+    setenv LD_PRELOAD /system/lib/librayo12_diaglog.so
+    stdio_to_kmsg
+    disabled

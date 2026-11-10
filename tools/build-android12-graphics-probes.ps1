@@ -11,4 +11,6 @@ New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 if ($LASTEXITCODE -ne 0) { throw 'GPU probe build failed' }
 & "$toolchain/armv7a-linux-androideabi26-clang.cmd" -Wall -Wextra -Werror -static "$source/private_mount_probe.c" -o "$OutputDirectory/rayo12-private-mount-probe"
 if ($LASTEXITCODE -ne 0) { throw 'Private mount helper build failed' }
+& "$toolchain/armv7a-linux-androideabi31-clang.cmd" -Wall -Wextra -Werror -shared -fPIC "$source/diaglog.c" -llog -o "$OutputDirectory/librayo12_diaglog.so"
+if ($LASTEXITCODE -ne 0) { throw 'Diagnostic stderr logger build failed' }
 Write-Output 'Built ARMv7 offscreen probes. No device action performed.'

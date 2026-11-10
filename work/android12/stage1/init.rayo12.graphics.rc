@@ -1,0 +1,50 @@
+# Explicit diagnostic trigger only. This does not start Android's framework.
+on property:sys.rayo12.graphics=start
+    # Unchanged v14 module: exact kernel banner, layouts and symbol guards.
+    insmod /sbin/rayo_hwbinder.ko armed=1
+    wait /dev/hwbinder 5
+    chmod 0666 /dev/hwbinder
+    chmod 0666 /dev/vndbinder
+    setprop ro.hardware.hwcomposer rayo12
+    start servicemanager
+    start hwservicemanager
+    start rayo12_allocator
+    start rayo12_composer
+
+service servicemanager /system/bin/servicemanager
+    user root
+    group root system readproc
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    setenv LD_CONFIG_FILE /system/etc/ld.config.rayo12.txt
+    seclabel u:r:servicemanager:s0
+    stdio_to_kmsg
+    disabled
+
+service hwservicemanager /system/bin/hwservicemanager
+    user root
+    group root system readproc
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    setenv LD_CONFIG_FILE /system/etc/ld.config.rayo12.txt
+    seclabel u:r:hwservicemanager:s0
+    stdio_to_kmsg
+    disabled
+
+service rayo12_allocator /system/bin/android.hardware.graphics.allocator@2.0-service
+    interface android.hardware.graphics.allocator@2.0::IAllocator default
+    user root
+    group root system graphics
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    setenv LD_CONFIG_FILE /system/etc/ld.config.rayo12.txt
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+    disabled
+
+service rayo12_composer /system/bin/android.hardware.graphics.composer@2.1-service
+    interface android.hardware.graphics.composer@2.1::IComposer default
+    user root
+    group root system graphics
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    setenv LD_CONFIG_FILE /system/etc/ld.config.rayo12.txt
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+    disabled

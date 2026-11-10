@@ -47,6 +47,20 @@ filegroup {
 }
 
 cc_binary {
+    name: "rayo12_composer_probe",
+    srcs: ["composer_probe.cpp"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+    shared_libs: ["android.hardware.graphics.composer@2.1", "libhidlbase", "libutils", "liblog"],
+}
+
+cc_binary {
+    name: "rayo12_surface_probe",
+    srcs: ["surface_probe.cpp"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+    shared_libs: ["libgui", "libui", "libbinder", "libutils", "liblog"],
+}
+
+cc_binary {
     name: "rayo12_stage1_props",
     srcs: ["stage1_props.c"],
     static_executable: true,
