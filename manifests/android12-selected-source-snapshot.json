@@ -1,0 +1,53 @@
+{
+  "purpose": "Eight synchronized source projects for bounded ABI/port research; not a complete AOSP sync or working device product",
+  "release_tag": "android-12.0.0_r34",
+  "manifest_commit": "2ad7a0b216d6eeeceea5ca4881c4d888c1692d60",
+  "projects": [
+    {
+      "path": "device/google/atv",
+      "commit": "3ce48358b7e06ab1f1a1b713fb0f285aaa0983ca"
+    },
+    {
+      "path": "hardware/interfaces",
+      "commit": "4a8246e3757732cb787327c3f8ad5cbacf910d1e"
+    },
+    {
+      "path": "hardware/libhardware",
+      "commit": "a8568d0d3478cf8b75b36f9c7bd584cce5cfbd5c"
+    },
+    {
+      "path": "system/core",
+      "commit": "d7959b58d50b2a0a1f52e0842076660f87c8f5d5"
+    },
+    {
+      "path": "system/logging",
+      "commit": "37cb6ed458c92bc488b60963fd2cb8351ff30677"
+    },
+    {
+      "path": "frameworks/native",
+      "commit": "3e846409f064570d19769748a3050882c29fa999"
+    },
+    {
+      "path": "system/netd",
+      "commit": "04d78f8888c1a1fdf0f40fcaf533fccf23692ac8"
+    },
+    {
+      "path": "system/bpf",
+      "commit": "948e7b2cdeb8bfb3e38cbced397811a4da7c9a99"
+    }
+  ],
+  "probe_headers": [
+    {
+      "path": "hardware/libhardware/include/hardware/hwcomposer.h",
+      "sha256": "e7632e93e090e3d0321315766abde924bbfd7f405471cbd188545b1a80e1298a"
+    },
+    {
+      "path": "system/core/libsystem/include/system/graphics.h",
+      "sha256": "a0079cf6d4a628b7beaf9c49ec4fb80f1df8e416d02c973d147a4013a3823a47"
+    },
+    {
+      "path": "system/logging/liblog/include/log/log.h",
+      "sha256": "a88a797a352663075686bc6e3bf76675e1606367eaf12efd70f75706b84a595c"
+    }
+  ]
+}

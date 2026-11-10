@@ -2,6 +2,8 @@
 
 Date: November 9, 2026. The owner requested Android 12 with a TV-oriented experience if adaptation is modest, while continuing hardware validation. **The investigation found a substantial port, not a small ROM substitution. No Android 12 image has been built, flashed, or claimed working.**
 
+The subsequent explicit request for the original Google TV UI is tracked in [GOOGLE_TV_12_PORT.md](GOOGLE_TV_12_PORT.md). It adds actual reference APK/ABI/signature findings, an upstream HWC2On1 integration candidate, a tagged partial source workspace, and an ARM32/API31 build-only adapter probe. These extend this assessment without claiming a working Android 12 system.
+
 ## Verified upstream findings
 
 `tools/audit-android12-sources.py` fetched 11 bounded official source snapshots. Immutable project commits, file URLs, lengths, and SHA-256 values are recorded in `manifests/android12-tv-source-audit.json`. Run the script again to reproduce the source audit without downloading/building the entire platform. This lock is not a full AOSP manifest.
@@ -15,7 +17,7 @@ Date: November 9, 2026. The owner requested Android 12 with a TV-oriented experi
 | SurfaceFlinger uses the newer composer interfaces/HWC2 implementation | SurfaceFlinger Android.bp/HWComposer.cpp | The current 8.1 HWC1 adapter is not a drop-in Android 12 graphics integration |
 | BPF initialization is integrated into boot | `system/bpf/bpfloader/BpfLoader.cpp` | Kernel/userspace networking requirements need deliberate adaptation; missing programs/features cannot simply be ignored |
 
-The official [Android 12 for TV page](https://developer.android.com/tv/release/12) supplies Android TV and Google TV images specifically for ADT-3 developer devices. Those images are not for this Canon board. Google TV's branded application/services experience is distinct from building an AOSP TV system. The proposed open-source direction is a custom AOSP TV product without adding Google services by default; a TV-style launcher does not itself upgrade Android or supply Google certification.
+The official [Android 12 for TV page](https://developer.android.com/tv/release/12) supplies Android TV and Google TV images specifically for ADT-3 developer devices. Those images are not for this Canon board. Google TV's branded application/services experience is distinct from building an AOSP TV system. The earlier default was an AOSP TV product without Google services; the owner's latest original-UI request now makes Google TV component/service integration an explicit research stage after board support. A TV-style launcher does not itself upgrade Android or supply Google certification.
 
 ## Runtime evidence from the actual unit
 

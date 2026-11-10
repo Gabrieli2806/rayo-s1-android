@@ -28,3 +28,7 @@ The signing key is not in the release. Without it, Android development and insta
 ## This kit is not a final ROM
 
 The kit resumes this experiment on **the same unit**. It does not copy user accounts or Wi-Fi passwords. Existing trial applications/settings stay on the device; a clean installation requires separate initialization and validation. Do not erase userdata for a PC migration.
+
+## New Android 12 research workspace
+
+The fresh host's partial Android 12 checkout is on native WSL ext4 at `~/android/rayo12`, not inside Git or the Windows `local/` directory. It can be recreated from the tagged manifest/source selection and selected-project snapshot in `manifests/`. It is not a complete source sync or a board ROM. See GOOGLE_TV_12_PORT.md. The official reference image, extracted Google packages, and locally built probes are in ignored `local/`/`outputs/`; transfer them separately or reproduce the inspection using the recorded Google archive/hash. No signing key is included in that reference inventory.

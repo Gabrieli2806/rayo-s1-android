@@ -1,0 +1,29 @@
+{
+  "purpose": "Pinned bounded graphics bridge research; not a complete source manifest or a verified board HAL",
+  "files": [
+    {
+      "project": "platform/hardware/interfaces",
+      "commit": "4a8246e3757732cb787327c3f8ad5cbacf910d1e",
+      "path": "graphics/composer/2.1/utils/passthrough/include/composer-passthrough/2.1/HwcLoader.h",
+      "url": "https://android.googlesource.com/platform/hardware/interfaces/+/4a8246e3757732cb787327c3f8ad5cbacf910d1e/graphics/composer/2.1/utils/passthrough/include/composer-passthrough/2.1/HwcLoader.h",
+      "bytes": 4692,
+      "sha256": "e8bb9c65f12adaaa4da702711b060140e0d83b6e0f30c79ffe1532598cac96f0"
+    },
+    {
+      "project": "platform/hardware/interfaces",
+      "commit": "4a8246e3757732cb787327c3f8ad5cbacf910d1e",
+      "path": "graphics/composer/2.1/utils/hwc2on1adapter/HWC2On1Adapter.cpp",
+      "url": "https://android.googlesource.com/platform/hardware/interfaces/+/4a8246e3757732cb787327c3f8ad5cbacf910d1e/graphics/composer/2.1/utils/hwc2on1adapter/HWC2On1Adapter.cpp",
+      "bytes": 94131,
+      "sha256": "62d6b8c1179c81617c9cd2ea4811e5747c1f092d2daa49dcc9d7dcc4c7f1bb92"
+    },
+    {
+      "project": "platform/hardware/interfaces",
+      "commit": "4a8246e3757732cb787327c3f8ad5cbacf910d1e",
+      "path": "graphics/composer/2.1/utils/hwc2on1adapter/Android.bp",
+      "url": "https://android.googlesource.com/platform/hardware/interfaces/+/4a8246e3757732cb787327c3f8ad5cbacf910d1e/graphics/composer/2.1/utils/hwc2on1adapter/Android.bp",
+      "bytes": 1555,
+      "sha256": "a244eebbdde3a3d6715a323664f45897690b4a2bbde95773f24dc3c71144ce01"
+    }
+  ]
+}

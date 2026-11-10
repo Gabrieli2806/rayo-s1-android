@@ -39,6 +39,8 @@ To start the known trial from stock Android with the kit available: `powershell 
 
 ## Essential references
 
+- [Android 12 and the original Google TV UI: inspected reference and port preparation](docs/GOOGLE_TV_12_PORT.md)
+
 - [Current status and pending validation](docs/STATUS.md)
 - [Build instructions](docs/BUILD.md)
 - [Backup and recovery](docs/RECOVERY.md)

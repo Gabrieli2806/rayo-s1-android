@@ -60,3 +60,7 @@ One post-v14 diagnostic snapshot reported about 621,468 KiB available including 
 ## Normal-boot promotion
 
 Boot v14 and original recovery were written/read back and a normal reboot completed Android 8.1.0 (ro.bootmode=emmc). Wi-Fi internet and Bluetooth ON were verified. The owner confirmed the repeated hardware-decoded video, sound, colors, and panel. Cold power-on, long-use validation, pairing and independent physical rescue are still pending. The previous 7.1.2 system was not erased.
+
+## Android 12 / original Google TV research
+
+The owner now targets Android 12 with the original Google TV Home/menu. Offline reference inspection confirmed ARM32 packages; a selected AOSP 12 source subset and an ARM32/API31 build-only factory HWC adapter probe were prepared. The existing static ABI assertions passed against real Android 12 headers. See GOOGLE_TV_12_PORT.md for evidence and remaining gates. This does not change device validation: v14 remains the working OS, with no Android 12 or Google applications installed during this research.

@@ -62,8 +62,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--initialize-lock', action='store_true',
                         help='Resolve android12-release once if no lock exists')
+    parser.add_argument('--lock', type=Path, default=ROOT/'manifests/android12-tv-source-audit.json',
+                        help='Existing bounded source lock to reproduce, including supplemental audits')
     args = parser.parse_args()
-    lock = ROOT/'manifests/android12-tv-source-audit.json'
+    lock = args.lock
     if lock.exists():
         records = json.loads(lock.read_text(encoding='utf-8'))['files']
     else:
