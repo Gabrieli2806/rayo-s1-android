@@ -1,6 +1,6 @@
 # First Android 12 OS trial plan
 
-Status: preparation only, November 10, 2026. The owner authorized progressing toward an on-device Android 12/original Google TV trial. This plan does not request repeated authorization or declare an installation candidate ready.
+Status: native init/USB and physically projected SurfaceFlinger composition verified, November 10, 2026. Framework/ART/app boot remains preparation work. The owner authorized progressing toward an on-device Android 12/original Google TV trial. This plan does not request repeated authorization or declare an installation candidate ready.
 
 ## Protected baseline
 

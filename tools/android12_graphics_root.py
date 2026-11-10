@@ -98,6 +98,8 @@ def augment(system, product, native, root, work, copy, readelf, services=False, 
         (system/'etc/init').mkdir(parents=True, exist_ok=True)
         shutil.copyfile(root/'work/android12/stage1/init.rayo12.graphics.rc', system/'etc/init/rayo12.graphics.rc')
         if surfaceflinger:
+            if b'ro.rayo.graphics.ion_client_target' not in (product/'system/bin/surfaceflinger').read_bytes():
+                raise SystemExit('Rebuild SurfaceFlinger with the opt-in ION client-target adaptation')
             default.extend(copy('bin/'+name) for name in ('surfaceflinger', 'logd', 'logcat', 'dumpsys'))
             default.append(copy('bin/rayo12-surface-probe', native/'system/bin/rayo12_surface_probe'))
             shutil.copyfile(root/'work/android12/stage1/init.rayo12.surface.rc', system/'etc/init/rayo12.surface.rc')

@@ -209,6 +209,8 @@ def main():
                                             print('The native color-pattern buffer was posted. Inspect physical projection now.', flush=True)
                                             during = command('shell', '/system/bin/dumpsys', 'SurfaceFlinger', timeout=15)
                                             (logs/'surfaceflinger-during-pattern.txt').write_bytes(during.stdout+during.stderr)
+                                            from capture_rayo_display import capture
+                                            (logs/'display-during-pattern.json').write_text(json.dumps(capture(prefix), indent=2)+'\n')
                                         time.sleep(1)
                                     if child.poll() is None:
                                         child.kill()
