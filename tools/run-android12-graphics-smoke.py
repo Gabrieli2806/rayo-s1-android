@@ -23,8 +23,13 @@ def main():
     parser.add_argument('--platform-egl', action='store_true', help='Also test source-built Android 12 EGL/GLES wrappers')
     parser.add_argument('--buffer', action='store_true', help='Test local Android 12 allocator/mapper passthrough instead of EGL')
     parser.add_argument('--hwc-load', action='store_true', help='Resolve factory HWC/adapter symbols without opening hardware')
+    parser.add_argument('--transport-buffer', action='store_true', help='Test the Android 12 GraphicBuffer client with existing public allocator transport')
     parser.add_argument('--private-mount-helper', type=Path, help='Run wrappers in a disposable, read-only child mount view')
     args = parser.parse_args()
+    if sum((args.platform_egl, args.buffer, args.hwc_load, args.transport_buffer)) > 1:
+        raise SystemExit('Choose one graphics test mode')
+    if args.transport_buffer and not args.private_mount_helper:
+        raise SystemExit('Transport buffer mode requires the private mount helper')
     if args.platform_egl and not args.private_mount_helper:
         raise SystemExit('Platform EGL requires the private mount view for its absolute wrapper paths')
     if args.buffer and (args.platform_egl or not args.private_mount_helper):
@@ -47,11 +52,16 @@ def main():
         files['lib/libhardware.so'] = args.out_dir/'soong/.intermediates/hardware/libhardware/libhardware/android_vendor.31_arm_armv7-a-neon_cortex-a7_shared/libhardware.so'
     if args.hwc_load:
         files['lib/hwcomposer.rayo12.so'] = product.parent/'vendor/lib/hw/hwcomposer.rayo12.so'
-    if args.platform_egl or args.buffer:
+    if args.transport_buffer:
+        files['lib/hw/android.hardware.graphics.mapper@2.0-impl.so'] = product.parent/'vendor/lib/hw/android.hardware.graphics.mapper@2.0-impl.so'
+    if args.platform_egl or args.buffer or args.transport_buffer:
         ndk = Path(os.environ['ANDROID_HOME'])/'ndk/25.2.9519653/toolchains/llvm/prebuilt/windows-x86_64/bin/llvm-readelf.exe'
-        if args.buffer:
+        if args.buffer or args.transport_buffer:
             dynamic = subprocess.check_output([str(ndk), '-d', str(args.probe)], text=True)
             pending = re.findall(r'\(NEEDED\).*?\[(.*?)\]', dynamic)
+            if args.transport_buffer:
+                dynamic = subprocess.check_output([str(ndk), '-d', str(files['lib/hw/android.hardware.graphics.mapper@2.0-impl.so'])], text=True)
+                pending.extend(re.findall(r'\(NEEDED\).*?\[(.*?)\]', dynamic))
         else:
             pending = ['libEGL.so', 'libGLESv1_CM.so', 'libGLESv2.so']
         while pending:
@@ -112,7 +122,17 @@ namespace.sphal.link.default.shared_libs = libc.so:libm.so:libdl.so:libdl_androi
     if args.private_mount_helper:
         # Preserve the single factory Mali inode through both OEM paths.
         checked('shell', '/sbin/busybox', 'ln', '-s', '/vendor/lib/egl', remote+'/lib/egl')
-        checked('shell', '/sbin/busybox', 'ln', '-s', remote+'/legacy/hw', remote+'/lib/hw')
+        if args.transport_buffer:
+            checked('shell', '/sbin/busybox', 'mkdir', '-p', remote+'/lib/hw', remote+'/vendor-hw')
+            # Preserve libhardware's realpath partition check. A symlink out
+            # of vendor/hw is correctly rejected; stage a checked private copy.
+            factory = logs/'gralloc.rk30board.so'
+            checked('pull', '/system/lib/hw/gralloc.rk30board.so', str(factory))
+            if factory.read_bytes()[:5] != b'\x7fELF\x01':
+                raise SystemExit('Unexpected factory gralloc ELF')
+            files['vendor-hw/gralloc.rk30board.so'] = factory
+        else:
+            checked('shell', '/sbin/busybox', 'ln', '-s', remote+'/legacy/hw', remote+'/lib/hw')
     records = []
     for name, path in {**files, 'ld.config.txt': config_path}.items():
         data = path.read_bytes()
@@ -138,11 +158,12 @@ namespace.sphal.link.default.shared_libs = libc.so:libm.so:libdl.so:libdl_androi
     post = checked('shell', 'getprop', 'sys.boot_completed')
     after_namespace = checked('shell', '/sbin/busybox', 'readlink', '/proc/self/ns/mnt')
     (logs/'context.json').write_text(json.dumps({'private_device_directory': remote,
+        'test_mode': ('transport-buffer' if args.transport_buffer else 'hwc-load' if args.hwc_load else 'buffer' if args.buffer else 'platform-egl' if args.platform_egl else 'direct-egl'),
         'files': records, 'exit_code': result.returncode, 'post_boot_completed': post,
         'parent_mount_namespace_before': before_namespace,
         'parent_mount_namespace_after': after_namespace}, indent=2)+'\n')
     print(result.stdout, result.stderr)
-    token = 'FACTORY_HWC_LOAD_PASS' if args.hwc_load else ('GRALLOC_BUFFER_PASS' if args.buffer else 'GPU_PBUFFER_PASS')
+    token = 'GRAPHICBUFFER_TRANSPORT_PASS' if args.transport_buffer else ('FACTORY_HWC_LOAD_PASS' if args.hwc_load else ('GRALLOC_BUFFER_PASS' if args.buffer else 'GPU_PBUFFER_PASS'))
     if result.returncode or token not in result.stdout or post != '1' or before_namespace != after_namespace:
         raise SystemExit('Offscreen namespace test failed; logs: '+str(logs))
     print('Offscreen namespace test passed. This does not validate projection or Android 12 boot. Logs:', logs)

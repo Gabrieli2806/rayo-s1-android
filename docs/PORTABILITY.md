@@ -4,6 +4,8 @@
 
 The current full Android 12 source/output directories are on WSL ext4 (`~/android/rayo12`, `~/android/rayo12-out`), outside this Windows repository. Git contains the pinned full manifest, native lab device sources and replay/build/test tools, not that cache. Follow [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md) to reproduce the compiled native runtime and offscreen graphics checkpoint. This checkpoint is not a bootable Android 12 ROM. Historical 8.1 cache paths below may not exist after the PC reset; the verified private device kit remains the recovery baseline.
 
+The TV framework/full-tree build has a separate `~/android/rayo12-tv-out` directory. On Ubuntu 24.04 amd64 the old bundled RenderScript compiler also needs the genuine ABI-5 ncurses/tinfo compatibility packages; `tools/setup-android12-host-compat.sh` installs them from signed official Ubuntu package metadata without changing the default APT source list. See the native checkpoint for build targets and current completion status.
+
 ## Complete transfer, without downloading AOSP again
 
 Copy **this entire folder, including `local/`**. Git does not transfer that directory. It contains:

@@ -2,7 +2,7 @@
 
 ## Android 12 native research update
 
-The full pinned Android 12 source checkout is synchronized. Cortex-A7/Binder32 native runtime libraries execute on this device's original kernel. Source-built Android 12 EGL/GLES wrappers rendered a verified offscreen pixel through the original Mali-400 driver, with isolated legacy private libraries and a disposable child mount namespace. Normal boot remains 8.1 v14; no Android 12 OS/boot image or Google TV application has been installed. Physical Android 12 projection, full boot and Google TV remain unverified. See [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md) for evidence, reproduction and installation gates.
+The full pinned Android 12 source checkout is synchronized. Cortex-A7/Binder32 native runtime libraries execute on this device's original kernel. Source-built Android 12 EGL/GLES wrappers rendered a verified offscreen pixel through the original Mali-400 driver, with isolated legacy private libraries and a disposable child mount namespace. Local allocator/mapper and the Android 12 GraphicBuffer client using the existing 8.1 allocator transport also passed; the factory HWC loaded without opening display hardware. Selected actual TV framework/SystemUI/Settings/init/SurfaceFlinger components compiled successfully; full product staging is in progress. Normal boot remains 8.1 v14; no Android 12 OS/boot image or Google TV application has been installed. Physical Android 12 projection, full boot and Google TV remain unverified. See [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md) for evidence, reproduction and installation gates.
 
 ## Hardware
 

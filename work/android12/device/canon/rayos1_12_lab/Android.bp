@@ -33,3 +33,10 @@ cc_library_shared {
     shared_libs: ["liblog", "libdl", "libvndksupport"],
     stl: "none",
 }
+
+cc_binary {
+    name: "rayo12_graphicbuffer_probe",
+    srcs: ["graphicbuffer_probe.cpp"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+    shared_libs: ["libui", "libutils"],
+}
