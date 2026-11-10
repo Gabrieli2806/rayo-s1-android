@@ -2,7 +2,7 @@
 
 Date: November 9, 2026. The owner requested Android 12 with a TV-oriented experience if adaptation is modest, while continuing hardware validation. **The investigation found a substantial port, not a small ROM substitution. No Android 12 image has been built, flashed, or claimed working.**
 
-The subsequent explicit request for the original Google TV UI is tracked in [GOOGLE_TV_12_PORT.md](GOOGLE_TV_12_PORT.md). It adds actual reference APK/ABI/signature findings, an upstream HWC2On1 integration candidate, a tagged partial source workspace, and an ARM32/API31 build-only adapter probe. These extend this assessment without claiming a working Android 12 system.
+The subsequent explicit request for the original Google TV UI is tracked in [GOOGLE_TV_12_PORT.md](GOOGLE_TV_12_PORT.md). The November 10 [native lab checkpoint](ANDROID12_NATIVE_LAB.md) adds a full pinned source checkout, source-built Cortex-A7/Binder32 runtime, and verified offscreen Android 12 EGL/GLES rendering through the original Mali driver. The official ARM32 reference core instead requires ARMv8 instructions and cannot run on this CPU. These extend this assessment without claiming a bootable or working Android 12 OS.
 
 ## Verified upstream findings
 

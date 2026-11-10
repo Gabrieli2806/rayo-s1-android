@@ -1,0 +1,2 @@
+PRODUCT_MAKEFILES := $(LOCAL_DIR)/rayos1_tv12.mk
+COMMON_LUNCH_CHOICES := rayos1_tv12-eng

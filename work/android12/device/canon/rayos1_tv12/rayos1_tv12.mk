@@ -1,0 +1,44 @@
+# Native tests establish a graphics path; full TV boot remains unverified.
+PRODUCT_SUPPORTS_CAMERA := false
+$(call inherit-product, device/google/atv/products/atv_base.mk)
+$(call inherit-product, device/google/atv/products/atv_lowram_defaults.mk)
+
+PRODUCT_NAME := rayos1_tv12
+PRODUCT_DEVICE := rayos1_tv12
+PRODUCT_BRAND := Canon
+PRODUCT_MODEL := Rayo S1 Android 12 TV Development
+PRODUCT_MANUFACTURER := Canon
+PRODUCT_CHARACTERISTICS := tv
+PRODUCT_SHIPPING_API_LEVEL := 25
+PRODUCT_USE_DYNAMIC_PARTITIONS := false
+PRODUCT_SYSTEM_PROPERTIES += ro.sf.lcd_density=160 ro.kernel.ebpf.supported=false
+PRODUCT_SYSTEM_DEFAULT_PROPERTIES += debug.sf.no_hw_vsync=0
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.composer@2.1-service \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.mapper@2.0-impl \
+    hwcomposer.rayo12 \
+    LeanbackIME \
+    TvProvision
+
+# Original Google TV Home/services are a separate integration stage; no
+# lookalike launcher is selected as a substitute. Settings/ADB bootstrap only.
+# OEM blobs, root/init, legacy namespace configuration and rollback packaging
+# are not yet integrated. Do not generate a misleading flashable artifact.
+PRODUCT_BUILD_SYSTEM_IMAGE := false
+PRODUCT_BUILD_SYSTEM_OTHER_IMAGE := false
+PRODUCT_BUILD_VENDOR_IMAGE := false
+PRODUCT_BUILD_PRODUCT_IMAGE := false
+PRODUCT_BUILD_SYSTEM_EXT_IMAGE := false
+PRODUCT_BUILD_ODM_IMAGE := false
+PRODUCT_BUILD_VENDOR_DLKM_IMAGE := false
+PRODUCT_BUILD_ODM_DLKM_IMAGE := false
+PRODUCT_BUILD_CACHE_IMAGE := false
+PRODUCT_BUILD_RAMDISK_IMAGE := false
+PRODUCT_BUILD_USERDATA_IMAGE := false
+PRODUCT_BUILD_RECOVERY_IMAGE := false
+PRODUCT_BUILD_BOOT_IMAGE := false
+PRODUCT_BUILD_VENDOR_BOOT_IMAGE := false
+PRODUCT_BUILD_VBMETA_IMAGE := false
+PRODUCT_BUILD_SUPER_EMPTY_IMAGE := false

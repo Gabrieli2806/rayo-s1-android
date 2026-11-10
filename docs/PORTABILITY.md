@@ -1,5 +1,9 @@
 # Continuing on another PC
 
+## Android 12 native research after the PC reset
+
+The current full Android 12 source/output directories are on WSL ext4 (`~/android/rayo12`, `~/android/rayo12-out`), outside this Windows repository. Git contains the pinned full manifest, native lab device sources and replay/build/test tools, not that cache. Follow [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md) to reproduce the compiled native runtime and offscreen graphics checkpoint. This checkpoint is not a bootable Android 12 ROM. Historical 8.1 cache paths below may not exist after the PC reset; the verified private device kit remains the recovery baseline.
+
 ## Complete transfer, without downloading AOSP again
 
 Copy **this entire folder, including `local/`**. Git does not transfer that directory. It contains:

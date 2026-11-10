@@ -1,0 +1,2 @@
+PRODUCT_MAKEFILES := $(LOCAL_DIR)/rayos1_12_lab.mk
+COMMON_LUNCH_CHOICES := rayos1_12_lab-eng

@@ -1,0 +1,86 @@
+# Android 12 native device checkpoint
+
+Date: November 10, 2026. **No Android 12 OS, boot image, or Google TV application has been installed.** Normal boot remains Android 8.1 v14. The following tests run disposable native processes on that kernel/runtime.
+
+## Source and CPU baseline
+
+The complete AOSP `android-12.0.0_r34` checkout synchronized successfully. The immutable full project revisions are in `manifests/android12-full-source-snapshot.xml`; the earlier eight-project audit snapshot remains historical. Native sources and output are on Linux ext4, currently `~/android/rayo12` and `~/android/rayo12-out`.
+
+`rayos1_12_lab-eng` builds ARMv7-A/NEON Cortex-A7 code with Binder32. All image outputs are disabled. Android 12 linker, actual runtime-APEX libc/libm/libdl/libdl_android, and the bootstrap probe were compiled from source. Do not package the small platform libc interface stub as a runtime library.
+
+The official ADT-3 runtime is ARM32 **but compiled for Cortex-A53/ARMv8 AArch32**. Its linker produced SIGILL on this Cortex-A7. ARM32 alone does not establish instruction compatibility. Google TV Home's inspected JNI library instead declares ARMv7; that distinction does not validate the rest of the reference bundle. Never deploy the ADT-3 core runtime or firmware to this projector.
+
+## Verified native execution
+
+Source-built Android 12 Bionic ran on the preserved kernel 3.10.104:
+
+- 32-bit pointers, working threads/heap and monotonic clock.
+- `getentropy()` succeeded through upstream fallback; raw `getrandom` returned ENOSYS.
+- The loaded libc path was the new private Android 12 bundle, not the running OS libc.
+- Binder and HwBinder reported protocol 7.
+- Android 8.1 remained boot-complete after the tests.
+
+Local evidence: `local/android12-native-runs/20261109-235440-06c356a5` and `20261110-001458-d1c9be0b`. Some subsequent diagnostic files were added to these private device directories; use fresh tool-created directories to reproduce clean tests.
+
+## Verified offscreen graphics
+
+The source-built Android 12 EGL/GLES wrappers, Bionic, libvndksupport, and their Android 12 dependencies successfully rendered a green 1×1 pbuffer using the original Mali-400 driver. Output included:
+
+```text
+EGL display=0x1 platform=1
+EGL 1.4 vendor=Android
+GL renderer=Mali-400 MP version=OpenGL ES 2.0
+PIXEL rgba=0,255,0,255
+GPU_PBUFFER_PASS
+```
+
+Local evidence: `local/android12-graphics-runs/20261110-003223-be317600`. Process maps show separate new and legacy C++ libraries, the source-built EGL wrapper, and a single factory Mali binary. Direct-driver namespace/control probes also passed (`20261110-002521-32f70543`, `20261110-003213-f2ae270c`).
+
+The default linker namespace contains new Android 12 libraries. A visible isolated `sphal` namespace retains the working legacy private dependency graph and shares only selected new core libraries/libvndksupport. Replacing the entire legacy C++ graph with new libbase/libc++ failed; do not repeat that as a system modification. A temporary symbol shim also failed and is not the chosen integration path.
+
+For the wrapper test, a static helper creates a **new mount namespace**, makes propagation recursively private, retains a read-only view of the original `/system/lib`, and binds the private new library directory read-only at `/system/lib` **only in that child**. The helper then executes the new linker/probe and exits. A 20-second alarm bounds execution. No global mount, system file, display mode, service, property, or boot partition is replaced. Both OEM Mali paths must resolve to the same file: preserving `/system/lib/egl` and factory HAL lookup paths in the private view was necessary for a valid EGL display. The parent mount namespace is recorded before/after.
+
+This verifies offscreen rendering only. It does **not** verify HWC2On1, buffer allocation/import across services, fences, SurfaceFlinger, physical projection, input latency, Android 12 boot, networking, or Google TV Home. None should be inferred from a green pixel.
+
+### Allocator/mapper and HWC follow-up
+
+The source-built Android 12 allocator/mapper passthrough implementations successfully allocated a 64×64 RGBA buffer through the factory gralloc, imported it, locked it, wrote/read one pixel, unlocked it and freed it. Output: `stride=64 lock=1 pixel=1 unlock=1 free=1`, `GRALLOC_BUFFER_PASS`. This is a **local passthrough** test, not cross-process HIDL buffer/fence transport. The test uses the actual vendor libhardware build variant; the core/VNDK-APEX copy in this workspace was not interchangeable for routing historical system-path HALs into sphal.
+
+The upstream composer 2.1 service, allocator 2.0 service/implementation, mapper 2.0 implementation and the namespace-aware `hwcomposer.rayo12` ABI adapter compile. The wrapper reuses the unchanged, versioned 8.1 adapter and static layout assertions; only factory-library loading is routed through sphal. The factory HWC and new adapter both loaded and resolved HMI under the new runtime (`FACTORY_HWC_LOAD_PASS`). The probe intentionally **did not open HWC**, register callbacks, prepare/set layers or submit a framebuffer.
+
+Legacy libgraphicsenv/libnativeloader additionally imported four namespace functions from `libdl.so@LIBC_PLATFORM`, now moved upstream to libdl_android. The replay tool restores these four exact proxies in the new libdl, delegating to the existing Android 12 loader implementations: create_namespace, get_exported_namespace, init_anonymous_namespace and link_namespaces (all with the `android_` prefix). Namespace checks remain in the actual loader. No vendor ELF or running library was overwritten. This supersedes the failed standalone shim experiment.
+
+After that libdl change, bootstrap, Android 12 EGL/GLES and allocator/mapper tests all passed again. Local evidence: `local/android12-native-runs/20261110-005209-a9f0eedd`; graphics runs `20261110-005150-ae0b8c0c` (HWC load), `20261110-005213-deec118a` (EGL), `20261110-005223-5e755af3` (buffer). v14 boot and independent recovery hashes were checked before each run; the parent mount namespace and boot-complete state remained intact.
+
+## Binder32 build fixes
+
+`tools/apply-android12-legacy-build-fixes.py` applies narrow host-width logging casts and generates dedicated Binder32 export maps. The upstream ARM32 map assumes 64-bit Binder offsets, which do not match protocol-7 `uint32_t` offsets. Exact `freeBuffer`/`ipcSetDataReference` manglings are corrected in the generated maps; the absent uint64 logging instantiation is omitted because the existing uint32 export is used. Upstream maps remain intact. The dedicated source workspace selects these Rayo maps for its ARM32 build; it must not be reused as an unmodified Binder64 build workspace. No wire structures, kernel protocol guards, or linker undefined-symbol checks are bypassed.
+
+## Reproduction
+
+After a complete pinned source sync, on Linux:
+
+```bash
+bash tools/build-android12-native-lab.sh
+bash tools/build-android12-native-lab.sh libbinder libui libEGL libGLESv1_CM libGLESv2 libvndksupport libbase liblog libc++
+```
+
+On Windows with the project environment loaded:
+
+```powershell
+python tools/package-android12-native-smoke.py --out-dir '<Linux OUT_DIR via UNC>'
+./tools/build-android12-graphics-probes.ps1
+python tools/run-android12-native-smoke.py
+python tools/run-android12-native-smoke.py --execute
+python tools/run-android12-graphics-smoke.py --execute --platform-egl --private-mount-helper outputs/android12-probes/rayo12-private-mount-probe --out-dir '<Linux OUT_DIR via UNC>' --probe outputs/android12-probes/rayo12-gpu-namespace-probe
+```
+
+The device tools check the known unit, root v14 identity, kernel, boot MD5, and independent original recovery MD5 before staging. They create unique private directories on userdata and verify transferred checksums. Logs and all binaries stay ignored under `local/` and `outputs/`. The reference-runtime preparation tool is for reproducing the failed architecture audit, not for deployment.
+
+## Remaining installation gates
+
+`device/canon/rayos1_tv12` and `tools/build-android12-tv.sh` now prepare a separate actual TV framework/product configuration: Cortex-A7, Binder32, low-RAM TV defaults, flattened APEXes, no dynamic partitions, and density 160 matching the running device's measured 1280×720 logical display. Image generation remains disabled while OEM/root/init/linker/rollback integration is incomplete. No replacement/lookalike launcher is selected; the original Google TV Home integration remains a later stage. This product is not an installable ROM yet. Its build uses a separate `~/android/rayo12-tv-out` output directory.
+
+The explicit legacy-network source experiment compiled netd and bpfloader, with no live network test or rule changes. See [patch provenance and limits](../patches/android12/README.md). The TV product selects that backend; runtime firewall/accounting/network validation remains outstanding.
+
+Build/integrate the HWC2On1 composer and legacy allocator/mapper bridge, preserving the factory HWC ABI adapter and buffer/fence contracts. Then create a separate actual TV board product, root/init/APEX/linker configuration and a userdata-file trial with verified rollback to v14 normal boot. Resolve the kernel's missing BPF networking backend without silently disabling packet filtering. Only then package a boot candidate and test physical projection, controls, radios/media and the original Google TV application/service set. There is no installable Android 12 candidate at this checkpoint.

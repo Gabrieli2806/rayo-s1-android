@@ -61,7 +61,7 @@ Recorded probe SHA-256: `1eb11e565896f89a426e2b3e6fa124222fa756f3027344549c35ce6
 
 A separate Linux ext4 workspace was initialized at `~/android/rayo12`, using AOSP tag `android-12.0.0_r34` (API 31). Its manifest commit is `2ad7a0b216d6eeeceea5ca4881c4d888c1692d60`; the source selection and upstream XML are stored in `manifests/`. This is an initial research baseline, not an assertion that it exactly reproduces the proprietary ADT-3 build or provides current security support.
 
-Only eight projects were synchronized: device/google/atv, hardware/interfaces, hardware/libhardware, system/core, system/logging, frameworks/native, system/netd, and system/bpf. This supports source/ABI investigation; it is **not a full AOSP checkout or a buildable board product**. Per-project commits are recorded in `manifests/android12-selected-source-snapshot.json`. Earlier branch-based audit locks remain separate research snapshots, not the platform product manifest.
+The initial eight-project subset is recorded in `manifests/android12-selected-source-snapshot.json`. On November 10 the full platform sync completed; immutable project revisions are exported in `manifests/android12-full-source-snapshot.xml`. A native-only Cortex-A7/Binder32 lab product builds successfully. This is not yet a bootable board product. Earlier branch-based audit locks remain separate research snapshots, not the platform product manifest.
 
 ## Implementation sequence
 
@@ -72,7 +72,7 @@ Only eight projects were synchronized: device/google/atv, hardware/interfaces, h
 5. Integrate the original Google TV Home and the smallest **verified** supporting service set. Treat settings/system UI/signing and account/setup flows explicitly. Benchmark RAM, storage, frame timing, and real user interaction before expanding the bundle. Do not install all ADT-3 applications merely because they were bundled.
 6. Use a separately reviewed recovery/userdata-file test design preserving v14 normal boot, its overlay/data, independent recovery backup, and the previous system backups. No partition layout change, wipe, or bootloader replacement is part of this research step.
 
-Neither Android 12 nor Google services have been installed on the Canon during this work. ADB listed no connected projector during the offline audit. A first device test requires an actual boot candidate and verified rollback, not just an APK collection.
+No Android 12 OS/boot image or Google services have been installed. The projector was subsequently connected and passed isolated Android 12 Bionic and offscreen EGL/GLES/Mali tests. See [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md). Those child-process tests do not constitute an Android 12 boot or physical projection test. A first OS trial still requires an actual boot candidate and verified rollback.
 
 ## Reproduce the bounded inspection
 
@@ -85,7 +85,7 @@ repo init -u https://android.googlesource.com/platform/manifest -b android-12.0.
 repo sync -c --no-clone-bundle --no-tags -j4 device/google/atv hardware/interfaces hardware/libhardware system/core system/logging frameworks/native system/netd system/bpf
 ```
 
-Check the manifest and project commits against the recorded source snapshot. This deliberately omits the rest of the platform and its build dependencies. Export any future source modifications into versioned patches/device sources in this repository rather than leaving the only copy in the native Linux checkout.
+The command above reproduces the historical bounded audit. For native building, synchronize the full selection with `repo sync -c --no-clone-bundle --no-tags --fail-fast -j8` and verify the full snapshot. Source modifications must be preserved as versioned patches/replay tools/device sources in this repository rather than leaving the only copy in the native Linux checkout.
 
 On Windows, load the project toolchain and use Ubuntu's `android-sdk-libsparse-utils` and `e2fsprogs` for image inspection:
 
