@@ -25,6 +25,8 @@ def main():
     parser.add_argument('--hwc-load', action='store_true', help='Resolve factory HWC/adapter symbols without opening hardware')
     parser.add_argument('--private-mount-helper', type=Path, help='Run wrappers in a disposable, read-only child mount view')
     args = parser.parse_args()
+    if args.platform_egl and not args.private_mount_helper:
+        raise SystemExit('Platform EGL requires the private mount view for its absolute wrapper paths')
     if args.buffer and (args.platform_egl or not args.private_mount_helper):
         raise SystemExit('Buffer mode requires the private helper and excludes EGL mode')
     if args.hwc_load and (args.buffer or args.platform_egl or not args.private_mount_helper):
