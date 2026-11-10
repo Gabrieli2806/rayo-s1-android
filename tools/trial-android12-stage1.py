@@ -140,7 +140,9 @@ def main():
             # Stage one intentionally uses only a static rescue shell/probe.
             probe = command('shell', '/sbin/rayo12-props', timeout=5)
             if probe.returncode == 0 and b'ro.rayo.trial=12-stage1' in probe.stdout:
-                text = probe.stdout.decode(errors='replace')
+                # Older rescue shells insert CR bytes even without a PTY.
+                # Normalize transport line endings before exact field checks.
+                text = probe.stdout.decode(errors='replace').replace('\r', '')
                 if not seen_trial:
                     print('Android 12 stage-one ADB is responding.', flush=True)
                     print(text, flush=True)

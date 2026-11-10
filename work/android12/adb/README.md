@@ -1,0 +1,9 @@
+# Android 12 ADB on the original kernel
+
+The factory kernel's FunctionFS transport does not communicate successfully with the unmodified Android 12 asynchronous USB connection in this diagnostic. Runs `20261110-115353-ac668198` and `20261110-115843-108f89a4` enumerated USB but never completed an ADB session. Both returned to v14 and restored original recovery. This observation alone does not identify every unsupported kernel operation.
+
+`rayo_usb_sync.h` adapts synchronous, 16 KiB endpoint transfers and CLEAR_HALT/dup2 cancellation from [AOSP android-7.1.2_r39 usb_linux_client.cpp](https://android.googlesource.com/platform/system/core/+/android-7.1.2_r39/adb/usb_linux_client.cpp) to Android 12's BlockingConnectionAdapter. ADB packet dispatch, property access and authentication remain Android 12 code. The transport is selected only with `ro.rayo.adb.legacy_ffs=true`; upstream AIO remains the default otherwise. The original source is Apache-2.0. No factory binary is patched.
+
+Apply through `tools/apply-android12-adb-compat.py`, included in the TV build entry point. The targeted `adbd.recovery` build completed, including compiler and clang-tidy checks. Run `20261110-120400-d199fe21` passed the complete init-only gate: Android 12 / SDK 31, UID 0, PID 1 executable `/system/bin/init`, checked init binary, readonly system/userdata and tmpfs data. Repeated shell reads worked. The 180-second watchdog returned to v14, then original recovery was restored with its expected hash. USB transfers/reconnect stress and use during a full framework boot remain untested.
+
+The older static rescue daemon remains in the ramdisk as an artifact, but is not the selected service: its old property reader dropped to UID 2000 under this root. Diagnostic service stderr uses `stdio_to_kmsg`; Android 12 expects `/dev/kmsg_debug`, so the temporary root explicitly aliases that node to `/dev/kmsg`.

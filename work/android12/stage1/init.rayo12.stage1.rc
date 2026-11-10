@@ -11,6 +11,8 @@ on init
     mkdir /data/adb 0700 root root
     setprop ro.rayo.trial 12-stage1
     setprop service.adb.root 1
+    setprop ro.rayo.adb.legacy_ffs true
+    symlink /dev/kmsg /dev/kmsg_debug
     setprop sys.usb.configfs 0
     mkdir /dev/usb-ffs 0770 shell shell
     mkdir /dev/usb-ffs/adb 0770 shell shell
@@ -34,11 +36,13 @@ service ueventd /system/bin/ueventd
     group root
     seclabel u:r:ueventd:s0
 
-# Reuse the independently functioning static rescue transport from v14.
-service rayo_stage1_adbd /sbin/adbd --root_seclabel=u:r:su:s0 --device_banner=recovery
+# Product recovery adbd reads Android 12 property areas without APEX startup.
+service rayo_stage1_adbd /system/bin/adbd --root_seclabel=u:r:su:s0 --device_banner=recovery
     class core
     user root
     group root shell log readproc
+    setenv LD_LIBRARY_PATH /system/lib/bootstrap:/system/lib
+    stdio_to_kmsg
     socket adbd stream 0660 system system
     disabled
     seclabel u:r:adbd:s0

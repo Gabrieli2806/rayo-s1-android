@@ -46,10 +46,10 @@ def main():
     system.mkdir()
     copied = set()
 
-    def copy(relative):
+    def copy(relative, original=None):
         if relative in copied:
             return system/relative
-        original = source/relative
+        original = original or source/relative
         if not original.is_file():
             raise SystemExit('Build/install the required source artifact first: '+str(original))
         actual = original.resolve(strict=True)
@@ -62,7 +62,12 @@ def main():
         copied.add(relative)
         return destination
 
-    pending = [copy('bin/init'), copy('bin/bootstrap/linker')]
+    # The old static rescue daemon uses an older property-area reader and
+    # dropped to shell under Android 12. Use this product's recovery adbd,
+    # without needing the normal adbd APEX to be activated first.
+    pending = [copy('bin/init'), copy('bin/bootstrap/linker'),
+               copy('bin/adbd', product/'recovery/root/system/bin/adbd')]
+    (system/'bin/linker').symlink_to('bootstrap/linker')
     (system/'bin/ueventd').symlink_to('init')
     scanned = set()
     core = {'libc.so', 'libm.so', 'libdl.so', 'libdl_android.so'}
@@ -80,7 +85,10 @@ def main():
         dynamic = subprocess.check_output([str(readelf), '-d', str(elf)], text=True)
         for name in re.findall(r'\(NEEDED\).*?\[(.*?)\]', dynamic):
             relative = ('lib/bootstrap/' if name in core else 'lib/')+name
-            dependency = copy(relative)
+            original = source/relative
+            if not original.is_file():
+                original = product/'recovery/root/system'/relative
+            dependency = copy(relative, original)
             if dependency not in scanned:
                 pending.append(dependency)
     for relative in ('etc/ueventd.rc', 'etc/cgroups.json', 'etc/task_profiles.json',
