@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--product-out', required=True, type=Path)
     parser.add_argument('--native-product-out', required=True, type=Path)
     parser.add_argument('--source', required=True, type=Path)
+    parser.add_argument('--reuse-system-candidate', type=Path, help='Reuse a checksum-verified filesystem only if every staged entry matches')
     args = parser.parse_args()
     if os.name != 'posix':
         raise SystemExit('Run on native Linux/WSL ext4 to preserve symlinks and metadata')
@@ -144,11 +145,35 @@ def main():
     env = os.environ.copy()
     env['MKE2FS_CONFIG'] = str(host/'mke2fs.conf')
     features = 'none,extent,filetype,sparse_super,large_file,dir_index,ext_attr,flex_bg,uninit_bg,dir_nlink,extra_isize'
-    subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256',
-                    '-O', features, '-F', str(image), str(size//4096)], env=env, check=True)
-    contexts = source/'etc/selinux/plat_file_contexts'
-    subprocess.run([str(host/'e2fsdroid'), '-e', '-f', str(system), '-a', '/system',
-                    '-S', str(contexts), str(image)], check=True)
+    if args.reuse_system_candidate:
+        old = args.reuse_system_candidate
+        old_record = json.loads((old/'MANIFEST.json').read_text())
+        old_image = old/'rayo12-stage1-system.raw.img'
+        raw = old_image.read_bytes()
+        if len(raw) != size or hashlib.sha256(raw).hexdigest() != old_record['system']['sha256']:
+            raise SystemExit('Previous diagnostic image checksum differs')
+        extracted = work/'previous-system'
+        extracted.mkdir()
+        subprocess.run(['debugfs', '-R', 'rdump / '+str(extracted), str(old_image)], check=True, stdout=subprocess.DEVNULL)
+
+        def fingerprint(directory):
+            result = {}
+            for path in directory.rglob('*'):
+                relative = path.relative_to(directory).as_posix()
+                if relative == 'lost+found' or relative.startswith('lost+found/'):
+                    continue
+                result[relative] = ('link', os.readlink(path)) if path.is_symlink() else ('file', hashlib.sha256(path.read_bytes()).hexdigest()) if path.is_file() else ('dir', '')
+            return result
+
+        if fingerprint(extracted) != fingerprint(system):
+            raise SystemExit('The previous filesystem does not exactly match the current diagnostic contents')
+        shutil.copyfile(old_image, image)
+    else:
+        subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256',
+                        '-O', features, '-F', str(image), str(size//4096)], env=env, check=True)
+        contexts = source/'etc/selinux/plat_file_contexts'
+        subprocess.run([str(host/'e2fsdroid'), '-e', '-f', str(system), '-a', '/system',
+                        '-S', str(contexts), str(image)], check=True)
     superblock = image.read_bytes()[1024:2048]
     compat, incompat, ro_compat = struct.unpack_from('<III', superblock, 92)
     if incompat & ~0x242 or ro_compat & ~0x73 or compat & ~0x28:

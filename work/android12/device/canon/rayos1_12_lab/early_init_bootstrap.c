@@ -71,7 +71,9 @@ int main(int argc, char** argv) {
         sync();
         for (;;) { reboot(RB_AUTOBOOT); sleep(10); }
     }
-    umask(0077);
+    /* Match upstream first-stage setup; every sensitive path has an explicit
+     * restrictive mode rather than relying on an inherited umask. */
+    umask(0);
     struct utsname kernel;
     if (uname(&kernel) != 0 || strcmp(kernel.release, "3.10.104") != 0) fatal("kernel identity");
     char expected_digest[65] = {0};
@@ -85,17 +87,30 @@ int main(int argc, char** argv) {
     directory("/data", 0771);
     directory("/cache", 0770);
     mount_checked("tmpfs", "/dev", "tmpfs", MS_NOSUID, "mode=0755");
+    directory("/dev/pts", 0755);
+    directory("/dev/socket", 0755);
+    directory("/dev/dm-user", 0755);
+    mount_checked("devpts", "/dev/pts", "devpts", 0, NULL);
     node("/dev/null", S_IFCHR|0666, 1, 3);
     node("/dev/zero", S_IFCHR|0666, 1, 5);
     node("/dev/random", S_IFCHR|0666, 1, 8);
     node("/dev/urandom", S_IFCHR|0666, 1, 9);
     node("/dev/kmsg", S_IFCHR|0600, 1, 11);
+    node("/dev/ptmx", S_IFCHR|0666, 5, 2);
     int log = open("/dev/kmsg", O_WRONLY|O_CLOEXEC);
     if (log >= 0) { dup2(log, STDERR_FILENO); close(log); }
     mount_checked("proc", "/proc", "proc", MS_NODEV|MS_NOSUID|MS_NOEXEC, NULL);
     mount_checked("sysfs", "/sys", "sysfs", MS_NODEV|MS_NOSUID|MS_NOEXEC, NULL);
     directory("/sys/fs/selinux", 0755);
     mount_checked("selinuxfs", "/sys/fs/selinux", "selinuxfs", MS_NOSUID|MS_NOEXEC, NULL);
+    directory("/mnt", 0755);
+    mount_checked("tmpfs", "/mnt", "tmpfs", MS_NOEXEC|MS_NOSUID|MS_NODEV, "mode=0755,uid=0,gid=1000");
+    directory("/mnt/vendor", 0755);
+    directory("/mnt/product", 0755);
+    directory("/debug_ramdisk", 0755);
+    directory("/second_stage_resources", 0755);
+    mount_checked("tmpfs", "/debug_ramdisk", "tmpfs", MS_NOEXEC|MS_NOSUID|MS_NODEV, "mode=0755,uid=0,gid=0");
+    mount_checked("tmpfs", "/second_stage_resources", "tmpfs", MS_NOEXEC|MS_NOSUID|MS_NODEV, "mode=0755,uid=0,gid=0");
     /* Recovery enumerates the parameter partition differently from normal
      * boot. The measured Linux start is 0x5f4000; Rockchip Loader addresses
      * use 0x5f2000 relative to the additional 0x2000-sector prefix. */
@@ -170,6 +185,7 @@ int main(int argc, char** argv) {
     mount_checked("/dev/block/loop7", "/system", "ext4", MS_RDONLY|MS_NOATIME, "noload");
     close(loop);
     mount_checked("tmpfs", "/data", "tmpfs", MS_NODEV|MS_NOSUID, "size=64m,mode=0771,uid=1000,gid=1000");
+    directory("/data/cache", 0770);
     mount_checked("tmpfs", "/cache", "tmpfs", MS_NODEV|MS_NOSUID, "size=16m,mode=0770,uid=1000,gid=2001");
     fprintf(stderr, "RAYO12_STAGE1: verified readonly system; entering Android 12 SELinux/init setup\n");
     unsetenv("LD_PRELOAD");
