@@ -123,6 +123,44 @@ bool android_link_namespaces(struct android_namespace_t* from, struct android_na
         path.write_text(text.replace(previous if previous in text else before, after))
     print('Dedicated Binder32 casts/export maps checked. Device protocol remains 7.')
     print('Four LIBC_PLATFORM namespace proxies restored for measured legacy graphics imports.')
+    # This is an init bootstrap, and belongs to init's package. That package
+    # already has upstream permission to use non-FIPS static crypto for boot.
+    path = args.source/'system/core/init/Android.bp'
+    text = path.read_text()
+    if 'name: "rayo12_early_init_bootstrap"' not in text:
+        path.write_text(text+'''
+// Rayo stage-one diagnostic bootstrap. No installed image is generated here.
+cc_binary {
+    name: "rayo12_early_init_bootstrap",
+    srcs: [":rayo12_early_init_source"],
+    static_executable: true,
+    stl: "none",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+    static_libs: ["libcrypto_static", "libc", "libm", "libdl"],
+}
+''')
+    text = path.read_text()
+    corrected = text.replace('"//device/canon/rayos1_12_lab:rayo12_early_init_source"', '":rayo12_early_init_source"')
+    corrected = corrected.replace('static_libs: ["libcrypto_static"],', 'static_libs: ["libcrypto_static", "libc", "libm", "libdl"],')
+    if corrected != text:
+        path.write_text(corrected)
+    path = args.source/'system/core/init/reboot_utils.cpp'
+    text = path.read_text()
+    before = 'start_pos += sizeof(kRebootTargetStringPattern) - 1;'
+    after = 'start_pos += kRebootTargetStringPattern.size();'
+    if after not in text:
+        if text.count(before) != 1:
+            raise SystemExit('Unexpected init fatal-reboot parameter parser')
+        path.write_text(text.replace(before, after))
+    text = path.read_text()
+    # This unit's bootloader replaces the image-header command line. The
+    # diagnostic cannot rely on a header argument to prevent Loader entry.
+    old_target = 'static std::string init_fatal_reboot_target = "bootloader";'
+    new_target = 'static std::string init_fatal_reboot_target = "normal";'
+    if new_target not in text:
+        if text.count(old_target) != 1:
+            raise SystemExit('Unexpected init fatal-reboot default')
+        path.write_text(text.replace(old_target, new_target))
 
 
 if __name__ == '__main__':

@@ -12,7 +12,15 @@ parser=argparse.ArgumentParser(description='Pack a trial recovery while preservi
 parser.add_argument('--ramdisk',required=True,type=Path)
 parser.add_argument('--output',required=True,type=Path)
 parser.add_argument('--original-recovery',type=Path,default=Path(__file__).resolve().parents[1]/'local/device-kit/original/recovery.img')
+parser.add_argument('--cmdline', default='buildvariant=userdebug androidboot.selinux=permissive',
+                    help='ASCII kernel command line; default preserves the established v14 packaging')
 args=parser.parse_args()
+try:
+    command=args.cmdline.encode('ascii')
+except UnicodeEncodeError:
+    raise SystemExit('Boot command line must be ASCII')
+if len(command)>511 or any(byte<32 or byte>126 for byte in command):
+    raise SystemExit('Boot command line exceeds the header or contains control characters')
 source=args.ramdisk.resolve()
 destination=args.output.resolve()
 if not source.is_dir():raise SystemExit('Missing ramdisk directory')
@@ -60,7 +68,6 @@ second=original[second_offset:second_offset+second_size]
 if hashlib.sha256(kernel).hexdigest()!='e98f7640163344ccc5ae196310a4d3d03738adcbd29d055a3e66f1256ce6af94':
     raise SystemExit('Unexpected factory kernel')
 struct.pack_into('<I',header,16,len(ramdisk))
-command=b'buildvariant=userdebug androidboot.selinux=permissive'
 header[64:576]=command.ljust(512,b'\0')
 header[608:1632]=bytes(1024)
 digest=hashlib.sha1()

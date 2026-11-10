@@ -40,3 +40,17 @@ cc_binary {
     cflags: ["-Wall", "-Wextra", "-Werror"],
     shared_libs: ["libui", "libutils"],
 }
+
+filegroup {
+    name: "rayo12_early_init_source",
+    srcs: ["early_init_bootstrap.c"],
+}
+
+cc_binary {
+    name: "rayo12_stage1_props",
+    srcs: ["stage1_props.c"],
+    static_executable: true,
+    stl: "none",
+    static_libs: ["libc", "libm", "libdl"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

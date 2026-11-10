@@ -1,0 +1,45 @@
+# Diagnostic Android 12 PID 1/USB only. No framework, HWC or radio startup.
+
+on early-init
+    export PATH /sbin:/system/bin
+    start ueventd
+
+on init
+    mkdir /dev/pts 0755 root root
+    mount devpts devpts /dev/pts mode=0620,ptmxmode=0666,gid=5
+    mkdir /data/misc 0771 system misc
+    mkdir /data/misc/adb 02750 system shell
+    mkdir /data/adb 0700 root root
+    setprop ro.rayo.trial 12-stage1
+    setprop service.adb.root 1
+    setprop sys.usb.configfs 0
+    mkdir /dev/usb-ffs 0770 shell shell
+    mkdir /dev/usb-ffs/adb 0770 shell shell
+    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 18d1
+    write /sys/class/android_usb/android0/idProduct D001
+    write /sys/class/android_usb/android0/f_ffs/aliases adb
+    write /sys/class/android_usb/android0/functions adb
+    write /sys/class/android_usb/android0/iManufacturer Canon
+    write /sys/class/android_usb/android0/iProduct Rayo-Android12-Init
+    write /sys/class/android_usb/android0/iSerial 0123456789ABCDEF
+    write /sys/class/android_usb/android0/enable 1
+    start rayo_stage1_adbd
+    setprop sys.usb.state adb
+    setprop sys.rayo12.stage init-ready
+
+service ueventd /system/bin/ueventd
+    class core
+    user root
+    group root
+    seclabel u:r:ueventd:s0
+
+# Reuse the independently functioning static rescue transport from v14.
+service rayo_stage1_adbd /sbin/adbd --root_seclabel=u:r:su:s0 --device_banner=recovery
+    class core
+    user root
+    group root shell log readproc
+    socket adbd stream 0660 system system
+    disabled
+    seclabel u:r:adbd:s0

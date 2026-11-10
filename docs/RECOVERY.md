@@ -29,6 +29,8 @@ Base: `/dev/block/platform/1021c000.rksdmmc/by-name/`.
 
 These addresses are records for this unit, not automatic detection for other devices.
 
+Address-space clarification from the November 10 init diagnostic: these are Rockchip Loader-relative LBAs. Linux sysfs reports userdata's physical start as `0x5f4000` (the listed `0x5f2000` plus a `0x2000`-sector prefix). Recovery includes an additional enumerated `parameter` partition, so minor numbers differ from normal boot. Prefer checked by-name paths in a running OS; early bootstrap selection must verify physical start/size and the unit's filesystem UUID. Never turn these relative Loader offsets directly into unreviewed raw Linux whole-disk writes.
+
 Current trial checkpoint is v14 in private kit v0.2. Earlier v12 remains in kit v0.1. To roll back the whole runtime, restore its matching overlay as well as recovery; changing only recovery does not restore libraries/configuration stored on userdata. Preserve current runtime before rollback and do not erase trial application data.
 
 ## Return to stock boot
