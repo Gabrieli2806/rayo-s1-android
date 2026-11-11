@@ -13,6 +13,7 @@ import subprocess
 import tarfile
 import tempfile
 import uuid
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -48,6 +49,10 @@ def main():
     system, ramdisk, mini = (work/name for name in ('system', 'ramdisk', 'graphics'))
     shutil.copytree(product/'system', system, symlinks=True)
     shutil.copytree(product/'root', ramdisk, symlinks=True)
+    # Declare the board's actual radio so SystemServer publishes WifiManager.
+    # This is also required by the stock TV Settings connectivity screen.
+    shutil.copyfile(args.source/'frameworks/native/data/etc/android.hardware.wifi.xml',
+                    system/'etc/permissions/android.hardware.wifi.xml')
     mini.mkdir()
 
     def copy(relative, original=None):
@@ -62,7 +67,7 @@ def main():
 
     from android12_graphics_root import augment
     readelf = args.source/'prebuilts/clang/host/linux-x86/clang-r416183b/bin/llvm-readelf'
-    _, graphics = augment(mini, product, native, ROOT, work, copy, readelf, True, True)
+    _, graphics = augment(mini, product, native, ROOT, work, copy, readelf, True, True, audio=True)
     # Merge only the verified graphics closure, not the diagnostic init/services.
     for path in mini.rglob('*'):
         relative = path.relative_to(mini)
@@ -87,6 +92,24 @@ def main():
         # This board has no source device manifest. Preserve installed software
         # HAL fragments and add the already verified graphics declarations.
         shutil.copyfile(mini/'vendor/etc/vintf/manifest.xml', manifest_path)
+    device_manifest = ET.parse(manifest_path)
+    for package, interface in (('android.hardware.audio', 'IDevicesFactory'),
+                               ('android.hardware.audio.effect', 'IEffectsFactory')):
+        if any(hal.findtext('name') == package for hal in device_manifest.getroot().findall('hal')):
+            raise SystemExit('Unexpected preexisting audio declaration: '+package)
+        hal = ET.SubElement(device_manifest.getroot(), 'hal', {'format': 'hidl'})
+        ET.SubElement(hal, 'name').text = package
+        ET.SubElement(hal, 'transport').text = 'hwbinder'
+        ET.SubElement(hal, 'version').text = '7.0'
+        declaration = ET.SubElement(hal, 'interface')
+        ET.SubElement(declaration, 'name').text = interface
+        ET.SubElement(declaration, 'instance').text = 'default'
+    device_manifest.write(manifest_path, encoding='unicode')
+    shutil.copyfile(ROOT/'work/android12/framework/audio_policy_configuration.xml',
+                    system/'vendor/etc/audio_policy_configuration.xml')
+    for name in ('audio_policy_volumes.xml', 'default_volume_tables.xml'):
+        shutil.copyfile(args.source/'frameworks/av/services/audiopolicy/config'/name,
+                        system/'vendor/etc'/name)
     # The new C++ implementation must load in the new system namespace.
     for name in ('android.hardware.graphics.allocator@2.0-impl.so',
                  'android.hardware.graphics.mapper@2.0-impl.so', 'hwcomposer.rayo12.so'):
@@ -101,17 +124,27 @@ def main():
     for path in (system/'vendor/etc/init').glob('*.rc'):
         text = path.read_text()
         for name in ('android.hardware.graphics.allocator@2.0-service',
-                     'android.hardware.graphics.composer@2.1-service', 'android.hardware.health@2.1-service'):
+                     'android.hardware.graphics.composer@2.1-service', 'android.hardware.health@2.1-service',
+                     'android.hardware.audio.service'):
             text = text.replace('/vendor/bin/hw/'+name, '/system/bin/'+name)
         path.write_text(text)
-    for source, target in ((product/'system/vendor/bin/hw/android.hardware.health@2.1-service',
+    bridge_files = ((product/'system/vendor/bin/hw/android.hardware.health@2.1-service',
                             system/'bin/android.hardware.health@2.1-service'),
                            (product/'system/vendor/lib/hw/android.hardware.health@2.0-impl-2.1.so',
-                            system/'lib/hw/android.hardware.health@2.0-impl-2.1.so')):
+                            system/'lib/hw/android.hardware.health@2.0-impl-2.1.so'),
+                           (product/'system/vendor/bin/hw/android.hardware.audio.service',
+                            system/'bin/android.hardware.audio.service'),
+                           (product/'system/vendor/lib/hw/android.hardware.audio@7.0-impl.so',
+                            system/'lib/hw/android.hardware.audio@7.0-impl.so'),
+                           (product/'system/vendor/lib/hw/android.hardware.audio.effect@7.0-impl.so',
+                            system/'lib/hw/android.hardware.audio.effect@7.0-impl.so'))
+    for source, target in bridge_files:
         shutil.copyfile(source, target)
         target.chmod(0o755 if target.parent.name == 'bin' else 0o644)
-    (system/'vendor/lib/hw/android.hardware.health@2.0-impl-2.1.so').unlink()
-    pending = [system/'bin/android.hardware.health@2.1-service', system/'lib/hw/android.hardware.health@2.0-impl-2.1.so']
+    for _, target in bridge_files:
+        if target.parent.name == 'hw':
+            (system/'vendor/lib/hw'/target.name).unlink()
+    pending = [target for _, target in bridge_files]
     scanned = set()
     while pending:
         path = pending.pop()
@@ -130,6 +163,34 @@ def main():
                     raise SystemExit('Missing or ambiguous health bridge dependency: '+name)
                 shutil.copyfile(candidates[0], dependency)
             pending.append(dependency)
+    validation = json.loads((ROOT/'outputs/android12-crypto-probe/VALIDATED.json').read_text())
+    crypto = system/'lib/librayo12_crypto_legacy.so'
+    accepted = {record['path']: record['sha256'] for record in validation['files']}
+    if (not validation.get('passed') or validation.get('fips') is not False
+            or validation.get('kernel') != '3.10.104'
+            or accepted.get('lib/librayo12_crypto_legacy.so') != digest(crypto)):
+        raise SystemExit('The board crypto backend has not passed its isolated device test')
+    selected = 0
+    for base in (system/'etc/init', system/'vendor/etc/init', system/'etc/init/hw'):
+        for path in base.glob('*.rc'):
+            lines = []
+            for line in path.read_text().splitlines():
+                lines.append(line)
+                if line.startswith('service ') and any(name in line for name in
+                        ('/vendor/bin/hw/android.hardware.keymaster@4.1-service', '/system/bin/keystore2 ',
+                         '/system/bin/app_process -Xzygote')):
+                    lines.append('    setenv LD_PRELOAD /system/lib/librayo12_crypto_legacy.so')
+                    lines.append('    stdio_to_kmsg')
+                    selected += 1
+            path.write_text('\n'.join(lines)+'\n')
+    if selected != 3:
+        raise SystemExit('Unexpected software key-service preload scope')
+    sid_validation = json.loads((ROOT/'outputs/android12-sid-probe/VALIDATED.json').read_text())
+    sid_source = ROOT/'work/android12/device/canon/rayos1_12_lab/legacy_sid.rs'
+    if (not sid_validation.get('passed') or sid_validation.get('kernel') != '3.10.104'
+            or sid_validation.get('helper_sha256') != digest(sid_source)
+            or b'ro.rayo.keystore.legacy_pid_sid' not in (system/'bin/keystore2').read_bytes()):
+        raise SystemExit('The exact legacy caller-context helper has not passed device validation')
     shutil.copyfile(product/'recovery/root/system/bin/adbd', system/'bin/rayo12-rescue-adbd')
     (system/'bin/rayo12-rescue-adbd').chmod(0o755)
     pending = [system/'bin/rayo12-rescue-adbd']
@@ -223,6 +284,8 @@ ro.rayo.adb.legacy_ffs=true
 ro.rayo.graphics.ion_client_target=true
 ro.rayo.graphics.legacy_sphal=true
 ro.rayo.cgroup.legacy=true
+ro.rayo.audio.legacy_stream_abi=true
+ro.rayo.keystore.legacy_pid_sid=true
 ro.hardware.hwcomposer=rayo12
 ro.opengles.version=131072
 debug.renderengine.backend=gles
@@ -233,6 +296,8 @@ dalvik.vm.heapsize=192m
 dalvik.vm.heaptargetutilization=0.75
 dalvik.vm.heapminfree=512k
 dalvik.vm.heapmaxfree=8m
+dalvik.vm.usejit=false
+dalvik.vm.usejitprofiles=false
 '''
     # Android 12's normal PropertyLoadBootDefaults does not read prop.default.
     # Preserve the complete source identity and use its canonical build.prop.
@@ -284,7 +349,8 @@ dalvik.vm.heapmaxfree=8m
                 lines = expanded_sorted(lines+[
                     '/system/bin/android\\.hardware\\.graphics\\.allocator@2\\.0-service u:object_r:hal_graphics_allocator_default_exec:s0',
                     '/system/bin/android\\.hardware\\.graphics\\.composer@2\\.1-service u:object_r:hal_graphics_composer_default_exec:s0',
-                    '/system/bin/android\\.hardware\\.health@2\\.1-service u:object_r:hal_health_default_exec:s0'])
+                    '/system/bin/android\\.hardware\\.health@2\\.1-service u:object_r:hal_health_default_exec:s0',
+                    '/system/bin/android\\.hardware\\.audio\\.service u:object_r:hal_audio_default_exec:s0'])
             if directory == 'vendor/etc/selinux':
                 lines = expanded_sorted(lines+[
                     '/vendor/bin/hw/android\\.hardware\\.gatekeeper@1\\.0-service\\.software u:object_r:hal_gatekeeper_default_exec:s0',
@@ -311,6 +377,7 @@ dalvik.vm.heapmaxfree=8m
                         ('/bin/android.hardware.graphics.allocator@2.0-service', 'hal_graphics_allocator_default_exec'),
                         ('/bin/android.hardware.graphics.composer@2.1-service', 'hal_graphics_composer_default_exec'),
                         ('/bin/android.hardware.health@2.1-service', 'hal_health_default_exec'),
+                        ('/bin/android.hardware.audio.service', 'hal_audio_default_exec'),
                         ('/vendor/bin/hw/android.hardware.graphics.composer@2.1-service', 'hal_graphics_composer_default_exec')):
         attribute = work/'checked-label'
         subprocess.run(['debugfs', '-R', 'ea_get -f '+str(attribute)+' '+path+' security.selinux', str(system_image)], check=True)
@@ -336,7 +403,12 @@ dalvik.vm.heapmaxfree=8m
         'recovery': verified, 'watchdog_seconds': 600, 'device_written': False,
         'graphics': graphics, 'bootstrap_sha256': digest(init),
         'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': True,
-        'android12_init_md5': hashlib.md5((system/'bin/init').read_bytes()).hexdigest()}
+        'android12_init_md5': hashlib.md5((system/'bin/init').read_bytes()).hexdigest(),
+        'software_key_crypto': {'sha256': digest(crypto), 'fips': False,
+            'scope': 'Software Keymaster, keystore2 and zygote children use the non-FIPS backend; platform FIPS module unchanged'},
+        'audio': 'Source HIDL 7 bridge with original primary driver; physical audio not validated',
+        'legacy_sid': {'helper_sha256': digest(sid_source),
+            'scope': 'Opt-in current kernel proc context; pinned PID and verified Binder UID; policy checks retained'}}
     (work/'MANIFEST.json').write_text(json.dumps(manifest, indent=2)+'\n')
     print('Offline framework candidate:', work)
 

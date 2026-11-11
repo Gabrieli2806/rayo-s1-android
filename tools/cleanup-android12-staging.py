@@ -17,6 +17,7 @@ BOOT = '7a3ac489b05f0f2e9cde16280551511a'
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--framework', action='store_true', help='Check bounded full-framework staging pairs instead of native profiles')
     args = parser.parse_args()
     prefix = [shutil.which('adb'), '-s', '0123456789ABCDEF']
 
@@ -38,16 +39,18 @@ def main():
     if hashlib.md5(host_original.read_bytes()).hexdigest() != ORIGINAL:
         raise RuntimeError('Original recovery host backup mismatch')
     known = {}
-    for manifest in (ROOT/'outputs/android12-stage1').glob('*/MANIFEST.json'):
+    profile = 'framework' if args.framework else 'stage1'
+    for manifest in (ROOT/('outputs/android12-'+profile)).glob('*/MANIFEST.json'):
         record = json.loads(manifest.read_text())
-        path = manifest.parent/'rayo12-stage1-recovery.img'
+        path = manifest.parent/('rayo12-'+profile+'-recovery.img')
         if path.is_file():
             raw = path.read_bytes()
             if len(raw) == 33554432 and hashlib.sha256(raw).hexdigest() == record['recovery']['sha256']:
                 known[hashlib.md5(raw).hexdigest()] = str(path.relative_to(ROOT))
-    listing = checked('shell', '/sbin/busybox', 'ls', '-1td', '/data/local/tmp/rayo12-stage1-*')
+    staging_prefix = '/data/local/tmp/rayo12-'+profile+'-'
+    listing = checked('shell', '/sbin/busybox', 'ls', '-1td', staging_prefix+'*')
     directories = [path for path in listing.splitlines()
-                   if re.fullmatch(r'/data/local/tmp/rayo12-stage1-[0-9a-f]{12}', path)]
+                   if re.fullmatch(re.escape(staging_prefix)+r'[0-9a-f]{12}', path)]
     records = []
     for directory in directories[2:]:  # Retain the two newest independent device copies.
         if not checked('shell', '/sbin/busybox', 'ls', '-ld', directory).startswith('d'):

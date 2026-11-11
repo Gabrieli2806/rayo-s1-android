@@ -7,7 +7,7 @@ import subprocess
 import tarfile
 
 
-def augment(system, product, native, root, work, copy, readelf, services=False, surfaceflinger=False):
+def augment(system, product, native, root, work, copy, readelf, services=False, surfaceflinger=False, audio=False):
     legacy = system/'vendor/lib/legacy'
     legacy.mkdir(parents=True)
     archive = tarfile.open(root/'local/device-kit/runtime/rayo81-live-overlay.tar.gz')
@@ -53,6 +53,9 @@ def augment(system, product, native, root, work, copy, readelf, services=False, 
         ('rayo-live/lib/hw/gralloc.rk30board.so', system/'vendor/lib/hw/gralloc.rk30board.so'),
         ('rayo-live/lib/hw/hwcomposer.rk30board.factory.so', system/'lib/hw/hwcomposer.rk30board.factory.so'),
     ]
+    if audio:
+        queue.append(('rayo-live/lib/hw/audio.primary.rk30board.so',
+                      system/'vendor/lib/hw/audio.primary.rk30board.so'))
     staged = set()
     while queue:
         source, destination = queue.pop()

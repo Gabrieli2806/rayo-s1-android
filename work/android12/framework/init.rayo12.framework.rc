@@ -30,6 +30,11 @@ on init
 on property:sys.rayo12.framework=start
     trigger rayo12-framework-start
 
+# C already mounted the private unencrypted data image. There is no mount_all
+# call to dispatch this event, which starts installd and the remaining classes.
+on post-fs-data
+    trigger nonencrypted
+
 service rayo12_rescue_adbd /system/bin/rayo12-rescue-adbd --root_seclabel=u:r:su:s0 --device_banner=recovery
     class core
     user root

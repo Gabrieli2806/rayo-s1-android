@@ -32,6 +32,23 @@ def main():
             raise SystemExit('Unexpected pinned framebuffer client-target usage')
         text = text.replace(before, after)
     path.write_text(text)
+    path = args.source/'system/linkerconfig/contents/section/legacy.cc'
+    text = path.read_text()
+    include = '#include <android-base/properties.h>\n'
+    if include not in text:
+        text = text.replace('#include "linkerconfig/sectionbuilder.h"', include+'\n#include "linkerconfig/sectionbuilder.h"')
+    anchor = '  namespaces.emplace_back(BuildSystemDefaultNamespace(ctx));'
+    addition = '''
+  // This pre-Treble board still needs an isolated legacy graphics closure.
+  if (android::base::GetBoolProperty("ro.rayo.graphics.legacy_sphal", false)) {
+    namespaces.emplace_back(BuildSphalNamespace(ctx));
+  }
+'''
+    if addition not in text:
+        if text.count(anchor) != 1:
+            raise SystemExit('Unexpected pinned legacy section layout')
+        text = text.replace(anchor, anchor+'\n'+addition)
+    path.write_text(text)
     path = args.source/'system/linkerconfig/contents/namespace/sphal.cc'
     text = path.read_text()
     include = '#include <android-base/properties.h>\n'

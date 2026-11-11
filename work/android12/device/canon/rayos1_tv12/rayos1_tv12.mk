@@ -13,6 +13,9 @@ PRODUCT_SHIPPING_API_LEVEL := 25
 PRODUCT_USE_DYNAMIC_PARTITIONS := false
 PRODUCT_SYSTEM_PROPERTIES += ro.sf.lcd_density=160 ro.kernel.ebpf.supported=false
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += debug.sf.no_hw_vsync=0
+# SystemServer starts the Wi-Fi framework only when this hardware feature is declared.
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/android.hardware.wifi.xml
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.allocator@2.0-service \
@@ -23,6 +26,10 @@ PRODUCT_PACKAGES += \
     android.hardware.health@2.1-impl \
     android.hardware.keymaster@4.1-service \
     android.hardware.gatekeeper@1.0-service.software \
+    android.hardware.audio.service \
+    android.hardware.audio@7.0-impl \
+    android.hardware.audio.effect@7.0-impl \
+    libaudiohal@7.0 \
     LeanbackIME \
     TvProvision
 

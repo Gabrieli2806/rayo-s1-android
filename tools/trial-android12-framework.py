@@ -144,6 +144,10 @@ def main():
     next_capture = 0
     count = 0
     framework_started = False
+    boot_reported = False
+    settings_opened = False
+    stable_pid = None
+    stable_since = 0
     error = None
     try:
         checked('shell', 'stop', 'flash_recovery')
@@ -195,10 +199,29 @@ def main():
                         framework_started = True
                         print('Root init/storage preflight passed; explicitly starting framework.', flush=True)
                 if not boot_complete and command('shell', 'getprop', 'sys.boot_completed', timeout=5).stdout.strip() == b'1':
-                    boot_complete = True
-                    print('Android 12 reports boot complete. Opening Settings for physical inspection.', flush=True)
-                    result = command('shell', 'am', 'start', '-a', 'android.settings.SETTINGS', timeout=15)
-                    (logs/'open-settings.txt').write_bytes(result.stdout+result.stderr)
+                    if not boot_reported:
+                        print('Boot-complete flag reported; checking a stable interactive Settings window.', flush=True)
+                        boot_reported = True
+                    pid = command('shell', 'pidof', 'system_server', timeout=5).stdout.strip()
+                    if not pid.isdigit():
+                        continue
+                    if pid != stable_pid:
+                        stable_pid, stable_since, settings_opened = pid, time.monotonic(), False
+                    if not settings_opened:
+                        result = command('shell', 'am', 'start', '-a', 'android.settings.SETTINGS', timeout=15)
+                        (logs/'open-settings.txt').write_bytes(result.stdout+result.stderr)
+                        combined = result.stdout+result.stderr
+                        settings_opened = (result.returncode == 0 and b'Starting:' in combined
+                                           and b'Error:' not in combined and b"Can't find service" not in combined)
+                    if settings_opened and time.monotonic()-stable_since >= 45:
+                        window = command('shell', 'dumpsys', 'window', 'displays', timeout=15)
+                        (logs/'settings-window.txt').write_bytes(window.stdout+window.stderr)
+                        focused = any(b'mCurrentFocus' in line and b'com.android.tv.settings' in line
+                                      and b'FallbackHome' not in line
+                                      for line in window.stdout.splitlines())
+                        if window.returncode == 0 and focused:
+                            boot_complete = True
+                            print('Settings focused with the same system_server for at least 45 seconds; physical inspection still required.', flush=True)
             elif version == b'8.1.0' and normal():
                 current = checked('shell', 'cat', '/proc/sys/kernel/random/boot_id')
                 if current != before_boot:
@@ -231,6 +254,7 @@ def main():
             data = command('pull', DATA_DIR+'/userdata.ext4', str(logs/'private-data-after.ext4'), timeout=120)
             (logs/'private-data-pull.txt').write_bytes(data.stdout+data.stderr)
         (logs/'RESULT.json').write_text(json.dumps({'candidate': manifest, 'android12_usb_seen': seen,
+            'boot_completed_reported': boot_reported,
             'framework_boot_completed': boot_complete, 'normal_v14_returned': returned,
             'original_recovery_restored': restored, 'error': error}, indent=2)+'\n')
     print('Framework boot:', boot_complete, 'normal return:', returned, 'recovery restored:', restored, flush=True)

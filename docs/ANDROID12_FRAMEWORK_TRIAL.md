@@ -131,3 +131,91 @@ behind USB/storage preflight. Its result is not implied by these corrections.
 Framework/SystemServer, projected UI, app input, radios, audio/video and Google
 TV Home remain unvalidated until a later trial demonstrates them. Native
 projected colors and the core Java probe are separate earlier passing gates.
+
+## Full-root graphics and framework checkpoints
+
+`20261110-212952-62af9cdf`: canonical compatibility properties and gated root
+USB/storage preflight passed. The device is pre-Treble, so its generated legacy
+linker section did not contain sphal: factory graphics initially tried the new
+default libion and failed resolving `ion_get_phys`. A temporary RAM bind of the
+complete generated config plus the isolated sphal namespace made composer,
+allocator, SurfaceFlinger, zygote and system_server stay alive. The owner
+confirmed the Android boot animation through the lens. The source linker
+adaptation now adds sphal to the legacy section as well as configuring it.
+The Java trace showed system_server waiting for installd before entering its
+main method. Since C had already mounted data, no mount_all dispatched the
+stock `nonencrypted` event. The trial RC now dispatches it after post-fs-data.
+Normal v14 and verified factory recovery returned at the timer deadline.
+
+`20261110-220041-aec4178d`: automatic graphics startup and installd succeeded;
+system_server reached package manager and core service startup. Source HIDL 7
+audio loaded the original primary module and opened 48 kHz stereo output with
+a 512-frame HAL buffer. Physical sound has not been verified. The old stream
+struct lacks later optional event/metadata slots; pointer non-null checks do
+not establish their presence because they read adjacent legacy memory. The
+adapter now avoids those slots for the selected legacy stream ABI. A timed
+normal return and factory recovery restoration passed again.
+
+The software key services aborted in platform FIPS RNG initialization because
+this measured kernel lacks getrandom. A separate library built from upstream
+non-FIPS `libcrypto_static` passed isolated device tests: FIPS_mode zero, kernel
+entropy acquisition, SHA-256 known answer, P-256 generation/sign/verify, and
+rejection of an altered digest. `run-android12-crypto-probe.py` verifies the
+normal boot/recovery baseline before and after that bounded process; it does
+not change a service, mount or partition. No fake randomness, synthetic
+getrandom syscall or modified platform FIPS binary is used.
+
+The image accepts that backend only when its exact hash matches the device
+validation record. Software Keymaster and keystore2 use a scoped preload.
+system_server also required the backend; a temporary RAM-bind zygote wrapper
+advanced past package manager. The next image supplies the normal zygote
+service environment directly, including its forked children. This backend is
+explicitly non-FIPS and does not provide hardware-backed attestation or FIPS
+certification. The platform self-test executables are not bypassed or replaced.
+
+A subsequent system_server crash occurred in JIT code-cache allocation
+(`mspace_malloc` / `JitMemoryRegion::AllocateCode`). The next diagnostic disables
+JIT and JIT profile saving while retaining source-built precompiled artifacts.
+The root cause and performance implications remain unvalidated; this is a
+bringup setting, not an optimization claim. Runtime audio callback fixes and
+the zygote wrapper were RAM/private-data changes only and vanished at reboot.
+
+`20261110-221751-0ab7bf47`: with the audio ABI guards, zygote crypto environment
+and JIT disabled, system_server reached System UI and reported boot complete.
+However, LockSettingsService repeatedly received Keystore's SYSTEM_ERROR (4):
+the old Binder driver does not provide transaction security contexts. The
+resulting Java assertion killed the system and its Settings window. The earlier
+controller recorded the raw boot flag as success; **this run did not validate a
+stable GUI**. The controller now records that flag separately and requires a
+focused Settings window with an unchanged system_server for at least 45 seconds.
+Physical projection and longer stability are still separate checks.
+
+The opt-in Keystore adapter prefers the native transaction SID whenever one is
+present. On this legacy kernel it can instead pin the Binder caller's proc
+directory, verify the effective UID against the driver-provided calling UID,
+read the actual kernel SELinux context twice, and reject a missing/dead PID,
+UID mismatch/drift, changed context or unreadable data. Existing key, grant,
+UID and SELinux authorization functions remain unchanged. It never substitutes
+a privileged context or an unlocked state. This current-process observation
+is not equivalent to a kernel transaction-time SID snapshot, particularly for
+concurrent credential/context transitions; retain the diagnostic classification
+until security and kernel compatibility are separately reviewed.
+
+The same helper is compiled into a Keystore-owned Rust probe within the existing
+Rust adoption policy. Its isolated v14 device test passed actual-context reads
+and rejected a wrong UID and PID zero. Normal boot/recovery were verified before
+and after it. Main Keystore compilation and clippy passed. The image accepts
+only the helper hash matching that validation record. The subsequent full boot
+must establish whether the real Keystore UID can obtain and authorize callers.
+
+`20261110-224025-3ac36afa`: the caller-context adapter allowed system_server
+to remain running, user zero unlocked, and System UI reached the projected
+wallpaper. The owner confirmed visible wallpaper and touchpad cursor movement.
+This is not a usable launcher validation: no home application is installed.
+Opening TV Settings terminated its process with a fatal framework WTF because
+WifiManager had no published service. SystemServer starts that service only
+when the Wi-Fi hardware feature is declared; the source product omitted the
+feature XML despite the board having a radio. The next candidate includes the
+official hardware declaration. Radio operation remains unvalidated on Android 12.
+The controller now reads window display focus and explicitly rejects FallbackHome
+as proof of an interactive Settings screen.

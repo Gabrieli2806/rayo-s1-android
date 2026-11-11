@@ -73,3 +73,21 @@ cc_binary {
     static_libs: ["libc", "libm", "libdl"],
     cflags: ["-Wall", "-Wextra", "-Werror"],
 }
+// A separate upstream non-FIPS backend for the measured pre-getrandom kernel.
+// Never replace or relabel the platform FIPS module with this library.
+cc_library_shared {
+    name: "librayo12_crypto_legacy",
+    whole_static_libs: ["libcrypto_static"],
+    export_static_lib_headers: ["libcrypto_static"],
+    shared_libs: ["libc", "libm", "libdl"],
+    ldflags: ["-Wl,-Bsymbolic"],
+    stl: "none",
+}
+
+cc_binary {
+    name: "rayo12_crypto_probe",
+    srcs: ["crypto_probe.c"],
+    shared_libs: ["librayo12_crypto_legacy"],
+    stl: "none",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}
