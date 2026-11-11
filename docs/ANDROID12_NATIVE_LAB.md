@@ -1,6 +1,6 @@
 # Android 12 native device checkpoint
 
-Date: November 10, 2026. Normal boot remains Android 8.1 v14. Android 12 init, native graphics and core ART have passed temporary recovery-slot trials using the preserved kernel. A full-framework trial is being prepared separately; Google TV Home has not been validated or installed as the working interface. Earlier sections describe the initial disposable-process experiments.
+Date: November 10, 2026. Normal boot remains Android 8.1 v14. Android 12 init, native graphics and core ART passed temporary recovery-slot trials using the preserved kernel. Subsequent [framework trials](ANDROID12_FRAMEWORK_TRIAL.md) reached System UI, projected wallpaper and cursor movement; Settings and launcher integration remain incomplete. Google TV Home is not validated or installed as the working interface. Earlier sections describe the initial disposable-process experiments.
 
 ## Source and CPU baseline
 

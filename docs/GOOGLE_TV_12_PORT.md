@@ -1,6 +1,6 @@
 # Google TV 12: original UI target and port preparation
 
-Research checkpoint: November 9, 2026. The owner explicitly requested Android 12 with the original Google TV menu/UI. This is the selected research target; a custom lookalike is not an approved substitute. **No Android 12 ROM is built or running on the Canon.** Its verified normal startup remains Android 8.1 v14.
+Current checkpoint: November 10, 2026. The owner requested Android 12 with the original Google TV menu/UI; a lookalike is not the selected target. Source-built Android 12 has reached System UI, projected wallpaper and cursor movement in a bounded recovery-slot trial. Settings/service integration remains incomplete and Google TV Home has not yet been tested. Normal startup remains Android 8.1 v14. See [the framework trial record](ANDROID12_FRAMEWORK_TRIAL.md). The reference inspection below records the earlier research stage.
 
 ## What was inspected
 
@@ -72,7 +72,7 @@ The initial eight-project subset is recorded in `manifests/android12-selected-so
 5. Integrate the original Google TV Home and the smallest **verified** supporting service set. Treat settings/system UI/signing and account/setup flows explicitly. Benchmark RAM, storage, frame timing, and real user interaction before expanding the bundle. Do not install all ADT-3 applications merely because they were bundled.
 6. Use a separately reviewed recovery/userdata-file test design preserving v14 normal boot, its overlay/data, independent recovery backup, and the previous system backups. No partition layout change, wipe, or bootloader replacement is part of this research step.
 
-No Android 12 OS/boot image or Google services have been installed. The projector was subsequently connected and passed isolated Android 12 Bionic and offscreen EGL/GLES/Mali tests. See [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md). Those child-process tests do not constitute an Android 12 boot or physical projection test. A first OS trial still requires an actual boot candidate and verified rollback.
+The initial child-process tests below were followed by temporary OS trials documented in [ANDROID12_FRAMEWORK_TRIAL.md](ANDROID12_FRAMEWORK_TRIAL.md). Google services and Home remain a separate, unvalidated integration stage. Temporary recovery trials preserve normal v14 boot and restore factory recovery after return.
 
 ## Reproduce the bounded inspection
 
