@@ -7,14 +7,27 @@ confirmed both. Google Home/GSF were removed from isolated trial data and GMS
 installation failed without installing. The selected UI target is a simplified
 TV design without Google services. Normal boot has not been promoted to Android 12.
 
-**Latest device checkpoint:** the earlier interrupted recovery was restored using
-the guarded tool. Trial `20261111-093343-b66a3207` then passed automatic Wi-Fi
-association/internet validation, Wi-Fi off/on reconnection, Bluetooth startup
-with zero crashes, a completed discovery finding five devices, and five further
-Home/Settings/Back cycles with unchanged system_server and netd. Normal v14
-return and factory recovery readback were verified. See
-[GABOS_RADIO_BRINGUP.md](GABOS_RADIO_BRINGUP.md). Pairing, media, physical graphics,
-true power-cycle behavior and prolonged stability still block permanent promotion.
+**Latest device checkpoint:** trial `20261111-134210-12720cc5` returned to normal
+8.1 v14 and restored/hash-verified factory recovery. Boot MD5 remains
+`7a3ac489b05f0f2e9cde16280551511a`; recovery MD5 remains
+`b32f971e7dfce13c708d264c6221844d`. No Android 12 promotion or older-OS deletion.
+
+Home 0.5 opens actual Android TV Settings; no custom GabOS settings page/Control
+app is packaged. Native Files, GabOS Media/Diagnostics, Aurora 4.8.4 and SmartTube
+32.71 are integrated/installed. Wi-Fi validation and BT startup/discovery passed;
+accessory profiles and streaming remain separate. The source OMX facade passed
+factory AVC enumeration/role, creation/free, C size and video-port checks; real
+hardware decoding is still unverified. Software AVC/AAC playback completed twice
+in an earlier trial.
+
+The owner rejected an opaque settings workaround and confirmed client-composition
+alone still flickered gray. Disabling HWUI buffer age plus partial updates and
+restarting TV Settings corrected the internal capture; lens confirmation is pending.
+Those flags are baked into offline `gabos-full-redraw-01`, not yet freshly booted.
+The PCM soft-start build/tests passed, but first-audio transient listening is
+pending. Shutdown still reboots; inactivity shutdown stays disabled. See the
+[current handoff](HANDOFF.md) and [prioritized work](ANDROID12_NEXT_STEPS.md).
+Older sections below retain historical evidence, not the current release status.
 
 ## Android 12 native research update
 

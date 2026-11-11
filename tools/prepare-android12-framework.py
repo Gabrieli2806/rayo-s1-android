@@ -58,6 +58,8 @@ def main():
         raise SystemExit('Rebuild linkerconfig with the opt-in legacy graphics namespace')
     if b'ro.rayo.graphics.no_hwc_background' not in (product/'system/vendor/lib/libhwc2on1adapter.so').read_bytes():
         raise SystemExit('Rebuild libhwc2on1adapter with the guarded solid-color fallback')
+    if b'debug.rayo.graphics.client_blend' not in (product/'system/vendor/lib/libhwc2on1adapter.so').read_bytes():
+        raise SystemExit('Rebuild the opt-in translucent-frame client compositor')
     candidates = Path.home()/'android/rayo12-framework-candidates'
     candidates.mkdir(parents=True, exist_ok=True)
     work = Path(tempfile.mkdtemp(prefix='candidate-', dir=candidates))
@@ -398,7 +400,9 @@ ro.rayo.graphics.legacy_sphal=true
 ro.rayo.cgroup.legacy=true
 ro.rayo.audio.legacy_stream_abi=true
 ro.rayo.audio.pcm_soft_start=true
-ro.gabos.settings.opaque=true
+debug.rayo.graphics.client_blend=1
+debug.hwui.use_buffer_age=false
+debug.hwui.use_partial_updates=false
 ro.rayo.keystore.legacy_pid_sid=true
 ro.hardware.hwcomposer=rayo12
 ro.opengles.version=131072
@@ -426,9 +430,9 @@ dalvik.vm.usejitprofiles=false
     if len(tv_apks) != 1:
         raise SystemExit('Expected one native TV Settings application')
     with zipfile.ZipFile(tv_apks[0]) as apk:
-        if not any(b'ro.gabos.settings.opaque' in apk.read(name)
+        if any(b'ro.gabos.settings.opaque' in apk.read(name)
                    for name in apk.namelist() if name.endswith('.dex')):
-            raise SystemExit('Rebuild native TV Settings with the opaque board adaptation')
+            raise SystemExit('Rebuild native TV Settings after restoring its transparency')
     # Android 12's normal PropertyLoadBootDefaults does not read prop.default.
     # Preserve the complete source identity and use its canonical build.prop.
     original_properties = (system/'build.prop').read_text()
@@ -564,7 +568,8 @@ dalvik.vm.usejitprofiles=false
         'gabos_apps': gabos_apps,
         'software_media': args.software_media,
         'legacy_media': args.legacy_media,
-        'native_settings_opaque': True, 'pcm_soft_start_ms': 100,
+        'native_settings_transparent': True, 'client_blend_fallback': True,
+        'hwui_full_redraw': True, 'pcm_soft_start_ms': 100,
         'radio_services': radio_records, 'radio_file_capabilities': radio_capabilities,
         'local_launcher': record if args.local_launcher else None,
         'system': {'path': system_image.name, 'bytes': size, 'sha256': digest(system_image)},

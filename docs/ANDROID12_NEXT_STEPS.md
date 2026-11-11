@@ -1,77 +1,83 @@
 # Android 12 continuation checklist
 
-## Current state
+Read [HANDOFF.md](HANDOFF.md) first for exact device guards, artifact paths,
+commands, private-cache requirements and the owner's latest UI decisions.
 
-The owner confirmed projected TV Settings navigation, then the lightweight
-local Rayo Home and Settings. The selected design is a simplified TV interface
-without Google services, now named GabOS. Offline identity is `GabOS 0.1-dev`;
-the launcher is GabOS Home 0.4. See [the OS/application plan](GABOS.md).
-It is not a stable replacement ROM yet. Keep normal
-v14 and the preserved factory system until the acceptance checks pass.
+## Priority 1: validate the final full-redraw candidate
 
-The latest run is `20261111-093343-b66a3207` (radio-05). Wi-Fi automatically
-connected with validated internet and reconnected after an off/on cycle while
-Bluetooth stayed ON. Bluetooth had zero crashes and a fresh completed discovery
-found five devices. Five Home/Settings/Back cycles preserved core process IDs.
-Normal v14 returned and factory recovery was restored and hash verified.
-The earlier interrupted run was repaired separately; its historical failed RESULT
-was not rewritten. See [radio bring-up](GABOS_RADIO_BRINGUP.md).
+Final offline candidate `outputs/android12-framework/gabos-full-redraw-01` preserves
+native Android TV transparency and enables a targeted GPU/client-composition
+fallback for fractional-alpha/dim frames. Home 0.5 Settings opens native TV
+settings directly; the custom settings page/Control app is removed. Keep native
+Files. The owner explicitly rejected the earlier opaque-window workaround.
 
-## Next owner-assisted session
+The prior trial `20261111-134210-12720cc5` returned to v14 and restored factory
+recovery with readback. The final candidate has not had a fresh immutable boot.
+Its two HWUI full-redraw properties corrected the internal runtime capture,
+but physical confirmation and performance comparison are pending.
 
-Identify Android version, completed boot and boot/recovery hashes before testing.
-Keep the tested v14 boot and factory recovery. Check projected colors and input,
-Bluetooth accessory pairing/reconnection and audio routing, speaker/video decoding,
-actual power cycles, suspend, thermals and extended stability. Scanning does not
-prove Bluetooth audio: the current primary-only audio policy still needs routing
-work. Graphics counters still show substantial jank; no smoothness claim is made.
-Physical MaskROM entry remains untested. Development SELinux/permissive and root
-service exposure require review before a release. Do not promote or remove v14.
+Verify normal boot and full factory recovery readback at the end of each new test. Never end a
+handoff with a temporary recovery slot silently assumed restored. Historical
+failed RESULT files remain failures; use a separate verified restoration record
+when repairing an interrupted run.
 
-## Offline preparation
+## Priority 2: physical settings and audio regressions
 
-- Local UI source: `work/rayo-tv`; build with `tools/build-lightweight-tv.ps1`.
-  Development signing credentials remain private under `local/secrets`.
-- Prepared candidate: `candidate-t320pzw3` under the WSL framework-candidates
-  directory. It includes local Home and panel/remote keymaps. It is untested.
-- Newer branded candidate: `candidate-874zpwfy`, with GabOS identity and Home
-  0.4; Android 12/API 31 are unchanged. Its properties and signed APK metadata
-  were checked offline; it has not been installed or validated on the device.
-- `prepare-android12-framework.py --local-launcher` reproduces that integration
-  with a checksum-checked APK; no Google components are added.
-- `prepare-android12-radio-assets.py` verifies the v14 archive and stages only
-  private firmware/Bluetooth libraries, with hashes and ELF dependencies.
-- `build-android12-radios.sh` uses a separate `rayos1_tv12_radios` product and
-  `~/android/rayo12-radios-out`, preserving the passing TV output. It compiles
-  Broadcom NL80211 Wi-Fi/supplicant and Bluetooth HIDL services. It does not
-  prepare an installable image or establish hardware operation.
-- Bluetooth's original C++ dependencies require an isolated legacy namespace.
-  The opt-in loader adaptation and source-built null-timer compatibility helper
-  compiled successfully. Six source ARM32 artifacts passed the offline audit;
-  private firmware/vendor assets also passed archive/checksum/ELF inventory.
-  Final init, permissions, VINTF and legacy dependency integration is pending.
-- Source radio services depending on BoringSSL need the same explicit old-kernel
-  entropy/backend review as Keystore. Do not silently substitute entropy or
-  label the non-FIPS diagnostic backend as platform FIPS support.
-- The archived hardware media implementation includes Rockchip OMX/VPU
-  libraries and codec XML. These still need a separately checked Android 12
-  service/namespace/allocator integration; software playback is not proof of
-  hardware decoding or adequate performance.
+- From GabOS Home, open native Settings repeatedly. Verify Home stays visible
+  through the left transparent area without gray flashes; test Back and submenus.
+- The owner confirmed the GPU fallback alone still flickered gray. Combined
+  `debug.hwui.use_buffer_age=false` / `debug.hwui.use_partial_updates=false`,
+  followed by restarting TV Settings, corrected the internal capture. Start
+  with a physical retest; do not restore an opaque theme.
+- Confirm the fallback activates in composer logs and compare the runtime
+  `debug.rayo.graphics.client_blend` switch only during a guarded trial. The
+  fallback keeps alpha values unchanged; it may add GPU work on affected frames.
+- Listen at moderate volume to first output and output after standby. The new
+  PCM16 100 ms soft start passed host sample tests but cannot prove the amplifier
+  power-up transient is fixed. Inspect actual HAL routing/driver startup if not.
 
-## Acceptance before promotion
+## Priority 3: real media and third-party apps
 
-| Area | Required device evidence |
-|---|---|
-| Recovery | Normal v14, factory recovery readback and a tested rollback path |
-| Input/Home | Every panel/mando button, pointer response, app launch, Back/Home return |
-| Graphics | Repeated app/settings transitions, solid colors/alpha, no composer crashes, correct orientation |
-| Wi-Fi | Enable, scan, connect, validated internet, reboot reconnect and suspend/resume |
-| Bluetooth | Enable, scan, pair, reconnect; test actual HID/audio accessory profiles |
-| Media | Speaker sound and real AVC/AAC playback, identify decoder, seek and prolonged playback |
-| Memory/power | Sustained use on 1 GB RAM, no restart loops, temperature, battery reporting and suspend |
-| Persistence | Repeated cold boots with the same working configuration and no manual repairs |
+- Run the original AVC/AAC clip, identify the actual selected decoder and require
+  real frames/completion. Hardware registry/creation/ports are not playback proof.
+- Verify lens colors/motion and speaker audio; then seek, repeat and test longer
+  playback while measuring RAM/temperature. Retain software fallback for comparison.
+- Retest Aurora with full redraw first: its blank UI may share the old buffer
+  damage/alpha problem, but that is unverified. Resolve its blank capture/cold-start delay. Check whether it is a real
+  display problem versus capture/security/initialization behavior; do not re-sign
+  or modify third-party APKs to hide a failure. Store onboarding/download/install
+  remains unverified. No personal account is configured by the agent.
+- Verify SmartTube browsing and actual streaming/codec choice. It is installed;
+  initial activity launch is not playback proof.
 
-Keep a tested rollback image and private original backups after any future
-promotion. The owner's request to remove the older active installation is
-conditional on Android 12 becoming stable; it is not authorization to erase
-the preserved factory partitions or the only recovery copies now.
+## Priority 4: runtime performance and remaining hardware
+
+- Measure warm and cold launch latency separately. Tiny app cold opens were
+  around eight seconds in a diagnostic run. Frame callback count is not panel FPS.
+- Disabled JIT remains a workaround for an earlier ART crash. Do not call it an
+  optimization or re-enable it globally without a separate guarded test.
+- Wi-Fi startup/internet/reconnect and Bluetooth startup/discovery passed. Still
+  test suspend/reconnect and actual Bluetooth accessory pairing/HID/audio/BLE.
+  The current primary-only audio policy does not establish A2DP routing.
+- Fix real shutdown/cooling and verify battery, suspend and physical power cycles.
+  Both current shutdown methods returned to v14; inactivity shutdown stays disabled.
+- Review debug/permissive/legacy security behavior before a release; do not claim
+  production security or hardware-backed cryptography from the software backend.
+
+## Promotion and removal are still conditional
+
+The owner authorized making GabOS primary and removing older active systems
+once stable. First pass the above regression checks, repeated boots and extended
+use, with independent recovery/host backups verified. Prepare a concrete layout
+and rollback plan; current private data is only 256 MiB and gets tight during AOT.
+Any expansion must update/revalidate the explicit size/UUID/reserve guards rather
+than bypass them. Do not erase factory partitions or the only recovery copies.
+Physical MaskROM entry remains untested. The current ten-minute trial is not a
+stable primary installation, even if boot completes.
+
+## Minimal application scope
+
+Keep GabOS Home, Media and Diagnostics plus native Android TV Settings/Files,
+Aurora and SmartTube. Do not recreate a full browser/office suite. Casting/Share
+and a signed Updater are later work requiring genuine protocol/update/rollback
+implementations, not placeholder success screens.

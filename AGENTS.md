@@ -4,7 +4,7 @@
 
 Maintain all repository documentation, development notes, new code comments, and project-facing technical text in **English**. Preserve exact OEM identifiers, protocol strings, artifact paths, and external interfaces. Conversation with the owner may remain in clear Spanish. Do not change the device UI language as a side effect of this policy.
 
-Read `docs/STATUS.md`, `docs/RECOVERY.md`, and `docs/PORTABILITY.md` first. The goal is a lightweight Canon Rayo S1 distribution preserving projection, controls, and recoverability. A library loading or a correct internal screenshot does not establish hardware functionality: verify actual projection and interaction.
+Read `docs/HANDOFF.md`, `docs/ANDROID12_NEXT_STEPS.md`, `docs/STATUS.md`, `docs/RECOVERY.md`, and `docs/PORTABILITY.md` first. The goal is a lightweight Canon Rayo S1 distribution preserving projection, controls, and recoverability. A library loading or a correct internal screenshot does not establish hardware functionality: verify actual projection and interaction.
 
 ## Organization and authorization
 
@@ -51,3 +51,9 @@ GabOS Android 12/API31 has booted on the original kernel with Home/Settings, wor
 The full pinned source is in WSL `~/android/rayo12`, with separate TV/native/radio outputs. Compile ARMv7/Cortex-A7/Binder32; the ADT-3 ARMv8 runtime is incompatible. Keep the legacy Mali/ION namespace, original kernel/HwBinder guards and independent watchdog. Never flash an unrelated TV-box image.
 
 The owner has authorized installing Aurora/SmartTube and useful app replacements, then promoting Android 12 and removing older active installations only after stability is established. Do not request duplicate permission, but do not bypass failed acceptance checks or erase the preserved factory partitions/only recovery copies prematurely. Real shutdown currently reboots; Aurora's interface has shown blank output; physical media, accessory profiles, power cycles and prolonged stability remain pending. Use the guarded temporary trials and verify the normal v14 return and full recovery readback after each run.
+
+## Latest native settings correction
+
+The owner wants the actual Android TV Settings, with working transparency and visible background content. Do not restore a custom GabOS settings page or an opaque background as a purported transparency fix: the owner explicitly rejected that workaround. Home 0.5 launches native Settings directly. The current trial uses `debug.rayo.graphics.client_blend` to request complete client composition for affected alpha/dim frames while retaining alpha values. Physical flicker and first-audio transient checks remain separate; see the final result in `docs/HANDOFF.md`. Keep the handoff/pending list and README current, then commit/push only project changes.
+
+The final offline continuation image is `outputs/android12-framework/gabos-full-redraw-01`. The GPU fallback alone did not fix gray flicker; the owner confirmed that failure. A runtime test with both `debug.hwui.use_buffer_age=false` and `debug.hwui.use_partial_updates=false` and a TV Settings restart corrected the internal capture. Those flags are now baked offline; fresh-boot, lens and performance validation remain pending. The last device trial returned to v14 and restored factory recovery/readback. Follow `docs/HANDOFF.md` rather than assuming the final offline image was installed or declaring the pop/media/power issues fixed.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Use native TV settings with an opaque window and no board-side overlay animation."""
+"""Preserve native TV transparency and restore the upstream overlay transitions."""
 import argparse
 from pathlib import Path
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--source',type=Path,required=True);a=p.parse_args()
@@ -11,9 +11,8 @@ after='''<style name="TvSettingsActivityTheme" parent="Theme.Settings">
         <item name="android:windowBackground">@color/settings_background</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>'''
-if after not in text:
-    if text.count(before)!=1:raise SystemExit('Pinned TV settings theme differs')
-    text=text.replace(before,after)
+if after in text:text=text.replace(after,before)
+if text.count(before)!=1:raise SystemExit('Pinned transparent TV settings theme differs')
 path.write_text(text)
 path=base/'src/com/android/tv/settings/TvSettingsActivity.java';text=path.read_text()
 text=text.replace('import android.os.Bundle;','import android.os.Bundle;\nimport android.os.SystemProperties;') if 'import android.os.SystemProperties;' not in text else text
@@ -24,17 +23,14 @@ addition='''            if (SystemProperties.getBoolean("ro.gabos.settings.opaqu
                 return;
             }
 '''
-if addition not in text:
-    if text.count(anchor)!=1:raise SystemExit('Pinned settings entry differs')
-    text=text.replace(anchor,addition+anchor)
+text=text.replace(addition,'')
 anchor='    public void finish() {\n'
 addition='''        if (SystemProperties.getBoolean("ro.gabos.settings.opaque", false)) {
             super.finish();
             return;
         }
 '''
-if anchor+addition not in text:
-    if text.count(anchor)!=1:raise SystemExit('Pinned settings exit differs')
-    text=text.replace(anchor,anchor+addition)
+text=text.replace(anchor+addition,anchor)
+if 'SystemProperties.' not in text:text=text.replace('import android.os.SystemProperties;\n','')
 path.write_text(text)
-print('Native TV settings: opaque background and board-scoped direct transitions.')
+print('Native TV settings: original translucent theme and transitions retained.')

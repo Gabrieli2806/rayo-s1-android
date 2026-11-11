@@ -135,3 +135,22 @@ replayed by `apply-android12-audio-soft-start.py` and enabled only by the board
 property. Both TvSettings and HIDL audio 7 built successfully. Candidate
 `outputs/android12-framework/gabos-settings-audio-01` contains these changes and
 the corrected experimental hardware facade; device/physical checks are pending.
+
+## Transparent settings follow-up and final offline artifact
+
+The owner explicitly rejected removing transparency. The opaque theme/direct-
+transition workaround was reverted to upstream TV Settings. Candidate
+`gabos-transparent-settings-01` ran in `20261111-134210-12720cc5` with the targeted
+whole-frame client-composition switch. Logs confirmed activation and CLIENT
+composition for Home, dim and Settings, with original alpha intact. Nevertheless,
+the owner still saw gray and flickering transparency during pointer movement.
+
+Disabling both HWUI buffer-age reuse and partial updates, then restarting TV
+Settings, corrected the USB capture: dimmed Home was visible behind the native
+panel. This implicates the partial/preserved-buffer path, but does not isolate
+one flag or prove a physical fix. A lens-confirmation question remains pending.
+The full-redraw properties are baked into the final offline candidate
+`outputs/android12-framework/gabos-full-redraw-01`; hashes/configuration verified,
+fresh immutable boot not yet tested. The previous run returned to v14 and
+restored factory recovery with readback. Audio-pop listening and real hardware
+video acceptance remain pending; no stable/promotion claim is made.

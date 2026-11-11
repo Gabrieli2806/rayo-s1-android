@@ -21,6 +21,43 @@ def main():
             raise SystemExit('Unexpected pinned HWC background capability query')
         text = text.replace(before, after)
     path.write_text(text)
+    # HWC1 mixed planes flicker under dim/translucent overlays on this board.
+    # Client-compose the complete affected frame, retaining original alpha and background.
+    path = args.source/'hardware/interfaces/graphics/composer/2.1/utils/hwc2on1adapter/HWC2On1Adapter.cpp'
+    text = path.read_text()
+    anchor = '    ALOGV("Calling HWC1 prepare");'
+    addition = '''    if (property_get_bool("debug.rayo.graphics.client_blend", false)) {
+        for (const auto& contents : mHwc1Contents) {
+            if (!contents) continue;
+            bool clientBlend = false;
+            for (size_t l = 0; l < contents->numHwLayers; ++l) {
+                const auto& layer = contents->hwLayers[l];
+                if (layer.compositionType == HWC_FRAMEBUFFER_TARGET) continue;
+                clientBlend |= layer.planeAlpha < 255 ||
+                        ((layer.flags & HWC_SKIP_LAYER) && layer.handle == nullptr);
+            }
+            if (!clientBlend) continue;
+            static bool logged = false;
+            if (!logged) {
+                ALOGI("Rayo: client-composing translucent frame with original alpha");
+                logged = true;
+            }
+            for (size_t l = 0; l < contents->numHwLayers; ++l) {
+                auto& layer = contents->hwLayers[l];
+                if (layer.compositionType == HWC_FRAMEBUFFER_TARGET) continue;
+                layer.compositionType = HWC_FRAMEBUFFER;
+                layer.flags |= HWC_SKIP_LAYER;
+            }
+        }
+    }
+
+'''
+    if addition not in text:
+        if text.count(anchor) != 1:
+            raise SystemExit('Unexpected pinned HWC prepare boundary')
+        text = text.replace(anchor, addition+anchor)
+    path.write_text(text)
+
     path = args.source/'frameworks/native/services/surfaceflinger/DisplayHardware/FramebufferSurface.cpp'
     text = path.read_text()
     include = '#include <android-base/properties.h>\n'

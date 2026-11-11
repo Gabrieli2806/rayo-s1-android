@@ -8,8 +8,10 @@ It is not the permanent boot or a stable release. See [the GabOS plan](docs/GABO
 passed bounded trials with verified v14 return and factory recovery restoration.
 Aurora Store and SmartTube are installed in isolated Android 12 data. Native
 Files and GabOS Media/Diagnostics are integrated. At the owner's request, Home
-0.5 opens native Android TV Settings directly; opaque settings and a PCM soft-start
-fix are in a new trial candidate. See [application integration](docs/GABOS_APPS.md),
+0.5 opens native Android TV Settings directly; a transparency-preserving composition adaptation and PCM soft start
+are prepared. A combined HWUI full-redraw runtime test corrected the internal
+transparent-settings capture; lens confirmation is pending. The opaque-window
+workaround was rejected and reverted. See [application integration](docs/GABOS_APPS.md),
 [radio bring-up](docs/GABOS_RADIO_BRINGUP.md) and
 [the continuation checklist](docs/ANDROID12_NEXT_STEPS.md). Android 12 is still a
 development trial; unresolved UI/media/power behavior blocks permanent promotion.
@@ -42,6 +44,8 @@ Documentation, development notes, new code comments, and the project foundation 
 | `local/` | Complete backups, firmware, AOSP volume, Linux cache, private keys; **excluded from Git** |
 
 ## Continue on another PC
+
+Start with the current [handoff](docs/HANDOFF.md) and [prioritized pending work](docs/ANDROID12_NEXT_STEPS.md). They distinguish completed checks from experimental changes and physical acceptance still needed.
 
 1. Clone this private repository using an authorized account.
 2. Install Git, GitHub CLI, Python 3, and Android Platform Tools. Building also requires WSL2/Ubuntu, SDK/NDK, and Java; see [BUILD.md](docs/BUILD.md).
