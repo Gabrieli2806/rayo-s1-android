@@ -13,6 +13,7 @@ import subprocess
 import tarfile
 import tempfile
 import uuid
+import zipfile
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,7 +34,15 @@ def main():
                         help='Include the separately built and signed lightweight launcher')
     parser.add_argument('--radios-product-out', type=Path,
                         help='Integrate the separately audited source radio product')
+    parser.add_argument('--gabos-apps', action='store_true',
+                        help='Include checksum-verified Media and Diagnostics with native DocumentsUI')
+    parser.add_argument('--software-media', action='store_true',
+                        help='Declare source OMX software codecs for baseline media validation')
+    parser.add_argument('--legacy-media', action='store_true',
+                        help='Opt into the experimental source facade over factory OMX C APIs')
     args = parser.parse_args()
+    if args.legacy_media and not args.software_media:
+        parser.error('--legacy-media requires --software-media for explicit OMX declarations')
     if os.name != 'posix':
         raise SystemExit('Use native Linux/WSL ext4 to preserve the product layout')
     product = args.product_out.resolve()
@@ -64,6 +73,22 @@ def main():
         destination = system/'app/RayoDark/RayoDark.apk'
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(apk, destination)
+    gabos_apps = []
+    if args.gabos_apps:
+        if not (system/'priv-app/DocumentsUI/DocumentsUI.apk').is_file():
+            raise SystemExit('Build the native DocumentsUI target first')
+        for name in ('Media', 'Diagnostics'):
+            apk = ROOT/'outputs'/('GabOS-'+name+'.apk')
+            metadata = json.loads(Path(str(apk)+'.build.json').read_text(encoding='utf-8-sig'))
+            if (metadata.get('package') != 'local.gabos.'+name.lower()
+                    or metadata.get('google_services') is not False
+                    or digest(apk) != metadata.get('sha256')):
+                raise SystemExit('Rebuild and verify GabOS '+name)
+            target = system/'app'/('GabOS'+name)/apk.name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(apk, target)
+            gabos_apps.append(metadata)
+
     # Declare the board's actual radio so SystemServer publishes WifiManager.
     # This is also required by the stock TV Settings connectivity screen.
     shutil.copyfile(args.source/'frameworks/native/data/etc/android.hardware.wifi.xml',
@@ -93,7 +118,7 @@ def main():
 
     from android12_graphics_root import augment
     readelf = args.source/'prebuilts/clang/host/linux-x86/clang-r416183b/bin/llvm-readelf'
-    _, graphics = augment(mini, product, native, ROOT, work, copy, readelf, True, True, audio=True)
+    _, graphics = augment(mini, product, native, ROOT, work, copy, readelf, True, True, audio=True, legacy_media=args.legacy_media)
     # Merge only the verified graphics closure, not the diagnostic init/services.
     for path in mini.rglob('*'):
         relative = path.relative_to(mini)
@@ -130,6 +155,50 @@ def main():
         declaration = ET.SubElement(hal, 'interface')
         ET.SubElement(declaration, 'name').text = interface
         ET.SubElement(declaration, 'instance').text = 'default'
+    if args.software_media:
+        service = system/'vendor/bin/hw/android.hardware.media.omx@1.0-service'
+        if not service.is_file():
+            raise SystemExit('Build android.hardware.media.omx@1.0-service first')
+        hal = ET.SubElement(device_manifest.getroot(), 'hal', {'format': 'hidl'})
+        ET.SubElement(hal, 'name').text = 'android.hardware.media.omx'
+        ET.SubElement(hal, 'transport').text = 'hwbinder'
+        ET.SubElement(hal, 'version').text = '1.0'
+        for interface in ('IOmx', 'IOmxStore'):
+            declaration = ET.SubElement(hal, 'interface')
+            ET.SubElement(declaration, 'name').text = interface
+            ET.SubElement(declaration, 'instance').text = 'default'
+        codec_source = args.source/'frameworks/av/media/libstagefright/data'
+        for filename in ('media_codecs_google_audio.xml', 'media_codecs_google_video.xml'):
+            shutil.copyfile(codec_source/filename, system/'vendor/etc'/filename)
+        if args.legacy_media:
+            if (b'ro.rayo.media.legacy_omx' not in (system/'lib/libstagefright_omx.so').read_bytes()
+                    or not (system/'lib/librayo12_omx_plugin.so').is_file()):
+                raise SystemExit('Build the source OMX facade and opt-in loader first')
+            with tarfile.open(ROOT/'local/device-kit/runtime/rayo81-live-overlay.tar.gz') as archive:
+                members = [m for m in archive if m.isfile() and m.name.endswith('/etc/media_codecs.xml')]
+                if len(members) != 1:
+                    raise SystemExit('Expected one pinned v14 codec declaration')
+                prior_codecs = ET.fromstring(archive.extractfile(members[0]).read())
+            decoders = [node for node in prior_codecs.findall('./Decoders/MediaCodec')
+                        if node.get('name') == 'OMX.rk.video_decoder.avc']
+            if len(decoders) != 1:
+                raise SystemExit('Expected the verified v14 AVC entry')
+            # Prefer the experimental hardware entry over C2 software without changing its limits.
+            decoders[0].set('rank', '1')
+            included = ET.Element('Included')
+            ET.SubElement(included, 'Decoders').append(decoders[0])
+            ET.ElementTree(included).write(system/'vendor/etc/media_codecs_rayo.xml', encoding='unicode')
+            init_media = system/'etc/init/init.rayo12.media.rc'
+            init_media.write_text(
+                'on post-fs-data\n'
+                '    chown mediacodec media /dev/vpu_service\n'
+                '    chmod 0660 /dev/vpu_service\n')
+        (system/'vendor/etc/media_codecs.xml').write_text(
+            '<?xml version="1.0" encoding="utf-8"?>\n<MediaCodecs>\n'
+            + ('  <Include href="media_codecs_rayo.xml"/>\n' if args.legacy_media else '')
+            + '  <Include href="media_codecs_google_audio.xml"/>\n'
+            '  <Include href="media_codecs_google_video.xml"/>\n</MediaCodecs>\n')
+
     device_manifest.write(manifest_path, encoding='unicode')
     radio_records = []
     if args.radios_product_out:
@@ -328,6 +397,8 @@ ro.rayo.graphics.ion_client_target=true
 ro.rayo.graphics.legacy_sphal=true
 ro.rayo.cgroup.legacy=true
 ro.rayo.audio.legacy_stream_abi=true
+ro.rayo.audio.pcm_soft_start=true
+ro.gabos.settings.opaque=true
 ro.rayo.keystore.legacy_pid_sid=true
 ro.hardware.hwcomposer=rayo12
 ro.opengles.version=131072
@@ -342,11 +413,22 @@ dalvik.vm.heapmaxfree=8m
 dalvik.vm.usejit=false
 dalvik.vm.usejitprofiles=false
 '''
+    if args.legacy_media:
+        defaults += 'ro.rayo.media.legacy_omx=true\n'
     if args.radios_product_out:
         defaults += ('ro.rayo.bluetooth.legacy_vendor_sphal=true\n'
                      'ro.rayo.bluetooth.legacy_hci=true\n'
                      'bluetooth.enable_timeout_ms=8000\n'
                      'wifi.interface=wlan0\nro.bt.bdaddr_path=/data/misc/bluetooth/bdaddr\n')
+    if b'ro.rayo.audio.pcm_soft_start' not in (system/'lib/hw/android.hardware.audio@7.0-impl.so').read_bytes():
+        raise SystemExit('Rebuild the PCM soft-start audio implementation first')
+    tv_apks = list(system.rglob('TvSettings.apk'))
+    if len(tv_apks) != 1:
+        raise SystemExit('Expected one native TV Settings application')
+    with zipfile.ZipFile(tv_apks[0]) as apk:
+        if not any(b'ro.gabos.settings.opaque' in apk.read(name)
+                   for name in apk.namelist() if name.endswith('.dex')):
+            raise SystemExit('Rebuild native TV Settings with the opaque board adaptation')
     # Android 12's normal PropertyLoadBootDefaults does not read prop.default.
     # Preserve the complete source identity and use its canonical build.prop.
     original_properties = (system/'build.prop').read_text()
@@ -479,6 +561,10 @@ dalvik.vm.usejitprofiles=false
     spec.loader.exec_module(verify)
     verified = verify.inspect(image.read_bytes(), (ROOT/'local/device-kit/original/recovery.img').read_bytes(), True)
     manifest = {'purpose': 'Temporary full-framework bringup; not a validated ROM or Google TV Home',
+        'gabos_apps': gabos_apps,
+        'software_media': args.software_media,
+        'legacy_media': args.legacy_media,
+        'native_settings_opaque': True, 'pcm_soft_start_ms': 100,
         'radio_services': radio_records, 'radio_file_capabilities': radio_capabilities,
         'local_launcher': record if args.local_launcher else None,
         'system': {'path': system_image.name, 'bytes': size, 'sha256': digest(system_image)},

@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
         if(batteryIcon!=null){batteryIcon.level=battery;batteryIcon.charging=plugged;batteryIcon.invalidate();}
     }
     private void render(int requestedPage){
+        if(requestedPage==2){launch(settingsPackage());return;}
         page=requestedPage;preferredFocus=null;
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(42),dp(24),dp(42),dp(12));
@@ -58,7 +59,7 @@ public class MainActivity extends Activity {
         ScrollView scroll=new ScrollView(this);scroll.setClipToPadding(false);scroll.setVerticalScrollBarEnabled(false);scroll.setFillViewport(false);
         body=new LinearLayout(this);body.setOrientation(1);body.setPadding(0,dp(18),0,dp(8));body.setClipChildren(false);scroll.addView(body);
         root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
-        if(page==0)home();else if(page==1)appGrid();else settings();
+        if(page==0)home();else appGrid();
         TextView footer=text("Your space. Your apps.",12,0xff687383);footer.setPadding(dp(5),dp(4),0,0);root.addView(footer);
         setContentView(root);lastPackageCount=getPackageManager().getInstalledApplications(0).size();updateStatus();
         if(preferredFocus!=null){final View focus=preferredFocus;focus.post(()->focus.requestFocus());}
@@ -119,20 +120,7 @@ public class MainActivity extends Activity {
         for(App app:list){if(n%5==0){row=new LinearLayout(this);row.setClipChildren(false);body.addView(row,new LinearLayout.LayoutParams(-1,-2));}View tile=appTile(app,180,112);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);p.setMargins(dp(7),dp(7),dp(7),dp(12));row.addView(tile,p);if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;n++;}
         if(row!=null)while(n++%5!=0)row.addView(new View(this),new LinearLayout.LayoutParams(0,1,1));
     }
-    private void settings(){
-        TextView title=text("Make it yours",30,WHITE);title.setTypeface(null,Typeface.BOLD);title.setPadding(dp(4),dp(12),0,dp(24));body.addView(title);
-        setting("Android settings","Connections, apps and device preferences",settingsPackage(),false);
-        if(installed("com.hotack.hotackkoreasettings"))setting("Projector settings","Image and projector controls","com.hotack.hotackkoreasettings",false);
-        if(installed("com.htc.htcrayolauncher"))setting("Canon home","Open the original projector interface","com.htc.htcrayolauncher",true);
-    }
     private String settingsPackage(){return installed("com.android.tv.settings")?"com.android.tv.settings":"com.android.settings";}
-    private void setting(String name,String detail,final String pkg,final boolean canon){
-        LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(22),dp(18),dp(22),dp(18));row.setBackground(rounded(CARD,18,0));row.setFocusable(true);row.setClickable(true);
-        ImageView icon=new ImageView(this);icon.setImageBitmap(icon(pkg,42));row.addView(icon,new LinearLayout.LayoutParams(dp(42),dp(42)));
-        LinearLayout copy=new LinearLayout(this);copy.setOrientation(1);copy.setPadding(dp(18),0,0,0);TextView t=text(name,20,WHITE);t.setTypeface(null,Typeface.BOLD);copy.addView(t);copy.addView(text(detail,14,DIM));row.addView(copy,new LinearLayout.LayoutParams(0,-2,1));row.addView(text("›",28,DIM));
-        row.setOnClickListener(v->{if(canon)original();else launch(pkg);});row.setOnFocusChangeListener((v,f)->row.setBackground(rounded(f?0xff354652:CARD,18,f?WHITE:0)));
-        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(dp(4),0,dp(4),dp(12));body.addView(row,p);if(preferredFocus==null)preferredFocus=row;
-    }
     private static class App{final String pkg,name;App(String p,String n){pkg=p;name=n;}}
     private List<App> apps(){
         LinkedHashMap<String,App> result=new LinkedHashMap<>();

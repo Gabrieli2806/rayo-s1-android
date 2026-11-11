@@ -1,0 +1,18 @@
+[
+  {
+    "file": "SmartTube-stable-32.71-armv7.apk",
+    "package": "org.smarttube.stable",
+    "version": "32.71",
+    "sha256": "288e8caaa11417f6b64d2a7f906cead85c0b8a9bb5904753d7cb4f79d117d023",
+    "signer_sha256": "109735aa24fe85e2e1623ebb3b1ecc4bf4263f4c6374e4411d646bfa2eda482a",
+    "source": "https://github.com/yuliskov/SmartTube/releases/tag/32.71s"
+  },
+  {
+    "file": "AuroraStore-4.8.4-fdroid.apk",
+    "package": "com.aurora.store",
+    "version": "4.8.4",
+    "sha256": "fd9c75d90d0f4a7c132b9b4a5a2cf1992a45e03b8d8ff988b7dcfbc0db2c4d11",
+    "signer_sha256": "5c83c7672b929955dc0a1db89a5e6ae4389e2eae7ec939956041694e5815f532",
+    "source": "https://f-droid.org/repo/com.aurora.store_76.apk"
+  }
+]

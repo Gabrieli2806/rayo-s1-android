@@ -101,3 +101,20 @@ cc_library_shared {
     stl: "none",
     cflags: ["-Wall", "-Wextra", "-Werror"],
 }
+
+// Only the source facade links current libutils; the factory core stays in sphal.
+cc_library_shared {
+    name: "librayo12_omx_plugin",
+    srcs: ["omx_plugin_bridge.cpp"],
+    header_libs: ["media_plugin_headers"],
+    shared_libs: ["libbase", "libutils", "liblog", "libdl", "libvndksupport"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}
+
+cc_binary {
+    name: "rayo12_omx_plugin_probe",
+    srcs: ["omx_plugin_probe.cpp"],
+    header_libs: ["media_plugin_headers"],
+    shared_libs: ["libutils", "libdl"],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

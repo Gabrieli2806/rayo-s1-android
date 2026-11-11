@@ -1,5 +1,6 @@
 """Stage a private legacy graphics closure for the init-only Android 12 root."""
 import hashlib
+import json
 import posixpath
 import re
 import shutil
@@ -7,10 +8,17 @@ import subprocess
 import tarfile
 
 
-def augment(system, product, native, root, work, copy, readelf, services=False, surfaceflinger=False, audio=False):
+def augment(system, product, native, root, work, copy, readelf, services=False, surfaceflinger=False, audio=False, legacy_media=False):
     legacy = system/'vendor/lib/legacy'
     legacy.mkdir(parents=True)
-    archive = tarfile.open(root/'local/device-kit/runtime/rayo81-live-overlay.tar.gz')
+    archive_path = root/'local/device-kit/runtime/rayo81-live-overlay.tar.gz'
+    if legacy_media:
+        kit = json.loads((root/'local/device-kit/MANIFEST.json').read_text())
+        expected = next(item['sha256'] for item in kit['files']
+                        if item['path'] == 'runtime/rayo81-live-overlay.tar.gz')
+        if hashlib.file_digest(archive_path.open('rb'), 'sha256').hexdigest() != expected:
+            raise SystemExit('Legacy media archive differs from the pinned kit')
+    archive = tarfile.open(archive_path)
     members = {m.name.rstrip('/'): m for m in archive}
     records = []
     core = {'libc.so', 'libm.so', 'libdl.so', 'libdl_android.so', 'libvndksupport.so'}
@@ -56,6 +64,9 @@ def augment(system, product, native, root, work, copy, readelf, services=False, 
     if audio:
         queue.append(('rayo-live/lib/hw/audio.primary.rk30board.so',
                       system/'vendor/lib/hw/audio.primary.rk30board.so'))
+    if legacy_media:
+        for name in ('libOMX_Core.so', 'libomxvpu_dec.so'):
+            queue.append(('rayo-live/lib/'+name, legacy/name))
     staged = set()
     while queue:
         source, destination = queue.pop()

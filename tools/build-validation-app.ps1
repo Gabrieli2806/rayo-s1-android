@@ -1,4 +1,4 @@
-param([string]$Sdk=$env:ANDROID_HOME,[string]$BuildTools='36.0.0',[string]$Keystore)
+param([string]$Sdk=$env:ANDROID_HOME,[string]$BuildTools='36.0.0',[string]$Keystore,[string]$SigningPasswordFile)
 $ErrorActionPreference='Stop'
 $rayoRoot=Split-Path -Parent $PSScriptRoot
 if(-not $Sdk){$Sdk=Join-Path $env:LOCALAPPDATA 'Android/Sdk'}
@@ -8,7 +8,7 @@ $rayoAndroidJar=Join-Path $Sdk 'platforms/android-26/android.jar'
 if(-not (Test-Path $rayoAndroidJar)){throw 'Install SDK platform android-26'}
 if(-not $Keystore){$Keystore=Join-Path $rayoRoot 'local/secrets/launcher-signing.p12'}
 if(-not (Test-Path $Keystore)){throw 'Copy the original launcher signing key into local/secrets first'}
-$rayoPassFile=Join-Path $rayoRoot 'local/secrets/launcher-signing-password.txt'
+$rayoPassFile=if($SigningPasswordFile){$SigningPasswordFile}else{Join-Path $rayoRoot 'local/secrets/launcher-signing-password.txt'}
 $rayoPassArgument=if($env:RAYO_SIGNING_PASSWORD){'env:RAYO_SIGNING_PASSWORD'}elseif(Test-Path $rayoPassFile){'file:'+$rayoPassFile}else{throw 'Set RAYO_SIGNING_PASSWORD or provide the local password file'}
 $rayoSource=Join-Path $rayoRoot 'work/rayo-validation'
 $rayoScratch=Join-Path $rayoRoot ('local/validation-build/'+(Get-Date -Format 'yyyyMMdd-HHmmss'))

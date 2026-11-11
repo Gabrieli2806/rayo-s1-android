@@ -8,7 +8,7 @@ Internal `rayo` paths, package names and hardware properties remain unchanged
 to preserve working updates, driver selection and rollback guards.
 
 `ro.gabos.name`, `ro.gabos.version`, the build display ID and device model identify
-the offline system candidate. The launcher is labeled GabOS Home, version 0.4;
+the offline system candidate. The launcher is labeled GabOS Home, version 0.5;
 its package/signing identity stays compatible with the development installation.
 The owner's G remains the brand artwork. No device change is performed by naming
 or packaging the offline candidate.
@@ -31,8 +31,8 @@ compatibility before calling a daily-use release stable.
 Hardware stability cannot be certified offline. Wi-Fi, Bluetooth, media, power,
 cold boots, repeated navigation and prolonged use must pass the acceptance
 checks in [ANDROID12_NEXT_STEPS.md](ANDROID12_NEXT_STEPS.md). That document also
-records the **pending recovery restoration verification**, which comes first
-when the projector is reconnected. Normal v14 remains the protected baseline.
+records verified recovery restoration and the remaining acceptance gates.
+Normal v14 remains the protected baseline.
 
 ## Factory application inventory
 
@@ -50,8 +50,8 @@ including SmartTube and Aurora, are outside this factory inventory.
 | Original functions/packages | Proposed GabOS application | Priority and limits |
 |---|---|---|
 | Rayo Launcher (`com.htc.htcrayolauncher`) | GabOS Home | Already implemented; dark TV layout, app icons and Settings access |
-| Hotack Settings (`com.hotack.hotackkoreasettings`), RockKeystone (`com.rockchip.keystone`) | GabOS Control | High priority after OS stability; unify projector settings only after verifying each vendor control/API |
-| FileExplorer (`com.android.rockchip`), ApkInstaller (`com.android.apkinstaller`), Downloads | GabOS Files | USB/local browsing and package installation through Android's existing installer; no custom signature bypass |
+| Hotack Settings, RockKeystone | Native Android TV Settings | Owner rejected a custom settings menu; native TV settings now opens directly. Optical/keystone controls still require verified vendor APIs |
+| FileExplorer, ApkInstaller, Downloads | Native Android Files (DocumentsUI) | Owner selected the native explorer instead of a custom GabOS Files app |
 | Video (`android.rk.RockVideoPlayer`), Music (`com.android.music`), Gallery (`com.android.gallery3d`) | GabOS Media | Simple video/music/photo UI; reuse tested codecs, with hardware decoding validated separately |
 | DeviceTest (`com.rockchip.devicetest`) | GabOS Diagnostics | RAM/storage, radio state and explicit display/audio/input checks; distinguish reported values from measured hardware behavior |
 | AirPlay, EDLNA, EShareServer, EShare and Mirroring (`com.ecloud.*`, `com.rockchip.wfd`) | GabOS Share | Later research; each receiving/control protocol and decoder dependency needs its own implementation and tests |
@@ -62,7 +62,7 @@ Other confirmed factory apps include Lightning browser, Canon Camera Connect
 full office suite, browser or Canon camera protocol is not part of the minimal
 OS plan; existing maintained applications can provide those functions.
 
-Implement Home, Control/Diagnostics and Files first. Keep one small application
+Implement Home, Diagnostics and Media; retain native Android TV Settings and Files. Keep one small application
 per useful role instead of adding many always-running services. Add media and
 sharing once the relevant lower-level hardware paths pass. Promotion to permanent
 boot follows those checks; keep independent factory/rollback backups afterward.
@@ -73,3 +73,5 @@ See [radio bring-up](GABOS_RADIO_BRINGUP.md) for source integration, verified
 Wi-Fi reconnection/internet, Bluetooth startup/discovery, navigation tests,
 rollback verification and remaining physical/media/security acceptance gates.
 Android 12 remains an isolated development trial; normal boot remains v14.
+
+See [the application integration checkpoint](GABOS_APPS.md) for current implementation and device evidence.

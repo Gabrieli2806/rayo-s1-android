@@ -1,6 +1,12 @@
 package local.gabos.diagnostics;
 
 import android.app.Activity;
+import android.view.Choreographer;
+import android.app.ActivityManager;
+import android.os.StatFs;
+import android.media.ToneGenerator;
+import android.media.AudioManager;
+import android.widget.*;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.*;
@@ -20,6 +26,9 @@ public class MainActivity extends Activity {
     private TextView screen;
     private BluetoothAdapter adapter;
     private int found;
+    private int frameCount;
+    private long frameStart;
+    private boolean measuringFrames;
     private boolean registered, requested, finished;
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
@@ -33,7 +42,24 @@ public class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         screen = new TextView(this); screen.setTextColor(Color.WHITE); screen.setBackgroundColor(0xff10151d);
-        screen.setTextSize(20); screen.setPadding(32, 32, 32, 32); setContentView(screen);
+        screen.setTextSize(18); screen.setPadding(24, 16, 24, 16);
+        LinearLayout body=new LinearLayout(this);body.setOrientation(1);body.setBackgroundColor(0xff10151d);
+        body.addView(screen);
+        Button refresh=new Button(this);refresh.setText("Refresh system information");body.addView(refresh);refresh.setOnClickListener(v->systemInfo());
+        Button radios=new Button(this);radios.setText("Wi-Fi and Bluetooth settings");body.addView(radios);radios.setOnClickListener(v->startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS)));
+        Button tone=new Button(this);tone.setText("Play a short speaker test");body.addView(tone);tone.setOnClickListener(v->{
+            try { final ToneGenerator generator=new ToneGenerator(AudioManager.STREAM_MUSIC,25);generator.startTone(ToneGenerator.TONE_PROP_BEEP,1000);handler.postDelayed(()->generator.release(),1200); }
+            catch(RuntimeException e){record("audio_test_error",e.getClass().getSimpleName());}
+        });
+        ScrollView scroll=new ScrollView(this);scroll.addView(body);setContentView(scroll); systemInfo();
+        if ("frames".equals(getIntent().getStringExtra("test"))) {
+            // Exclude service discovery and the expensive first window draw from steady-state callbacks.
+            handler.postDelayed(()->{
+                frameStart=SystemClock.elapsedRealtime(); measuringFrames=true;
+                Choreographer.getInstance().postFrameCallback(frameProbe);
+                handler.postDelayed(()->{measuringFrames=false;record("frame_callbacks_5s",frameCount);record("frame_elapsed_ms",SystemClock.elapsedRealtime()-frameStart);},5000);
+            },15000);
+        }
         try {
             WifiManager wifi = (WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
             record("wifi_enabled", wifi != null && wifi.isWifiEnabled());
@@ -51,6 +77,17 @@ public class MainActivity extends Activity {
             handler.post(poll);
             handler.postDelayed(() -> end(), 30000);
         } catch (Exception e) { record("error", e.getClass().getSimpleName()+": "+e.getMessage()); }
+    }
+    private final Choreographer.FrameCallback frameProbe=new Choreographer.FrameCallback(){
+        @Override public void doFrame(long time){if(!measuringFrames)return;frameCount++;Choreographer.getInstance().postFrameCallback(this);}
+    };
+    private void systemInfo() {
+        ActivityManager.MemoryInfo info=new ActivityManager.MemoryInfo();
+        ((ActivityManager)getSystemService(ACTIVITY_SERVICE)).getMemoryInfo(info);
+        StatFs storage=new StatFs(getFilesDir().getPath());
+        record("android_version",Build.VERSION.RELEASE);record("sdk",Build.VERSION.SDK_INT);
+        record("ram_total_mib",info.totalMem/1048576);record("ram_available_mib",info.availMem/1048576);
+        record("data_available_mib",storage.getAvailableBytes()/1048576);record("low_memory",info.lowMemory);
     }
     private final Runnable poll = new Runnable() {
         @Override public void run() {
@@ -81,6 +118,7 @@ public class MainActivity extends Activity {
         } catch (Exception e) { Log.e("GabOSRadioProbe", "Could not write diagnostic result", e); }
     }
     @Override protected void onDestroy() {
+        measuringFrames=false; Choreographer.getInstance().removeFrameCallback(frameProbe);
         end(); handler.removeCallbacksAndMessages(null);
         if (registered) unregisterReceiver(receiver);
         super.onDestroy();

@@ -24,3 +24,7 @@ if($LASTEXITCODE -ne 0){throw 'Diagnostics signing failed'}
 & (Join-Path $gabosBuild 'apksigner.bat') verify $gabosOutput
 if($LASTEXITCODE -ne 0){throw 'Diagnostics signature verification failed'}
 Write-Output $gabosOutput
+
+$App='diagnostics'
+
+@{package=('local.gabos.'+$App);sha256=(Get-FileHash -Algorithm SHA256 $gabosOutput).Hash.ToLower();google_services=$false} | ConvertTo-Json | Set-Content -Encoding utf8 ($gabosOutput+'.build.json')
