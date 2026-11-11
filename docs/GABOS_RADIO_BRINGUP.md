@@ -92,6 +92,11 @@ normal v14 and factory recovery have been verified again.
 After radio-05, normal Android 8.1 reported completed boot. Boot MD5 was
 `7a3ac489b05f0f2e9cde16280551511a`; factory recovery MD5 was
 `b32f971e7dfce13c708d264c6221844d`. The framework shutdown intent was issued
-from that verified normal system. ADB subsequently disconnected. Lamp/fan state
-was not physically observed because the owner was absent. The temporary host
+from that verified normal system. ADB disconnected, but the device subsequently
+returned with a fresh v14 uptime: framework shutdown did not keep it powered off.
+A direct `reboot -p` also disconnected USB temporarily, then returned to v14
+with a fresh uptime. Remote shutdown therefore remains a confirmed failure on
+this power path; the device was left on normal v14 rather than looping attempts
+or modifying power-controller registers without evidence. Physical shutdown
+requires the owner. Lamp/fan state was not observed because the owner was absent. The temporary host
 Wi-Fi migration credential file was deleted; saved device profiles remain private.
