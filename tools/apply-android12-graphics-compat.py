@@ -8,6 +8,19 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source', required=True, type=Path)
     args = parser.parse_args()
+    path = args.source/'hardware/interfaces/graphics/composer/2.1/utils/hwc2on1adapter/HWC2On1Adapter.cpp'
+    text = path.read_text()
+    include = '#include <cutils/properties.h>\n'
+    if include not in text:
+        text = text.replace('#include <hardware/hwcomposer.h>', include+'#include <hardware/hwcomposer.h>')
+    before = 'if ((result == 0) && (backgroundColorSupported == 1)) {'
+    after = '''if ((result == 0) && (backgroundColorSupported == 1) &&
+                !property_get_bool("ro.rayo.graphics.no_hwc_background", false)) {'''
+    if after not in text:
+        if text.count(before) != 1:
+            raise SystemExit('Unexpected pinned HWC background capability query')
+        text = text.replace(before, after)
+    path.write_text(text)
     path = args.source/'frameworks/native/services/surfaceflinger/DisplayHardware/FramebufferSurface.cpp'
     text = path.read_text()
     include = '#include <android-base/properties.h>\n'

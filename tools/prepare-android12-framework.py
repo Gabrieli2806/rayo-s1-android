@@ -43,6 +43,8 @@ def main():
             raise SystemExit('Unexpected product configuration: '+name)
     if b'ro.rayo.graphics.legacy_sphal' not in (product/'system/bin/bootstrap/linkerconfig').read_bytes():
         raise SystemExit('Rebuild linkerconfig with the opt-in legacy graphics namespace')
+    if b'ro.rayo.graphics.no_hwc_background' not in (product/'system/vendor/lib/libhwc2on1adapter.so').read_bytes():
+        raise SystemExit('Rebuild libhwc2on1adapter with the guarded solid-color fallback')
     candidates = Path.home()/'android/rayo12-framework-candidates'
     candidates.mkdir(parents=True, exist_ok=True)
     work = Path(tempfile.mkdtemp(prefix='candidate-', dir=candidates))
@@ -53,6 +55,8 @@ def main():
     # This is also required by the stock TV Settings connectivity screen.
     shutil.copyfile(args.source/'frameworks/native/data/etc/android.hardware.wifi.xml',
                     system/'etc/permissions/android.hardware.wifi.xml')
+    shutil.copyfile(args.source/'frameworks/native/data/etc/android.hardware.usb.host.xml',
+                    system/'etc/permissions/android.hardware.usb.host.xml')
     mini.mkdir()
 
     def copy(relative, original=None):
@@ -273,6 +277,7 @@ def main():
 ro.adb.secure=0
 ro.debuggable=1
 ro.apex.updatable=false
+ro.rayo.graphics.no_hwc_background=true
 ro.config.low_ram=true
 ro.product.first_api_level=25
 ro.serialno=0123456789ABCDEF

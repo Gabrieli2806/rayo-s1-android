@@ -219,3 +219,19 @@ feature XML despite the board having a radio. The next candidate includes the
 official hardware declaration. Radio operation remains unvalidated on Android 12.
 The controller now reads window display focus and explicitly rejects FallbackHome
 as proof of an interactive Settings screen.
+
+`20261110-225303-df68d72f`: declaring Wi-Fi allowed SystemServer to publish
+the Wi-Fi service. This does not validate the physical radio. Settings next
+reported a missing Ethernet service; the board's USB-host feature declaration
+was also absent (SystemServer uses it to enable Ethernet/USB-adapter support).
+The next candidate copies both official hardware declarations.
+
+The factory composer also crashed at `try_prepare_first+380`, dereferencing
+`0xff000028`. The upstream HWC2On1 adapter queries background-color capability;
+this factory advertises it, so a solid color such as `0xff000000` occupies the
+handle union. The factory then treats it as a buffer pointer despite the layer
+being marked for client composition. The opt-in
+`ro.rayo.graphics.no_hwc_background` quirk disables that advertised capability,
+selecting upstream's existing null-handle/client-composition path for solid
+colors. It does not replace buffers, colors or fences with fabricated values.
+This source fix requires a rebuilt libhwc2on1adapter and on-device validation.

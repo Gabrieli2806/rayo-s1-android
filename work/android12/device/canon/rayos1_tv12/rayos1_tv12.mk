@@ -15,7 +15,8 @@ PRODUCT_SYSTEM_PROPERTIES += ro.sf.lcd_density=160 ro.kernel.ebpf.supported=fals
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += debug.sf.no_hw_vsync=0
 # SystemServer starts the Wi-Fi framework only when this hardware feature is declared.
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/android.hardware.wifi.xml
+    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/permissions/android.hardware.usb.host.xml
 PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.allocator@2.0-service \
