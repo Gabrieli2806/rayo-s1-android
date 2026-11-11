@@ -6,12 +6,13 @@ $(call inherit-product, device/google/atv/products/atv_lowram_defaults.mk)
 PRODUCT_NAME := rayos1_tv12
 PRODUCT_DEVICE := rayos1_tv12
 PRODUCT_BRAND := Canon
-PRODUCT_MODEL := Rayo S1 Android 12 TV Development
+PRODUCT_MODEL := GabOS for Rayo S1 (Development)
 PRODUCT_MANUFACTURER := Canon
 PRODUCT_CHARACTERISTICS := tv
 PRODUCT_SHIPPING_API_LEVEL := 25
 PRODUCT_USE_DYNAMIC_PARTITIONS := false
 PRODUCT_SYSTEM_PROPERTIES += ro.sf.lcd_density=160 ro.kernel.ebpf.supported=false
+PRODUCT_SYSTEM_PROPERTIES += ro.gabos.name=GabOS ro.gabos.version=0.1-dev
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += debug.sf.no_hw_vsync=0
 # SystemServer starts the Wi-Fi framework only when this hardware feature is declared.
 PRODUCT_COPY_FILES += \

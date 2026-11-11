@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
     private void header(){
         LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setClipChildren(false);
         ImageView logo=new ImageView(this);logo.setImageResource(brand());row.addView(logo,new LinearLayout.LayoutParams(dp(38),dp(38)));
-        TextView name=text("RAYO",15,WHITE);name.setLetterSpacing(.18f);name.setTypeface(null,Typeface.BOLD);LinearLayout.LayoutParams np=new LinearLayout.LayoutParams(-2,-2);np.setMargins(dp(10),0,dp(34),0);row.addView(name,np);
+        TextView name=text("GabOS",15,WHITE);name.setLetterSpacing(.18f);name.setTypeface(null,Typeface.BOLD);LinearLayout.LayoutParams np=new LinearLayout.LayoutParams(-2,-2);np.setMargins(dp(10),0,dp(34),0);row.addView(name,np);
         String[] names={"Home","Apps","Settings"};
         for(int i=0;i<names.length;i++){
             final int destination=i;final boolean selected=page==i;

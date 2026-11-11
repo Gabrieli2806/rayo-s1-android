@@ -1,0 +1,627 @@
+{
+  "source_system_sha256": "f2bda2863d969bd329af34e18e0b0a3a203ae04ebf1460bf866f8bbeed2b5e71",
+  "scope": "Factory system APKs; excludes later user-installed apps",
+  "device_accessed": false,
+  "applications": [
+    {
+      "path": "/app/BasicDreams/BasicDreams.apk",
+      "package": "com.android.dreams.basic",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Basic Daydreams",
+      "bytes": 39669,
+      "sha256": "4b59dfd429472cca604dcfeaeec3ddfd546fc29f0557cb8dc6620f7164e1f189",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/Bluetooth/Bluetooth.apk",
+      "package": "com.android.bluetooth",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Bluetooth Share",
+      "bytes": 1949682,
+      "sha256": "bf26ddbe96b4cfe99108e91e7960797d480a39f1112abf5a7ca36576c9cc4bbc",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/CaptivePortalLogin/CaptivePortalLogin.apk",
+      "package": "com.android.captiveportallogin",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "CaptivePortalLogin",
+      "bytes": 68895,
+      "sha256": "bf9552d45b488c9662c5182362de77331e60fa6663e91d4e83681d71fcf21532",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/CertInstaller/CertInstaller.apk",
+      "package": "com.android.certinstaller",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Certificate Installer",
+      "bytes": 359917,
+      "sha256": "7939bb8d59ee7f4863d448e832194ee86e27858f2349a260dbd8fa2f9cb6b527",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/CtsShimPrebuilt/CtsShimPrebuilt.apk",
+      "package": "com.android.cts.ctsshim",
+      "version_code": "24",
+      "version_name": "7.0-2996264",
+      "label": null,
+      "bytes": 4807,
+      "sha256": "bb5b66c98398ee368dda15001e6eaebba5ac32223d4a09466a1572c723f68ca0",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/DeskClock/DeskClock.apk",
+      "package": "com.android.deskclock",
+      "version_code": "450",
+      "version_name": "4.5.0",
+      "label": "Clock",
+      "bytes": 3692792,
+      "sha256": "19237ffaf5fc259cbe7fff56c3a8d913bbb394d33862d39f41917d61f08743cc",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/DownloadProviderUi/DownloadProviderUi.apk",
+      "package": "com.android.providers.downloads.ui",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Downloads",
+      "bytes": 229513,
+      "sha256": "dfb99fb547dfa939f7dac99d4dd6e11b8db8849b7722cb0bade2073e9d39dba4",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/EAirPlay/EAirPlay.apk",
+      "package": "com.ecloud.eairplay",
+      "version_code": "126",
+      "version_name": "5.12.4",
+      "label": "AirPlay",
+      "bytes": 10328429,
+      "sha256": "9f162db3eb6c84ba7944a546b8d40d392c7de1eb5cb7a4e18816c60679785240",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/EDLNA/EDLNA.apk",
+      "package": "com.ecloud.emedia",
+      "version_code": "47",
+      "version_name": "v2.7.15",
+      "label": "EDLNA",
+      "bytes": 5935738,
+      "sha256": "598a2564aef725639410d6fb75813f8f9f130670d268c8b8d044d2a9db01a9fe",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/EShareServer/EShareServer.apk",
+      "package": "com.ecloud.eshare.server",
+      "version_code": "76",
+      "version_name": "v3.12.10",
+      "label": "EShareServer",
+      "bytes": 22905287,
+      "sha256": "da39d5f1d4bb095baebf90e66a4fa76b73aa68830c37b398c320e7b1de2e9306",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/ExactCalculator/ExactCalculator.apk",
+      "package": "com.android.calculator2",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Calculator",
+      "bytes": 390937,
+      "sha256": "8fcad65119a060f975b7749a4d91c9659b9e4eee1069949409cff633a8e66149",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/ExtShared/ExtShared.apk",
+      "package": "android.ext.shared",
+      "version_code": "1",
+      "version_name": "1",
+      "label": "Android Shared Library",
+      "bytes": 6098,
+      "sha256": "5e935715b2f005178a2f2a439f86e1a3ada5399f27b491d23cb939e1b6aff014",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/Gallery2/Gallery2.apk",
+      "package": "com.android.gallery3d",
+      "version_code": "40030",
+      "version_name": "1.1.40032-20140424",
+      "label": "Gallery",
+      "bytes": 4836813,
+      "sha256": "904a81ad3ab993d88a7ee1d7e07735ee99935f41e0b3bf4356ac75c88fd74424",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/HTMLViewer/HTMLViewer.apk",
+      "package": "com.android.htmlviewer",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "HTML Viewer",
+      "bytes": 17077,
+      "sha256": "d588061c97091f3ab35e088a286986623780fdeb7fdebe6b9457d7146b16418b",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/KeyChain/KeyChain.apk",
+      "package": "com.android.keychain",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Key Chain",
+      "bytes": 106406,
+      "sha256": "81e1c31774206d18776110ae0e0d903abbb2f825e1cd2aa0dee7e4a33aa4d261",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/LatinIME/LatinIME.apk",
+      "package": "com.android.inputmethod.latin",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Android Keyboard (AOSP)",
+      "bytes": 12502262,
+      "sha256": "b5b7bd0d0412c0411f23e8e2b4a6c53e008ec7fc4c79292f31a3394cbe29d732",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/Lightning/Lightning.apk",
+      "package": "acr.browser.barebones",
+      "version_code": "93",
+      "version_name": "4.4.2",
+      "label": "Lightning",
+      "bytes": 4121532,
+      "sha256": "e9add69355804a42ad4d6bbcfe30e103f840103ce359647b30eca27da1b33ddb",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/LiveWallpapersPicker/LiveWallpapersPicker.apk",
+      "package": "com.android.wallpaper.livepicker",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Live Wallpaper Picker",
+      "bytes": 1088587,
+      "sha256": "6cf03f8aa649eb02d2ddeaa3f0cc5feb40242330e6c1cbcb44a429621b4e4fc6",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/PacProcessor/PacProcessor.apk",
+      "package": "com.android.pacprocessor",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "PacProcessor",
+      "bytes": 7529,
+      "sha256": "b416a52fb1e7f232c773e2194b11cc822f8b9ac024b520f04a0b0ca44a3be63b",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/PicoTts/PicoTts.apk",
+      "package": "com.svox.pico",
+      "version_code": "1",
+      "version_name": "1.0",
+      "label": "Pico TTS",
+      "bytes": 20659,
+      "sha256": "8f31d00ce7e35d770ff61a4174e9f27922ef64a7a530d6b723f291e4d9834c48",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/PinyinIME/PinyinIME.apk",
+      "package": "com.android.inputmethod.pinyin",
+      "version_code": "25",
+      "version_name": "7.1",
+      "label": "谷歌拼音输入法",
+      "bytes": 1257580,
+      "sha256": "50b27b9a40142f45d79ca79329b3916900f5b0e8c4fb27bab7142fc78a8cc548",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/PrintSpooler/PrintSpooler.apk",
+      "package": "com.android.printspooler",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Print Spooler",
+      "bytes": 678870,
+      "sha256": "d28c074a92f34ad13114114e84e1f9e9fd90b734cf89cec43d74acbdea1ba1e0",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/RKDeviceTest/RKDeviceTest.apk",
+      "package": "com.rockchip.devicetest",
+      "version_code": "2",
+      "version_name": "v2.0.4.170712-M",
+      "label": "DeviceTest",
+      "bytes": 1075813,
+      "sha256": "258f4717d312b0f6a7881b035b0f762cb935f470fbfd7ffb628877d2d2f8d350",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/RKUpdateService/RKUpdateService.apk",
+      "package": "android.rockchip.update.service",
+      "version_code": "37",
+      "version_name": "1.8.1",
+      "label": "1111System Update",
+      "bytes": 1167062,
+      "sha256": "14c456572df805d6a9d1f818ecf1a808c5b7ee6803d66b1242dccb892161498b",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/RkApkinstaller/RkApkinstaller.apk",
+      "package": "com.android.apkinstaller",
+      "version_code": "1",
+      "version_name": "2.9.07",
+      "label": "ApkInstaller",
+      "bytes": 369305,
+      "sha256": "f96c476d6311fa9fdc6f32cc169df86d4d2144573ee7a1a12f34425f4da89fbd",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/RkBoxVideoPlayer/RkBoxVideoPlayer.apk",
+      "package": "android.rk.RockVideoPlayer",
+      "version_code": "80",
+      "version_name": "20161128-5.1",
+      "label": "Video",
+      "bytes": 1734408,
+      "sha256": "cf57eb957b911c278a2439657103564a56c909278400f7d876d60e44697dc39d",
+      "metadata_warning": "AndroidManifest.xml:27: error: ERROR getting 'android:icon' attribute: attribute value reference does not exist"
+    },
+    {
+      "path": "/app/RkExplorer/RkExplorer.apk",
+      "package": "com.android.rockchip",
+      "version_code": "6",
+      "version_name": "6.0",
+      "label": "FileExplorer",
+      "bytes": 1576055,
+      "sha256": "777a88ddc25346fffea644f596ae77573f59cddc8e532ec08984660838eb3d87",
+      "metadata_warning": "AndroidManifest.xml:19: error: ERROR getting 'android:icon' attribute: attribute value reference does not exist"
+    },
+    {
+      "path": "/app/RkMusic/RkMusic.apk",
+      "package": "com.android.music",
+      "version_code": "",
+      "version_name": "",
+      "label": "Music",
+      "bytes": 2518745,
+      "sha256": "4cf1146c99a834341ff3793c88dc5e66e18e7d092ab2904af924858fe53c858e",
+      "metadata_warning": "AndroidManifest.xml:41: error: ERROR getting 'android:icon' attribute: attribute value reference does not exist"
+    },
+    {
+      "path": "/app/RockKeystone/RockKeystone.apk",
+      "package": "com.rockchip.keystone",
+      "version_code": "1",
+      "version_name": "1.0.0",
+      "label": "RockKeystone",
+      "bytes": 18715,
+      "sha256": "924a4f88aea8e9506b02d0cf098281b748051dfa16fa8c8b2feb23865a484f60",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/UserDictionaryProvider/UserDictionaryProvider.apk",
+      "package": "com.android.providers.userdictionary",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "User Dictionary",
+      "bytes": 24203,
+      "sha256": "24b5139d2269327d91ead6242ff01cbd24a1dd614ac728d6f9c44989fec9cec3",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/WallpaperBackup/WallpaperBackup.apk",
+      "package": "com.android.wallpaperbackup",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": null,
+      "bytes": 9882,
+      "sha256": "4679e1e0f74b391bcadfad1a2e31a8326b326ac172767ecd421fce60503c9388",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/WifiDisplay/WifiDisplay.apk",
+      "package": "com.rockchip.wfd",
+      "version_code": "1",
+      "version_name": "1.2.0.140115",
+      "label": "Mirroring",
+      "bytes": 545464,
+      "sha256": "fad6a636e75fc8e62e4a54650b87a37a447b033948151c3382da3f786ee131d0",
+      "metadata_warning": null
+    },
+    {
+      "path": "/app/webview/webview.apk",
+      "package": "com.android.webview",
+      "version_code": "275610000",
+      "version_name": "52.0.2743.100",
+      "label": "Android System WebView",
+      "bytes": 45883082,
+      "sha256": "02c0d2fac9779fed83a946b4f743a4eeef4dba400c389abe5c2afb7cdb282934",
+      "metadata_warning": null
+    },
+    {
+      "path": "/ecloud/EShareClient.apk",
+      "package": "com.ecloud.eshare",
+      "version_code": "81",
+      "version_name": "v3.8.12",
+      "label": "EShare",
+      "bytes": 3392178,
+      "sha256": "fa559c169d5689c4d5bfc7bdb6fd5d6e8f46181724a24934e7c0ffd30f4ac8b2",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/BackupRestoreConfirmation/BackupRestoreConfirmation.apk",
+      "package": "com.android.backupconfirm",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": null,
+      "bytes": 223904,
+      "sha256": "b2c8f38200429beb7d6209721a73f47443e5567569da7e375c08f5c42f048bfd",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/CalendarProvider/CalendarProvider.apk",
+      "package": "com.android.providers.calendar",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Calendar Storage",
+      "bytes": 323397,
+      "sha256": "3b4797dcf1c43cbdaf8050ff1219970dd5edd6e84a792ea9ec4f9fe46ae041a5",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/ChangeLedStatus/ChangeLedStatus.apk",
+      "package": "com.example.changeled",
+      "version_code": "25",
+      "version_name": "7.1.1",
+      "label": null,
+      "bytes": 9085,
+      "sha256": "dd5fa8b2fa66c34efd28cfcb171edbe4b8c268aa40457fc4685755281b8a0cd0",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/ContactsProvider/ContactsProvider.apk",
+      "package": "com.android.providers.contacts",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Contacts Storage",
+      "bytes": 537597,
+      "sha256": "7b7321f45d65f07079cd7983ede711ce1605cc16be550ee187d4dda8cfd97180",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/CtsShimPrivPrebuilt/CtsShimPrivPrebuilt.apk",
+      "package": "com.android.cts.priv.ctsshim",
+      "version_code": "24",
+      "version_name": "7.0-2996264",
+      "label": null,
+      "bytes": 6044,
+      "sha256": "5a84cc6095477f894060590c0a9b737c70f47f5b9402fc58c6d354f702a263af",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/DefaultContainerService/DefaultContainerService.apk",
+      "package": "com.android.defcontainer",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Package Access Helper",
+      "bytes": 22390,
+      "sha256": "f56e7c33f4145e8ed0754e3e95a96b16ba28be0051284fb5e23f4e0e7c066357",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/DocumentsUI/DocumentsUI.apk",
+      "package": "com.android.documentsui",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Files",
+      "bytes": 1632185,
+      "sha256": "4644678fbdc7ba837a2d39a28b75980fcfea38d099fd284aa9b5b8a4bb21b038",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/DownloadProvider/DownloadProvider.apk",
+      "package": "com.android.providers.downloads",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Download Manager",
+      "bytes": 583711,
+      "sha256": "f94e24fb239e3f97b4ffeca8bfbdbb9cd8000d80be2ec64a608079fe04c730e0",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/ExtServices/ExtServices.apk",
+      "package": "android.ext.services",
+      "version_code": "1",
+      "version_name": "1",
+      "label": "Android Services Library",
+      "bytes": 9486,
+      "sha256": "775d23011f5aaff78aae340e29a664cd6e48e8183be8c5096a50bea6c4bcb6f8",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/ExternalStorageProvider/ExternalStorageProvider.apk",
+      "package": "com.android.externalstorage",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "External Storage",
+      "bytes": 45980,
+      "sha256": "3493b32f95cd9c22e967ff4ce761611e29db76cd933cf223372f22aa0c43b0eb",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/FusedLocation/FusedLocation.apk",
+      "package": "com.android.location.fused",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Fused Location",
+      "bytes": 20667,
+      "sha256": "666d5b2735a1208a364602b1d64c6caa6f7484c5f0c45038718630f918bc054e",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/InputDevices/InputDevices.apk",
+      "package": "com.android.inputdevices",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Input Devices",
+      "bytes": 215172,
+      "sha256": "a0e0dd7940e3bd0414ed8e736600ca3aa5a58be4e4faa45b1b9f06aa05ce62f5",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/MediaProvider/MediaProvider.apk",
+      "package": "com.android.providers.media",
+      "version_code": "800",
+      "version_name": "7.1.2",
+      "label": "Media Storage",
+      "bytes": 168741,
+      "sha256": "8ce128b62dd32ac73377d0bd87d834f7c5e62613340d642bae6095f948a0d217",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/PackageInstaller/PackageInstaller.apk",
+      "package": "com.android.packageinstaller",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Package installer",
+      "bytes": 4925220,
+      "sha256": "2ead3c24c102a0146af6343e83f38ac056abfe1c095e78857502f32f99e1e194",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/Provision/Provision.apk",
+      "package": "com.android.provision",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": null,
+      "bytes": 5559,
+      "sha256": "6eec561abc8f40bc4a655aa703d8a9c5d8b3b117b5a04135892c983f3e5cacba",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/ProxyHandler/ProxyHandler.apk",
+      "package": "com.android.proxyhandler",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "ProxyHandler",
+      "bytes": 11235,
+      "sha256": "e9a35fc57c603acf3d2025c11b416f6782e27e6091d405836508c3ebc1c910c4",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/Settings/Settings.apk",
+      "package": "com.android.settings",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Settings",
+      "bytes": 26909375,
+      "sha256": "b57b9ccb477db8693187332f9248c8a14bd7268700d99758bdea719c02fa5d3b",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/SettingsProvider/SettingsProvider.apk",
+      "package": "com.android.providers.settings",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Settings Storage",
+      "bytes": 166028,
+      "sha256": "b5a4619a86857a0986bff31033f30e1ce559c1cadc74b4161ac86489301de3fd",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/SharedStorageBackup/SharedStorageBackup.apk",
+      "package": "com.android.sharedstoragebackup",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": null,
+      "bytes": 8815,
+      "sha256": "9130febd0d068158ae5ef13bde3ddd8dd4f5a7971d17ad96dbe74a810930d2bd",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/Shell/Shell.apk",
+      "package": "com.android.shell",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "Shell",
+      "bytes": 229401,
+      "sha256": "df6eb03fa33c91d9022c277e164d78dfa33dd631a63de4bd22dab4f4bcb58931",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/StatementService/StatementService.apk",
+      "package": "com.android.statementservice",
+      "version_code": "1",
+      "version_name": "1.0",
+      "label": "Intent Filter Verification Service",
+      "bytes": 36159,
+      "sha256": "f27dda6bf46db9cf15f8838e9c3de6bf25e470d28df5339e277de009d1437436",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/SystemUI/SystemUI.apk",
+      "package": "com.android.systemui",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "System UI",
+      "bytes": 11820203,
+      "sha256": "75e665711693fef5151f43269fd24ba086695c59d290eb5014de8391432954cd",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/TvProvider/TvProvider.apk",
+      "package": "com.android.providers.tv",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "TV Storage",
+      "bytes": 67512,
+      "sha256": "6aade6a7f94e2e543ce9086d879968814f11671cd3d66d835d1865e34d66e119",
+      "metadata_warning": null
+    },
+    {
+      "path": "/priv-app/VpnDialogs/VpnDialogs.apk",
+      "package": "com.android.vpndialogs",
+      "version_code": "25",
+      "version_name": "7.1.2",
+      "label": "VpnDialogs",
+      "bytes": 79332,
+      "sha256": "eef323ce57a81adfbfcce6a32ad73541404891c214670dd58cb42ce73f52b7b4",
+      "metadata_warning": null
+    },
+    {
+      "path": "/vendor/bundled_persist-app/HTCRayoLauncher71/HTCRayoLauncher71.apk",
+      "package": "com.htc.htcrayolauncher",
+      "version_code": "1",
+      "version_name": "1.0",
+      "label": "Rayo_Launcher",
+      "bytes": 922465,
+      "sha256": "aa824c4840cf3cd7ca6d1da361e719634eb388d8b78376c7b655606fcebef1ab",
+      "metadata_warning": null
+    },
+    {
+      "path": "/vendor/bundled_persist-app/HotackKoreaSettingsRayo/HotackKoreaSettingsRayo.apk",
+      "package": "com.hotack.hotackkoreasettings",
+      "version_code": "1",
+      "version_name": "1.0",
+      "label": "Setting",
+      "bytes": 1272177,
+      "sha256": "acae726233636ec11e54a1184a1f978f4120ec38bdcbfe61149c62dcbf06a7d1",
+      "metadata_warning": null
+    },
+    {
+      "path": "/vendor/bundled_persist-app/cca_2_1_30_18_build712_r26/cca_2_1_30_18_build712_r26.apk",
+      "package": "jp.co.canon.ic.cameraconnect",
+      "version_code": "26",
+      "version_name": "2.1.30.18",
+      "label": "Camera Connect",
+      "bytes": 14689468,
+      "sha256": "e8027132bf7c9a7224fc2db9b2cf0d63c3aacd06cc4db15ad2524d9f3fc96fb8",
+      "metadata_warning": null
+    },
+    {
+      "path": "/vendor/bundled_persist-app/moffice__multidex/moffice__multidex.apk",
+      "package": "cn.wps.moffice_eng",
+      "version_code": "194",
+      "version_name": "10.2.5",
+      "label": "WPS Office",
+      "bytes": 34249606,
+      "sha256": "372a6809a168d1fbcc5d4aeedbf8c1724a5fdfff565608d28d8b1ee8ccdb03c1",
+      "metadata_warning": null
+    }
+  ]
+}

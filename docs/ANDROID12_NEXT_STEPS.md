@@ -4,7 +4,9 @@
 
 The owner confirmed projected TV Settings navigation, then the lightweight
 local Rayo Home and Settings. The selected design is a simplified TV interface
-without Google services. It is not a stable replacement ROM yet. Keep normal
+without Google services, now named GabOS. Offline identity is `GabOS 0.1-dev`;
+the launcher is GabOS Home 0.4. See [the OS/application plan](GABOS.md).
+It is not a stable replacement ROM yet. Keep normal
 v14 and the preserved factory system until the acceptance checks pass.
 
 The most recent run is `20261110-231858-d4343a03`. Its host controller lost USB
@@ -35,6 +37,9 @@ recovery contents. Physical MaskROM entry remains untested.
   Development signing credentials remain private under `local/secrets`.
 - Prepared candidate: `candidate-t320pzw3` under the WSL framework-candidates
   directory. It includes local Home and panel/remote keymaps. It is untested.
+- Newer branded candidate: `candidate-874zpwfy`, with GabOS identity and Home
+  0.4; Android 12/API 31 are unchanged. Its properties and signed APK metadata
+  were checked offline; it has not been installed or validated on the device.
 - `prepare-android12-framework.py --local-launcher` reproduces that integration
   with a checksum-checked APK; no Google components are added.
 - `prepare-android12-radio-assets.py` verifies the v14 archive and stages only

@@ -1,4 +1,8 @@
-# Rayo S1 — experimental Android 8.1
+# GabOS for Canon Rayo S1
+
+GabOS is the owner's lightweight custom OS project for this device. The Android
+12 branch is currently `0.1-dev`, with GabOS Home and no Google services selected.
+It is not the permanent boot or a stable release. See [the GabOS plan](docs/GABOS.md).
 
 **Current Android 12 work:** the owner confirmed the local lightweight Home and
 TV Settings. No Google services are selected. The last temporary trial lost USB

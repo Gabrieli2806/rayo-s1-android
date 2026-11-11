@@ -290,6 +290,10 @@ def main():
     defaults = '''ro.secure=0
 ro.adb.secure=0
 ro.debuggable=1
+ro.gabos.name=GabOS
+ro.gabos.version=0.1-dev
+ro.build.display.id=GabOS 0.1-dev
+ro.product.model=GabOS for Rayo S1
 ro.apex.updatable=false
 ro.rayo.graphics.no_hwc_background=true
 ro.config.low_ram=true
@@ -327,6 +331,7 @@ dalvik.vm.usejitprofiles=false
     effective = dict(line.split('=', 1) for line in full_properties.splitlines()
                      if line and not line.startswith('#') and '=' in line)
     for key, value in {'ro.build.version.release': '12', 'ro.build.version.sdk': '31',
+                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '0.1-dev',
                        'ro.rayo.trial': '12-framework', 'ro.rayo.adb.legacy_ffs': 'true',
                        'ro.rayo.cgroup.legacy': 'true', 'ro.rayo.graphics.ion_client_target': 'true',
                        'ro.rayo.graphics.legacy_sphal': 'true'}.items():
