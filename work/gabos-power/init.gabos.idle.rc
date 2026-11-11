@@ -1,0 +1,12 @@
+# Not imported into current images until physical power-off is validated.
+service gabos_idle /system/bin/sh /system/etc/gabos/idle-shutdown.sh --run
+    class late_start
+    user root
+    group root shell
+    disabled
+
+on property:persist.gabos.idle.enabled=1
+    start gabos_idle
+
+on property:persist.gabos.idle.enabled=0
+    stop gabos_idle
