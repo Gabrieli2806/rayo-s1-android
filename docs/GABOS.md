@@ -66,3 +66,10 @@ Implement Home, Control/Diagnostics and Files first. Keep one small application
 per useful role instead of adding many always-running services. Add media and
 sharing once the relevant lower-level hardware paths pass. Promotion to permanent
 boot follows those checks; keep independent factory/rollback backups afterward.
+
+## November 11 device checkpoint
+
+See [radio bring-up](GABOS_RADIO_BRINGUP.md) for source integration, verified
+Wi-Fi reconnection/internet, Bluetooth startup/discovery, navigation tests,
+rollback verification and remaining physical/media/security acceptance gates.
+Android 12 remains an isolated development trial; normal boot remains v14.

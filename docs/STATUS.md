@@ -7,12 +7,14 @@ confirmed both. Google Home/GSF were removed from isolated trial data and GMS
 installation failed without installing. The selected UI target is a simplified
 TV design without Google services. Normal boot has not been promoted to Android 12.
 
-**Recovery restoration pending verification:** trial `20261110-231858-d4343a03`
-lost USB before a normal return was observed. Its RESULT explicitly records
-`normal_v14_returned=false` and `original_recovery_restored=false`. Do not start
-another trial or assume factory recovery is currently present. See
-[the next steps](ANDROID12_NEXT_STEPS.md). The older checkpoints below retain
-their historical observations and do not override this latest state.
+**Latest device checkpoint:** the earlier interrupted recovery was restored using
+the guarded tool. Trial `20261111-093343-b66a3207` then passed automatic Wi-Fi
+association/internet validation, Wi-Fi off/on reconnection, Bluetooth startup
+with zero crashes, a completed discovery finding five devices, and five further
+Home/Settings/Back cycles with unchanged system_server and netd. Normal v14
+return and factory recovery readback were verified. See
+[GABOS_RADIO_BRINGUP.md](GABOS_RADIO_BRINGUP.md). Pairing, media, physical graphics,
+true power-cycle behavior and prolonged stability still block permanent promotion.
 
 ## Android 12 native research update
 

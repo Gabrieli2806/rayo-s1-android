@@ -4,11 +4,13 @@ GabOS is the owner's lightweight custom OS project for this device. The Android
 12 branch is currently `0.1-dev`, with GabOS Home and no Google services selected.
 It is not the permanent boot or a stable release. See [the GabOS plan](docs/GABOS.md).
 
-**Current Android 12 work:** the owner confirmed the local lightweight Home and
-TV Settings. No Google services are selected. The last temporary trial lost USB
-before normal return/recovery restoration could be verified; restore that state
-first on the next connection. See [the continuation checklist](docs/ANDROID12_NEXT_STEPS.md).
-The historical 8.1 recovery statement below is not proof of the current recovery slot.
+**Current Android 12 work (November 11):** GabOS Home/Settings passed repeated
+navigation tests. Wi-Fi automatically reconnects with validated internet, including
+an off/on cycle; Bluetooth starts with zero crashes and discovers nearby devices.
+The latest trial returned to v14 and restored factory recovery with full hash
+verification. Android 12 remains an isolated development trial, not the permanent
+boot. See [radio bring-up](docs/GABOS_RADIO_BRINGUP.md) and
+[the continuation checklist](docs/ANDROID12_NEXT_STEPS.md).
 
 AOSP `android-8.1.0_r81` adaptation for **this Canon Rayo S1 unit**: RK3128 ARMv7, Mali-400, and approximately 1 GB RAM. Includes Rayo Dark TV, the Rockchip compositor adapter, HwBinder, input and connectivity fixes, tools, and documentation for continuing on another PC.
 

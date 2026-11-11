@@ -9,27 +9,24 @@ the launcher is GabOS Home 0.4. See [the OS/application plan](GABOS.md).
 It is not a stable replacement ROM yet. Keep normal
 v14 and the preserved factory system until the acceptance checks pass.
 
-The most recent run is `20261110-231858-d4343a03`. Its host controller lost USB
-before observing return and restoring recovery. Normal boot was not written by
-this trial, but the current recovery slot is **not verified as factory recovery**.
-The device is disconnected; continue offline until the owner reconnects it.
+The latest run is `20261111-093343-b66a3207` (radio-05). Wi-Fi automatically
+connected with validated internet and reconnected after an off/on cycle while
+Bluetooth stayed ON. Bluetooth had zero crashes and a fresh completed discovery
+found five devices. Five Home/Settings/Back cycles preserved core process IDs.
+Normal v14 returned and factory recovery was restored and hash verified.
+The earlier interrupted run was repaired separately; its historical failed RESULT
+was not rewritten. See [radio bring-up](GABOS_RADIO_BRINGUP.md).
 
-## First action on reconnection
+## Next owner-assisted session
 
-Identify Android version, completed boot and partition hashes. If normal v14
-is running, use the guarded restoration tool:
-
-```powershell
-. ./local/setup/enter-project-env.ps1
-python tools/restore-framework-recovery.py --run local/android12-framework-runs/20261110-231858-d4343a03
-python tools/restore-framework-recovery.py --run local/android12-framework-runs/20261110-231858-d4343a03 --execute
-```
-
-It checks completed root v14, its normal boot hash, empty BCB, exact trial
-recovery, and the independently saved factory image. It writes only recovery,
-compares the complete readback, and creates a separate restoration record.
-Do not run it from Android 12, guess a loader operation, or overwrite unknown
-recovery contents. Physical MaskROM entry remains untested.
+Identify Android version, completed boot and boot/recovery hashes before testing.
+Keep the tested v14 boot and factory recovery. Check projected colors and input,
+Bluetooth accessory pairing/reconnection and audio routing, speaker/video decoding,
+actual power cycles, suspend, thermals and extended stability. Scanning does not
+prove Bluetooth audio: the current primary-only audio policy still needs routing
+work. Graphics counters still show substantial jank; no smoothness claim is made.
+Physical MaskROM entry remains untested. Development SELinux/permissive and root
+service exposure require review before a release. Do not promote or remove v14.
 
 ## Offline preparation
 

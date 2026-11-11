@@ -29,6 +29,25 @@ def main():
             raise SystemExit('Unexpected pinned Bluetooth vendor loader')
         text = text.replace(before, after)
     path.write_text(text)
+    path = args.source/'system/bt/hci/src/hci_layer_android.cc'
+    text = path.read_text()
+    include = '#include "osi/include/properties.h"\n'
+    if include not in text:
+        text = text.replace('#include "osi/include/log.h"\n', '#include "osi/include/log.h"\n'+include)
+    before = '  btHci_1_1 = V1_1::IBluetoothHci::getService();'
+    after = '''  // This board actually provides HCI 1.0. Avoid a two-second legacy
+  // lookup for an absent 1.1 service consuming the controller startup deadline.
+  if (osi_property_get_bool("ro.rayo.bluetooth.legacy_hci", false)) {
+    btHci_1_1 = nullptr;
+    LOG_INFO("Using the board's HCI 1.0 service directly");
+  } else {
+    btHci_1_1 = V1_1::IBluetoothHci::getService();
+  }'''
+    if after not in text:
+        if text.count(before) != 1:
+            raise SystemExit('Unexpected pinned Bluetooth HCI lookup')
+        text = text.replace(before, after)
+    path.write_text(text)
     path = directory/'Android.bp'
     text = path.read_text()
     anchor = '    name: "android.hardware.bluetooth@1.0-impl",'

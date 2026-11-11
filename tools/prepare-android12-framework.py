@@ -31,6 +31,8 @@ def main():
                         help='Retain the UUID of an earlier isolated trial data image')
     parser.add_argument('--local-launcher', action='store_true',
                         help='Include the separately built and signed lightweight launcher')
+    parser.add_argument('--radios-product-out', type=Path,
+                        help='Integrate the separately audited source radio product')
     args = parser.parse_args()
     if os.name != 'posix':
         raise SystemExit('Use native Linux/WSL ext4 to preserve the product layout')
@@ -70,7 +72,13 @@ def main():
                     system/'etc/permissions/android.hardware.usb.host.xml')
     shutil.copyfile(ROOT/'work/android12/framework/ekt2101.kl', system/'usr/keylayout/ekt2101.kl')
     for name in ('rk29-keypad.kl', '20050030_pwm.kl'):
-        shutil.copyfile(ROOT/'work/android81/input-keymaps-oreo'/name, system/'usr/keylayout'/name)
+        from android12_input_maps import normalized
+        (system/'usr/keylayout'/name).write_text(normalized(ROOT/'work/android81/input-keymaps-oreo'/name))
+    validator = host/'validatekeymaps'
+    if not validator.is_file():
+        raise SystemExit('Build the source validatekeymaps host tool first')
+    subprocess.run([str(validator)]+[str(system/'usr/keylayout'/name) for name in
+                    ('ekt2101.kl', 'rk29-keypad.kl', '20050030_pwm.kl')], check=True)
     mini.mkdir()
 
     def copy(relative, original=None):
@@ -123,6 +131,13 @@ def main():
         ET.SubElement(declaration, 'name').text = interface
         ET.SubElement(declaration, 'instance').text = 'default'
     device_manifest.write(manifest_path, encoding='unicode')
+    radio_records = []
+    if args.radios_product_out:
+        if b'ro.rayo.bluetooth.legacy_hci' not in (system/'lib/libbluetooth.so').read_bytes():
+            raise SystemExit('Rebuild the Bluetooth client with the opt-in HCI 1.0 lookup')
+        from android12_radio_root import stage
+        radio_records = stage(system, args.radios_product_out.resolve(), ROOT,
+                              args.source, work, readelf)
     shutil.copyfile(ROOT/'work/android12/framework/audio_policy_configuration.xml',
                     system/'vendor/etc/audio_policy_configuration.xml')
     for name in ('audio_policy_volumes.xml', 'default_volume_tables.xml'):
@@ -196,12 +211,13 @@ def main():
                 lines.append(line)
                 if line.startswith('service ') and any(name in line for name in
                         ('/vendor/bin/hw/android.hardware.keymaster@4.1-service', '/system/bin/keystore2 ',
-                         '/system/bin/app_process -Xzygote')):
+                         '/system/bin/app_process -Xzygote')+
+                        (('/system/bin/netd',) if args.radios_product_out else ())):
                     lines.append('    setenv LD_PRELOAD /system/lib/librayo12_crypto_legacy.so')
                     lines.append('    stdio_to_kmsg')
                     selected += 1
             path.write_text('\n'.join(lines)+'\n')
-    if selected != 3:
+    if selected != (4 if args.radios_product_out else 3):
         raise SystemExit('Unexpected software key-service preload scope')
     sid_validation = json.loads((ROOT/'outputs/android12-sid-probe/VALIDATED.json').read_text())
     sid_source = ROOT/'work/android12/device/canon/rayos1_12_lab/legacy_sid.rs'
@@ -273,6 +289,10 @@ def main():
     subprocess.run([str(host/'host_init_verifier'),
                     '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
                     str(system/'etc/init/rayo12.framework.rc')], check=True)
+    if args.radios_product_out:
+        subprocess.run([str(host/'host_init_verifier'),
+                        '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
+                        str(system/'etc/init/rayo12.radios.rc')], check=True)
     # Never permit trial service failures to select Loader or another slot.
     for base in (system, ramdisk):
         for path in base.rglob('*.rc'):
@@ -322,6 +342,11 @@ dalvik.vm.heapmaxfree=8m
 dalvik.vm.usejit=false
 dalvik.vm.usejitprofiles=false
 '''
+    if args.radios_product_out:
+        defaults += ('ro.rayo.bluetooth.legacy_vendor_sphal=true\n'
+                     'ro.rayo.bluetooth.legacy_hci=true\n'
+                     'bluetooth.enable_timeout_ms=8000\n'
+                     'wifi.interface=wlan0\nro.bt.bdaddr_path=/data/misc/bluetooth/bdaddr\n')
     # Android 12's normal PropertyLoadBootDefaults does not read prop.default.
     # Preserve the complete source identity and use its canonical build.prop.
     original_properties = (system/'build.prop').read_text()
@@ -374,7 +399,10 @@ dalvik.vm.usejitprofiles=false
                     '/system/bin/android\\.hardware\\.graphics\\.allocator@2\\.0-service u:object_r:hal_graphics_allocator_default_exec:s0',
                     '/system/bin/android\\.hardware\\.graphics\\.composer@2\\.1-service u:object_r:hal_graphics_composer_default_exec:s0',
                     '/system/bin/android\\.hardware\\.health@2\\.1-service u:object_r:hal_health_default_exec:s0',
-                    '/system/bin/android\\.hardware\\.audio\\.service u:object_r:hal_audio_default_exec:s0'])
+                    '/system/bin/android\\.hardware\\.audio\\.service u:object_r:hal_audio_default_exec:s0',
+                    '/system/bin/android\\.hardware\\.wifi@1\\.0-service u:object_r:hal_wifi_default_exec:s0',
+                    '/system/bin/android\\.hardware\\.bluetooth@1\\.0-service u:object_r:hal_bluetooth_default_exec:s0',
+                    '/system/bin/wpa_supplicant u:object_r:hal_wifi_supplicant_default_exec:s0'])
             if directory == 'vendor/etc/selinux':
                 lines = expanded_sorted(lines+[
                     '/vendor/bin/hw/android\\.hardware\\.gatekeeper@1\\.0-service\\.software u:object_r:hal_gatekeeper_default_exec:s0',
@@ -393,6 +421,25 @@ dalvik.vm.usejitprofiles=false
     subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256', '-O', features,
                     '-F', str(system_image), str(size//4096)], env=env, check=True)
     subprocess.run([str(host/'e2fsdroid'), '-e', '-f', str(system), '-a', '/system', '-S', str(context_file), str(system_image)], check=True)
+    radio_capabilities = {}
+    if args.radios_product_out:
+        # This kernel predates ambient capabilities. Keep services non-root and
+        # grant only their verified executable file capabilities on the RO loop.
+        for name, caps in (('android.hardware.wifi@1.0-service', 0x3000),
+                           ('wpa_supplicant', 0x3000),
+                           ('android.hardware.bluetooth@1.0-service', 0x1000801000),
+                           ('wificond', 0x3000), ('netd', 0x74ef)):
+            value = struct.pack('<IIIII', 0x02000001, caps & 0xffffffff, 0, caps >> 32, 0)
+            encoded, checked = work/'radio-capability-value', work/'radio-capability-check'
+            encoded.write_bytes(value)
+            subprocess.run(['debugfs', '-w', '-R', 'ea_set -f '+str(encoded)+' /bin/'+name+
+                            ' security.capability', str(system_image)], check=True)
+            checked.unlink(missing_ok=True)
+            subprocess.run(['debugfs', '-R', 'ea_get -f '+str(checked)+' /bin/'+name+
+                            ' security.capability', str(system_image)], check=True)
+            if checked.read_bytes() != value:
+                raise SystemExit('Radio capability readback differs: '+name)
+            radio_capabilities[name] = caps
     for path, label in (('/bin/init', 'init_exec'),
                         ('/bin/app_process32', 'zygote_exec'),
                         ('/vendor/bin/boringssl_self_test32', 'vendor_boringssl_self_test_exec'),
@@ -409,6 +456,16 @@ dalvik.vm.usejitprofiles=false
             raise SystemExit('Missing execution label: '+path)
         attribute.unlink()
     data_image = work/'rayo12-framework-data.ext4'
+    if args.radios_product_out:
+        for name, label in (('android.hardware.wifi@1.0-service', 'hal_wifi_default_exec'),
+                            ('android.hardware.bluetooth@1.0-service', 'hal_bluetooth_default_exec'),
+                            ('wpa_supplicant', 'hal_wifi_supplicant_default_exec')):
+            attribute = work/'checked-radio-label'
+            attribute.unlink(missing_ok=True)
+            subprocess.run(['debugfs', '-R', 'ea_get -f '+str(attribute)+' /bin/'+name+
+                            ' security.selinux', str(system_image)], check=True)
+            if attribute.read_bytes().rstrip(b'\0') != ('u:object_r:'+label+':s0').encode():
+                raise SystemExit('Radio executable label differs: '+name)
     data_uuid = uuid.UUID(json.loads(args.reuse_data_manifest.read_text())['data']['uuid']) if args.reuse_data_manifest else uuid.uuid4()
     subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256', '-O', features,
                     '-U', str(data_uuid), '-F', str(data_image), str(256*1024*1024//4096)], env=env, check=True)
@@ -422,6 +479,7 @@ dalvik.vm.usejitprofiles=false
     spec.loader.exec_module(verify)
     verified = verify.inspect(image.read_bytes(), (ROOT/'local/device-kit/original/recovery.img').read_bytes(), True)
     manifest = {'purpose': 'Temporary full-framework bringup; not a validated ROM or Google TV Home',
+        'radio_services': radio_records, 'radio_file_capabilities': radio_capabilities,
         'local_launcher': record if args.local_launcher else None,
         'system': {'path': system_image.name, 'bytes': size, 'sha256': digest(system_image)},
         'data': {'path': data_image.name, 'bytes': data_image.stat().st_size, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
@@ -430,7 +488,9 @@ dalvik.vm.usejitprofiles=false
         'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': True,
         'android12_init_md5': hashlib.md5((system/'bin/init').read_bytes()).hexdigest(),
         'software_key_crypto': {'sha256': digest(crypto), 'fips': False,
-            'scope': 'Software Keymaster, keystore2 and zygote children use the non-FIPS backend; platform FIPS module unchanged'},
+            'scope': 'Software Keymaster, keystore2 and zygote children use the non-FIPS backend; '
+                     + ('radio Wi-Fi/supplicant and netd services also preload it; ' if args.radios_product_out else '')
+                     + 'platform FIPS module unchanged'},
         'audio': 'Source HIDL 7 bridge with original primary driver; physical audio not validated',
         'legacy_sid': {'helper_sha256': digest(sid_source),
             'scope': 'Opt-in current kernel proc context; pinned PID and verified Binder UID; policy checks retained'}}

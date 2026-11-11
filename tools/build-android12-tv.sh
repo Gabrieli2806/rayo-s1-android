@@ -29,7 +29,7 @@ case "$rayo_product" in
 esac
 lunch "$rayo_product"
 if [ "$#" -eq 0 ]; then
-  set -- services SystemUI TvSettings surfaceflinger init adbd linkerconfig netd bpfloader
+  set -- services SystemUI TvSettings surfaceflinger init adbd linkerconfig netd bpfloader validatekeymaps
 fi
 m -j"${RAYO_JOBS:-12}" "$@"
 printf '\nTV framework preparation only. Images disabled; no device installation performed.\n'
