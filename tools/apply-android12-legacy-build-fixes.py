@@ -145,6 +145,21 @@ cc_binary {
     if corrected != text:
         path.write_text(corrected)
     path = args.source/'system/core/init/reboot_utils.cpp'
+    framework_module = '''
+// Dedicated bounded framework trial, with a private file-backed /data.
+cc_binary {
+    name: "rayo12_framework_init_bootstrap",
+    srcs: [":rayo12_framework_init_source"],
+    static_executable: true,
+    stl: "none",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+    static_libs: ["libcrypto_static", "libc", "libm", "libdl"],
+}
+'''
+    init_bp = args.source/'system/core/init/Android.bp'
+    init_text = init_bp.read_text()
+    if 'name: "rayo12_framework_init_bootstrap"' not in init_text:
+        init_bp.write_text(init_text+framework_module)
     text = path.read_text()
     before = 'start_pos += sizeof(kRebootTargetStringPattern) - 1;'
     after = 'start_pos += kRebootTargetStringPattern.size();'

@@ -19,13 +19,17 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.mapper@2.0-impl \
     hwcomposer.rayo12 \
+    android.hardware.health@2.1-service \
+    android.hardware.health@2.1-impl \
+    android.hardware.keymaster@4.1-service \
+    android.hardware.gatekeeper@1.0-service.software \
     LeanbackIME \
     TvProvision
 
 # Original Google TV Home/services are a separate integration stage; no
 # lookalike launcher is selected as a substitute. Settings/ADB bootstrap only.
-# OEM blobs, root/init, legacy namespace configuration and rollback packaging
-# are not yet integrated. Do not generate a misleading flashable artifact.
+# The isolated trial packager integrates OEM blobs, init, namespaces and
+# rollback guards separately. Normal product image generation stays disabled.
 PRODUCT_BUILD_SYSTEM_IMAGE := false
 PRODUCT_BUILD_SYSTEM_OTHER_IMAGE := false
 PRODUCT_BUILD_VENDOR_IMAGE := false

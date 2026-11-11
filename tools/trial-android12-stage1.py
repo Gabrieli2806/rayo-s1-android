@@ -30,7 +30,10 @@ def main():
     recovery = candidate/'rayo12-stage1-recovery.img'
     original = ROOT/'local/device-kit/original/recovery.img'
     system_bytes, recovery_bytes, original_bytes = system.read_bytes(), recovery.read_bytes(), original.read_bytes()
-    if len(system_bytes) != 128*1024*1024 or hashlib.sha256(system_bytes).hexdigest() != manifest['system']['sha256']:
+    expected_size = 192*1024*1024 if manifest.get('art_runtime') else 128*1024*1024
+    if manifest.get('art_runtime') and manifest.get('graphics_probe'):
+        raise SystemExit('The first ART trial must remain separate from graphics')
+    if len(system_bytes) != expected_size or hashlib.sha256(system_bytes).hexdigest() != manifest['system']['sha256']:
         raise SystemExit('Unexpected diagnostic system file')
     if hashlib.sha256(recovery_bytes).hexdigest() != manifest['recovery']['sha256']:
         raise SystemExit('Unexpected diagnostic recovery file')
@@ -125,6 +128,7 @@ def main():
     transport_ok = None
     composer_ok = None
     surface_ok = None
+    art_ok = None
     returned = False
     restored = False
     observations = []
@@ -164,6 +168,32 @@ def main():
                               and storage_ok and data_ok and init_md5 == manifest['android12_init']['md5'])
                     seen_trial = True
                     observations.append({'stage1_passed': passed})
+                    if passed and manifest.get('art_runtime'):
+                        checked('shell', '/system/bin/setprop', 'sys.rayo12.art', 'start')
+                        time.sleep(3)
+                        actual = checked('shell', '/sbin/busybox', 'md5sum', '/apex/com.android.art/bin/dalvikvm32').split()[0]
+                        if actual != manifest['art_runtime']['dalvikvm_md5']:
+                            raise RuntimeError('Mounted ART executable does not match the source-built input')
+                        jars = ['core-oj', 'core-libart', 'okhttp', 'bouncycastle', 'apache-xml']
+                        bootclasspath = ':'.join('/apex/com.android.art/javalib/'+name+'.jar' for name in jars)
+                        bootclasspath += ':/apex/com.android.i18n/javalib/core-icu4j.jar'
+                        managed = command('shell',
+                            'LD_LIBRARY_PATH=',
+                            'LD_PRELOAD=/system/lib/librayo12_diaglog.so',
+                            '/apex/com.android.art/bin/dalvikvm32',
+                            '-Xms8m', '-Xmx64m', '-Xnorelocate',
+                            '-Ximage:/apex/com.android.art/javalib/boot.art',
+                            '-Xbootclasspath:'+bootclasspath, '-cp', '/system/framework/rayo-runtime-probe.jar',
+                            'RayoRuntimeProbe', timeout=50)
+                        (logs/'art-runtime-stdout.txt').write_bytes(managed.stdout)
+                        (logs/'art-runtime-stderr.txt').write_bytes(managed.stderr)
+                        art_ok = managed.returncode == 0 and b'ART12_MANAGED_RUNTIME_PASS' in managed.stdout
+                        observations.append({'art_managed_runtime_passed': art_ok})
+                        late = command('shell', '/sbin/busybox', 'dmesg')
+                        (logs/'art-runtime-dmesg.txt').write_bytes(late.stdout+late.stderr)
+                        mounts = command('shell', '/sbin/busybox', 'cat', '/proc/mounts')
+                        (logs/'art-runtime-mounts.txt').write_bytes(mounts.stdout+mounts.stderr)
+                        print('Android 12 managed runtime:', 'PASS' if art_ok else 'NOT PASSED', flush=True)
                     if passed and manifest.get('graphics_probe'):
                         graphics = command('shell', 'LD_CONFIG_FILE=/system/etc/ld.config.rayo12.txt',
                                            'RAYO_USE_PLATFORM_EGL=1', '/system/bin/rayo12-gpu-probe', timeout=25)
@@ -269,6 +299,7 @@ def main():
             'graphics_transport_passed': transport_ok,
             'composer_query_passed': composer_ok,
             'surface_buffer_posted': surface_ok,
+            'art_managed_runtime_passed': art_ok,
             'normal_v14_returned': returned, 'original_recovery_restored': restored,
             'observations': observations}, indent=2)+'\n')
     complete = passed and returned and restored and (not manifest.get('graphics_probe') or graphics_ok is True)
@@ -276,6 +307,8 @@ def main():
         complete = complete and transport_ok is True and composer_ok is True
     if manifest.get('graphics_probe', {}).get('surfaceflinger'):
         complete = complete and surface_ok is True
+    if manifest.get('art_runtime'):
+        complete = complete and art_ok is True
     print('Programmatic diagnostic result:', 'PASS' if complete else 'NOT PASSED', 'Logs:', logs)
     if manifest.get('graphics_probe', {}).get('surfaceflinger'):
         print('Physical projection is a separate owner observation; transaction acceptance does not verify it.')

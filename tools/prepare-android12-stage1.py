@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--graphics-probes', action='store_true', help='Include a private Mali closure and an offscreen EGL probe')
     parser.add_argument('--graphics-services', action='store_true', help='Also stage explicitly triggered Binder/HIDL graphics services; no framework')
     parser.add_argument('--surfaceflinger', action='store_true', help='Also stage explicitly triggered native composition test; no framework or apps')
+    parser.add_argument('--art-runtime', action='store_true', help='Stage a bounded core ART/Java runtime diagnostic; no framework or apps')
     parser.add_argument('--reuse-system-candidate', type=Path, help='Reuse a checksum-verified filesystem only if every staged entry matches')
     args = parser.parse_args()
     if args.surfaceflinger:
@@ -79,6 +80,13 @@ def main():
     for name in core:
         pending.append(copy('lib/bootstrap/'+name))
     graphics = None
+    art = None
+    if args.art_runtime:
+        if args.graphics_probes or args.graphics_services or args.surfaceflinger:
+            raise SystemExit('Keep the first managed-runtime diagnostic separate from graphics')
+        from android12_art_root import augment as augment_art
+        extra, art = augment_art(system, product, ROOT, work, copy, readelf, host)
+        pending.extend(extra)
     if args.graphics_probes or args.graphics_services:
         from android12_graphics_root import augment
         extra, graphics = augment(system, product, args.native_product_out, ROOT, work, copy, readelf,
@@ -107,6 +115,9 @@ def main():
     for relative in ('etc/ueventd.rc', 'etc/cgroups.json', 'etc/task_profiles.json',
                      'build.prop'):
         copy(relative)
+    if art:
+        from android12_art_root import finish
+        finish(system, work, host)
     # Image outputs are disabled for the development product, so its normal
     # default-property installation is absent. Supply explicit rescue flags;
     # actual platform version/build identity remains the source build.prop.
@@ -163,6 +174,10 @@ def main():
         subprocess.run([str(host/'host_init_verifier'),
             '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
             str(system/'etc/init/rayo12.surface.rc')], check=True)
+    if art:
+        subprocess.run([str(host/'host_init_verifier'),
+            '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
+            str(system/'etc/init/rayo12.art.rc')], check=True)
     policy = (product/'system/vendor/etc/selinux/precompiled_sepolicy').read_bytes()
     magic, name_length = struct.unpack_from('<II', policy)
     version = struct.unpack_from('<I', policy, 8+name_length)[0]
@@ -170,7 +185,7 @@ def main():
         raise SystemExit('Policy exceeds the measured original-kernel policy format')
     (ramdisk/'sepolicy').write_bytes(policy)
     image = work/'rayo12-stage1-system.raw.img'
-    size = 128*1024*1024
+    size = art['system_bytes'] if art else 128*1024*1024
     content_bytes = sum(p.stat().st_size for p in system.rglob('*') if p.is_file())
     if content_bytes > size*0.7:
         raise SystemExit('Minimal diagnostic content no longer fits its bounded filesystem')
@@ -235,6 +250,8 @@ def main():
         'device_written': False}
     if graphics:
         manifest['graphics_probe'] = graphics
+    if art:
+        manifest['art_runtime'] = art
     (work/'MANIFEST.json').write_text(json.dumps(manifest, indent=2)+'\n')
     print('Offline diagnostic candidate:', work)
 

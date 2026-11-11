@@ -1,6 +1,6 @@
 # Android 12 native device checkpoint
 
-Date: November 10, 2026. **No Android 12 OS, boot image, or Google TV application has been installed.** Normal boot remains Android 8.1 v14. The following tests run disposable native processes on that kernel/runtime.
+Date: November 10, 2026. Normal boot remains Android 8.1 v14. Android 12 init, native graphics and core ART have passed temporary recovery-slot trials using the preserved kernel. A full-framework trial is being prepared separately; Google TV Home has not been validated or installed as the working interface. Earlier sections describe the initial disposable-process experiments.
 
 ## Source and CPU baseline
 
@@ -126,3 +126,8 @@ The explicit legacy-network source experiment compiled netd and bpfloader, with 
 The [first OS boot plan](ANDROID12_FIRST_BOOT_PLAN.md) records protected paths, fresh rollback copies, recovery-slot limitations and the pre-installation gates. Read it before creating or writing any Android 12 boot/recovery artifact. Read-only kernel inventory also confirmed legacy LMK and vmpressure/event-control nodes, with no PSI memory file. Upstream Android 12 lmkd contains in-kernel LMK detection and vmpressure fallback; neither has been runtime validated under the new OS, and no live memory-killer settings were changed.
 
 Build/integrate the HWC2On1 composer and legacy allocator/mapper bridge, preserving the factory HWC ABI adapter and buffer/fence contracts. Then create a separate actual TV board product, root/init/APEX/linker configuration and a userdata-file trial with verified rollback to v14 normal boot. Resolve the kernel's missing BPF networking backend without silently disabling packet filtering. Only then package a boot candidate and test physical projection, controls, radios/media and the original Google TV application/service set. There is no installable Android 12 candidate at this checkpoint.
+## Managed runtime checkpoint — November 10, 2026
+
+Run `20261110-164755-375a0a0e` automatically passed the core Android 12 ART/Java probe on the preserved 3.10.104 kernel. It executed the source-built ARM32 runtime, created a Java worker thread, sorted and verified an array, and printed `ART12_MANAGED_RUNTIME_PASS`. The controller verified return to normal Android 8.1 and restoration of factory recovery. Earlier profiles exposed missing public-library configuration and canonical Bionic aliases; the successful profile uses normal flattened APEX paths and clears inherited bootstrap library overrides. This is not a zygote, SystemServer, application, or Google TV Home boot.
+
+The separate full-framework bootstrap compiled successfully. Its normal-Android guard refused execution with exit 64 because it was not PID 1; boot and recovery hashes remained the expected baseline values. The subsequent isolated full-root trial and its limitations are recorded in [ANDROID12_FRAMEWORK_TRIAL.md](ANDROID12_FRAMEWORK_TRIAL.md). This supersedes the earlier preparation-only status; normal boot remains v14.

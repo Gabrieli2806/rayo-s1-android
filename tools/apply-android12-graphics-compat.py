@@ -32,6 +32,32 @@ def main():
             raise SystemExit('Unexpected pinned framebuffer client-target usage')
         text = text.replace(before, after)
     path.write_text(text)
+    path = args.source/'system/linkerconfig/contents/namespace/sphal.cc'
+    text = path.read_text()
+    include = '#include <android-base/properties.h>\n'
+    if include not in text:
+        text = text.replace('#include "linkerconfig/namespacebuilder.h"', include+'\n#include "linkerconfig/namespacebuilder.h"')
+    anchor = '  ns.AddSearchPath("/odm/${LIB}");'
+    addition = '''  // Keep the verified legacy C++ closure separate from Android 12 C++.
+  if (android::base::GetBoolProperty("ro.rayo.graphics.legacy_sphal", false)) {
+    ns.AddSearchPath("/vendor/${LIB}/legacy");
+    ns.AddSearchPath("/vendor/${LIB}");
+    ns.AddSearchPath("/vendor/${LIB}/egl");
+    ns.AddSearchPath("/vendor/${LIB}/hw");
+    ns.AddPermittedPath("/vendor/${LIB}");
+    ns.AddPermittedPath("/system/vendor/${LIB}");
+    ns.AddPermittedPath("/system/${LIB}/hw");
+    ns.GetLink(ctx.GetSystemNamespaceName()).AddSharedLib(
+        "libc.so:libm.so:libdl.so:libdl_android.so:libvndksupport.so");
+    return ns;
+  }
+
+'''
+    if addition not in text:
+        if text.count(anchor) != 1:
+            raise SystemExit('Unexpected pinned sphal namespace layout')
+        text = text.replace(anchor, addition+anchor)
+    path.write_text(text)
     print('Opt-in ION client targets applied; allocation validation and factory HAL remain unchanged.')
 
 

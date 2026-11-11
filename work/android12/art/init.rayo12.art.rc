@@ -1,0 +1,15 @@
+# Core managed runtime diagnostic only. No class_start, zygote or framework.
+on early-init
+    export ANDROID_ART_ROOT /apex/com.android.art
+    export ANDROID_I18N_ROOT /apex/com.android.i18n
+    export ANDROID_TZDATA_ROOT /apex/com.android.tzdata
+
+on property:sys.rayo12.art=start
+    mkdir /data/misc/apexdata 0771 root system
+    mkdir /data/dalvik-cache 0771 root system
+    mkdir /data/dalvik-cache/arm 0771 root system
+    mkdir /data/local 0751 root root
+    mkdir /data/local/tmp 0771 shell shell
+    exec -- /system/bin/bootstrap/linkerconfig --target /linkerconfig
+    perform_apex_config
+    setprop sys.rayo12.art.ready 1

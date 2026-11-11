@@ -46,6 +46,11 @@ filegroup {
     srcs: ["early_init_bootstrap.c"],
 }
 
+filegroup {
+    name: "rayo12_framework_init_source",
+    srcs: ["framework_bootstrap.c"],
+}
+
 cc_binary {
     name: "rayo12_composer_probe",
     srcs: ["composer_probe.cpp"],

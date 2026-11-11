@@ -1,0 +1,49 @@
+# Bounded framework bringup. The C PID 1 bootstrap owns data and the watchdog.
+on early-init
+    insmod /sbin/rayo_hwbinder.ko armed=1
+    wait /dev/hwbinder 5
+    chmod 0666 /dev/hwbinder
+    chmod 0666 /dev/vndbinder
+
+on init
+    setprop service.adb.root 1
+    setprop sys.usb.configfs 0
+    mkdir /dev/usb-ffs 0770 shell shell
+    mkdir /dev/usb-ffs/adb 0770 shell shell
+    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 18d1
+    write /sys/class/android_usb/android0/idProduct D001
+    write /sys/class/android_usb/android0/f_ffs/aliases adb
+    write /sys/class/android_usb/android0/functions adb
+    write /sys/class/android_usb/android0/iManufacturer Canon
+    write /sys/class/android_usb/android0/iProduct Rayo-Android12-Framework-Trial
+    write /sys/class/android_usb/android0/iSerial 0123456789ABCDEF
+    write /sys/class/android_usb/android0/enable 1
+    start rayo12_rescue_adbd
+    start rayo12_log_capture
+    setprop sys.usb.state adb
+    setprop sys.rayo12.stage framework-init
+
+# The host checks root USB, PID 1 and isolated mounts before starting the
+# expensive framework sequence. A missing host leaves only the rescue timer.
+on property:sys.rayo12.framework=start
+    trigger rayo12-framework-start
+
+service rayo12_rescue_adbd /system/bin/rayo12-rescue-adbd --root_seclabel=u:r:su:s0 --device_banner=recovery
+    class core
+    user root
+    group root shell log readproc
+    socket adbd stream 0660 system system
+    seclabel u:r:adbd:s0
+    stdio_to_kmsg
+    disabled
+
+# Preserve framework errors inside the private trial data even if USB fails.
+service rayo12_log_capture /system/bin/logcat -b all -v threadtime -f /data/rayo12-logcat.txt -r 512 -n 1
+    class core
+    user root
+    group root log readproc
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+    disabled

@@ -14,9 +14,14 @@
 #include <sys/utsname.h>
 #include <unistd.h>
 
-/* Stage-one boot experiment only: readonly physical userdata/system and
- * disposable tmpfs data. This is not the full Android/Google TV root. */
+/* Diagnostic builds use readonly physical userdata and disposable RAM data.
+ * The separate framework build uses a bounded private data image; both keep
+ * the system image readonly and retain the independent normal-reboot timer. */
+#ifdef RAYO_FRAMEWORK_TRIAL
+static const char image_path[] = "/realdata/local/tmp/rayo12-framework-system.raw.img";
+#else
 static const char image_path[] = "/realdata/local/tmp/rayo12-stage1-system.raw.img";
+#endif
 static const unsigned char unit_uuid[16] = {
     0x57,0xf8,0xf4,0xbc,0xab,0xf4,0x65,0x5f,0xbf,0x67,0x94,0x6f,0xc0,0xf9,0xf2,0x5b
 };
@@ -51,6 +56,10 @@ static int read_expected(char digest[65], unsigned long long* bytes) {
     return 0;
 }
 
+#ifdef RAYO_FRAMEWORK_TRIAL
+#include "framework_data.h"
+#endif
+
 int main(int argc, char** argv) {
     (void)argv;
     /* Running this binary through ADB must never mount anything or reboot. */
@@ -67,7 +76,22 @@ int main(int argc, char** argv) {
     if (watchdog == 0) {
         /* First diagnostic has no disarm path. Normal boot remains v14.
          * Reboot selection/return must be checked before any recovery write. */
+#ifdef RAYO_FRAMEWORK_TRIAL
+        // PID 1 mounts proc immediately after the fork. Keep the independent
+        // rescue timer out of the low-memory killer's candidate set.
+        for (unsigned attempt = 0; attempt < 30; ++attempt) {
+            int score = open("/proc/self/oom_score_adj", O_WRONLY|O_CLOEXEC);
+            if (score >= 0) {
+                ssize_t written = write(score, "-1000\n", 6);
+                close(score);
+                if (written == 6) break;
+            }
+            usleep(100000);
+        }
+        sleep(600);
+#else
         sleep(180);
+#endif
         sync();
         for (;;) { reboot(RB_AUTOBOOT); sleep(10); }
     }
@@ -156,9 +180,16 @@ int main(int argc, char** argv) {
     for (unsigned i = 0; i < 16; ++i) used += snprintf(identity+used, sizeof(identity)-(size_t)used, "%02x", superblock[104+i]);
     fprintf(stderr, "%s\n", identity);
     if (superblock[56] != 0x53 || superblock[57] != 0xef || memcmp(superblock+104, unit_uuid, 16) != 0) fatal("unit filesystem UUID");
+#ifdef RAYO_FRAMEWORK_TRIAL
+    // Identify the physical filesystem before a standard journal-aware mount.
+    // Only the dedicated bounded data image is exposed to Android as /data.
+    mount_checked("/dev/block/rayo12-userdata", "/realdata", "ext4",
+                  MS_NODEV|MS_NOSUID|MS_NOATIME, NULL);
+#else
     /* noload also prevents journal replay writes to the protected baseline. */
     mount_checked("/dev/block/rayo12-userdata", "/realdata", "ext4",
                   MS_RDONLY|MS_NODEV|MS_NOSUID|MS_NOATIME, "noload");
+#endif
     int image = open(image_path, O_RDONLY|O_CLOEXEC|O_NOFOLLOW);
     struct stat info;
     if (image < 0 || fstat(image, &info) != 0 || !S_ISREG(info.st_mode) ||
@@ -184,7 +215,13 @@ int main(int argc, char** argv) {
     close(image);
     mount_checked("/dev/block/loop7", "/system", "ext4", MS_RDONLY|MS_NOATIME, "noload");
     close(loop);
+#ifdef RAYO_FRAMEWORK_TRIAL
+    mount_framework_data();
+    directory("/metadata", 0700);
+    mount_checked("tmpfs", "/metadata", "tmpfs", MS_NODEV|MS_NOSUID, "size=16m,mode=0700");
+#else
     mount_checked("tmpfs", "/data", "tmpfs", MS_NODEV|MS_NOSUID, "size=64m,mode=0771,uid=1000,gid=1000");
+#endif
     directory("/data/cache", 0770);
     mount_checked("tmpfs", "/cache", "tmpfs", MS_NODEV|MS_NOSUID, "size=16m,mode=0770,uid=1000,gid=2001");
     fprintf(stderr, "RAYO12_STAGE1: verified readonly system; entering Android 12 SELinux/init setup\n");
