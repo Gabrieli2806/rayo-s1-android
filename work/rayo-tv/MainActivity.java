@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private int brand(){return getResources().getIdentifier("brand","drawable",getPackageName());}
     private void updateStatus(){
         if(clock!=null)clock.setText(new SimpleDateFormat("HH:mm",Locale.getDefault()).format(new Date()));
-        if(batteryLabel!=null){batteryLabel.setText(battery<0?"—":battery+"%"+(plugged?(charging&&battery<100?" · Cargando":" · Conectado"):""));batteryLabel.setTextColor(battery>=0&&battery<=15&&!plugged?0xffffb36b:DIM);}
+        if(batteryLabel!=null){batteryLabel.setText(battery<0?"—":battery+"%"+(plugged?(charging&&battery<100?" · Charging":" · Connected"):""));batteryLabel.setTextColor(battery>=0&&battery<=15&&!plugged?0xffffb36b:DIM);}
         if(batteryIcon!=null){batteryIcon.level=battery;batteryIcon.charging=plugged;batteryIcon.invalidate();}
     }
     private void render(int requestedPage){
@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
         body=new LinearLayout(this);body.setOrientation(1);body.setPadding(0,dp(18),0,dp(8));body.setClipChildren(false);scroll.addView(body);
         root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
         if(page==0)home();else if(page==1)appGrid();else settings();
-        TextView footer=text("Tu espacio. Tus apps.",12,0xff687383);footer.setPadding(dp(5),dp(4),0,0);root.addView(footer);
+        TextView footer=text("Your space. Your apps.",12,0xff687383);footer.setPadding(dp(5),dp(4),0,0);root.addView(footer);
         setContentView(root);lastPackageCount=getPackageManager().getInstalledApplications(0).size();updateStatus();
         if(preferredFocus!=null){final View focus=preferredFocus;focus.post(()->focus.requestFocus());}
     }
@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setClipChildren(false);
         ImageView logo=new ImageView(this);logo.setImageResource(brand());row.addView(logo,new LinearLayout.LayoutParams(dp(38),dp(38)));
         TextView name=text("RAYO",15,WHITE);name.setLetterSpacing(.18f);name.setTypeface(null,Typeface.BOLD);LinearLayout.LayoutParams np=new LinearLayout.LayoutParams(-2,-2);np.setMargins(dp(10),0,dp(34),0);row.addView(name,np);
-        String[] names={"Inicio","Apps","Ajustes"};
+        String[] names={"Home","Apps","Settings"};
         for(int i=0;i<names.length;i++){
             final int destination=i;final boolean selected=page==i;
             TextView tab=text(names[i],17,selected?0xff11151d:DIM);tab.setGravity(Gravity.CENTER);tab.setPadding(dp(20),dp(10),dp(20),dp(10));tab.setTypeface(null,Typeface.BOLD);
@@ -86,19 +86,19 @@ public class MainActivity extends Activity {
         ImageView mark=new ImageView(this);mark.setImageResource(brand());mark.setAlpha(.65f);mark.setScaleType(ImageView.ScaleType.FIT_CENTER);
         FrameLayout.LayoutParams mp=new FrameLayout.LayoutParams(dp(284),dp(284),Gravity.RIGHT|Gravity.CENTER_VERTICAL);mp.setMargins(0,0,dp(45),0);hero.addView(mark,mp);
         LinearLayout copy=new LinearLayout(this);copy.setOrientation(1);copy.setGravity(Gravity.CENTER_VERTICAL);copy.setPadding(dp(32),dp(22),0,dp(20));
-        TextView eyebrow=text("HECHO PARA TU PANTALLA",11,CYAN);eyebrow.setLetterSpacing(.15f);eyebrow.setTypeface(null,Typeface.BOLD);copy.addView(eyebrow);
-        TextView title=text("Dale al play.",40,WHITE);title.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL));title.setPadding(0,dp(7),0,dp(5));copy.addView(title);
-        TextView description=text("Vídeos, música y tus apps favoritas.\nTodo en un mismo lugar.",16,DIM);description.setLineSpacing(dp(3),1);copy.addView(description);
-        final String feature=installed("org.smarttube.stable")?"org.smarttube.stable":"android.rk.RockVideoPlayer";
-        LinearLayout play=new LinearLayout(this);play.setGravity(Gravity.CENTER_VERTICAL);play.setPadding(dp(16),dp(9),dp(22),dp(9));play.setBackground(rounded(WHITE,28,0));play.setFocusable(true);play.setClickable(true);play.setContentDescription("Abrir "+label(feature));
+        TextView eyebrow=text("MADE FOR YOUR SCREEN",11,CYAN);eyebrow.setLetterSpacing(.15f);eyebrow.setTypeface(null,Typeface.BOLD);copy.addView(eyebrow);
+        TextView title=text("Ready when you are.",40,WHITE);title.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL));title.setPadding(0,dp(7),0,dp(5));copy.addView(title);
+        TextView description=text("Videos, music and your favorite apps.\nTogether in one place.",16,DIM);description.setLineSpacing(dp(3),1);copy.addView(description);
+        final String feature=installed("org.smarttube.stable")?"org.smarttube.stable":settingsPackage();
+        LinearLayout play=new LinearLayout(this);play.setGravity(Gravity.CENTER_VERTICAL);play.setPadding(dp(16),dp(9),dp(22),dp(9));play.setBackground(rounded(WHITE,28,0));play.setFocusable(true);play.setClickable(true);play.setContentDescription("Open "+label(feature));
         ImageView icon=new ImageView(this);icon.setImageBitmap(icon(feature,28));play.addView(icon,new LinearLayout.LayoutParams(dp(28),dp(28)));
-        TextView caption=text("Abrir "+label(feature),16,0xff11151d);caption.setTypeface(null,Typeface.BOLD);caption.setPadding(dp(10),0,0,0);play.addView(caption);
+        TextView caption=text("Open "+label(feature),16,0xff11151d);caption.setTypeface(null,Typeface.BOLD);caption.setPadding(dp(10),0,0,0);play.addView(caption);
         play.setOnClickListener(v->launch(feature));play.setOnFocusChangeListener((v,focus)->play.setBackground(rounded(focus?0xffc8f6ff:WHITE,28,focus?CYAN:0)));
         LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-2,-2);pp.setMargins(0,dp(18),0,0);copy.addView(play,pp);
         hero.addView(copy,new FrameLayout.LayoutParams(-1,-1));body.addView(hero,new LinearLayout.LayoutParams(-1,dp(272)));
         LinearLayout heading=new LinearLayout(this);heading.setGravity(Gravity.CENTER_VERTICAL);heading.setPadding(dp(4),dp(24),dp(4),dp(8));
-        TextView titleApps=text("Tus aplicaciones",21,WHITE);titleApps.setTypeface(null,Typeface.BOLD);heading.addView(titleApps,new LinearLayout.LayoutParams(0,-2,1));
-        TextView all=text("Ver todas  ›",14,DIM);all.setPadding(dp(14),dp(8),dp(14),dp(8));all.setFocusable(true);all.setBackground(rounded(Color.TRANSPARENT,18,0));all.setOnClickListener(v->render(1));all.setOnFocusChangeListener((v,f)->all.setBackground(rounded(f?CARD:Color.TRANSPARENT,18,f?CYAN:0)));heading.addView(all);body.addView(heading);
+        TextView titleApps=text("Your apps",21,WHITE);titleApps.setTypeface(null,Typeface.BOLD);heading.addView(titleApps,new LinearLayout.LayoutParams(0,-2,1));
+        TextView all=text("View all  ›",14,DIM);all.setPadding(dp(14),dp(8),dp(14),dp(8));all.setFocusable(true);all.setBackground(rounded(Color.TRANSPARENT,18,0));all.setOnClickListener(v->render(1));all.setOnFocusChangeListener((v,f)->all.setBackground(rounded(f?CARD:Color.TRANSPARENT,18,f?CYAN:0)));heading.addView(all);body.addView(heading);
         HorizontalScrollView rail=new HorizontalScrollView(this);rail.setHorizontalScrollBarEnabled(false);rail.setClipToPadding(false);rail.setClipChildren(false);
         LinearLayout apps=new LinearLayout(this);apps.setOrientation(0);apps.setClipChildren(false);apps.setPadding(dp(5),dp(8),dp(10),dp(12));
         List<App> available=apps();for(App app:available){View tile=appTile(app,166,104);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(166),-2);p.setMargins(0,0,dp(15),0);apps.addView(tile,p);if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;}
@@ -114,17 +114,18 @@ public class MainActivity extends Activity {
         return group;
     }
     private void appGrid(){
-        TextView title=text("Todas tus apps",30,WHITE);title.setTypeface(null,Typeface.BOLD);title.setPadding(dp(4),dp(8),0,dp(22));body.addView(title);
+        TextView title=text("All apps",30,WHITE);title.setTypeface(null,Typeface.BOLD);title.setPadding(dp(4),dp(8),0,dp(22));body.addView(title);
         List<App> list=apps();LinearLayout row=null;int n=0;
         for(App app:list){if(n%5==0){row=new LinearLayout(this);row.setClipChildren(false);body.addView(row,new LinearLayout.LayoutParams(-1,-2));}View tile=appTile(app,180,112);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);p.setMargins(dp(7),dp(7),dp(7),dp(12));row.addView(tile,p);if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;n++;}
         if(row!=null)while(n++%5!=0)row.addView(new View(this),new LinearLayout.LayoutParams(0,1,1));
     }
     private void settings(){
-        TextView title=text("A tu manera",30,WHITE);title.setTypeface(null,Typeface.BOLD);title.setPadding(dp(4),dp(12),0,dp(24));body.addView(title);
-        setting("Ajustes del proyector","Imagen, conexión y opciones del equipo","com.hotack.hotackkoreasettings",false);
-        setting("Ajustes de Android","Conexiones, aplicaciones y preferencias","com.android.settings",false);
-        setting("Volver al menú Canon","Abrir la interfaz original del proyector","com.htc.htcrayolauncher",true);
+        TextView title=text("Make it yours",30,WHITE);title.setTypeface(null,Typeface.BOLD);title.setPadding(dp(4),dp(12),0,dp(24));body.addView(title);
+        setting("Android settings","Connections, apps and device preferences",settingsPackage(),false);
+        if(installed("com.hotack.hotackkoreasettings"))setting("Projector settings","Image and projector controls","com.hotack.hotackkoreasettings",false);
+        if(installed("com.htc.htcrayolauncher"))setting("Canon home","Open the original projector interface","com.htc.htcrayolauncher",true);
     }
+    private String settingsPackage(){return installed("com.android.tv.settings")?"com.android.tv.settings":"com.android.settings";}
     private void setting(String name,String detail,final String pkg,final boolean canon){
         LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(22),dp(18),dp(22),dp(18));row.setBackground(rounded(CARD,18,0));row.setFocusable(true);row.setClickable(true);
         ImageView icon=new ImageView(this);icon.setImageBitmap(icon(pkg,42));row.addView(icon,new LinearLayout.LayoutParams(dp(42),dp(42)));
@@ -143,11 +144,11 @@ public class MainActivity extends Activity {
         return new ArrayList<>(result.values());
     }
     private boolean installed(String pkg){try{getPackageManager().getApplicationInfo(pkg,0);return true;}catch(PackageManager.NameNotFoundException e){return false;}}
-    private String label(String pkg){if(pkg.equals("org.smarttube.stable"))return "SmartTube";if(pkg.equals("android.rk.RockVideoPlayer"))return "Vídeos";if(pkg.equals("com.hotack.hotackkoreasettings"))return "Proyector";if(pkg.equals("acr.browser.barebones"))return "Navegador";if(pkg.equals("com.android.music"))return "Música";if(pkg.equals("com.android.gallery3d"))return "Galería";if(pkg.equals("com.ecloud.eshare.server"))return "EShare";try{return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg,0)).toString();}catch(Exception e){return "Aplicación";}}
-    private Intent launchIntent(String pkg){Intent i=getPackageManager().getLaunchIntentForPackage(pkg);if(i==null)i=getPackageManager().getLeanbackLaunchIntentForPackage(pkg);return i;}
-    private void launch(String pkg){Intent i=launchIntent(pkg);try{if(i==null)throw new ActivityNotFoundException();startActivity(i);}catch(Exception e){Toast.makeText(this,"No se pudo abrir esta aplicación",Toast.LENGTH_SHORT).show();}}
+    private String label(String pkg){if(pkg.equals("org.smarttube.stable"))return "SmartTube";if(pkg.equals("android.rk.RockVideoPlayer"))return "Videos";if(pkg.equals("com.hotack.hotackkoreasettings"))return "Projector";if(pkg.equals("acr.browser.barebones"))return "Browser";if(pkg.equals("com.android.music"))return "Music";if(pkg.equals("com.android.gallery3d"))return "Gallery";if(pkg.equals("com.ecloud.eshare.server"))return "EShare";try{return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg,0)).toString();}catch(Exception e){return "App";}}
+    private Intent launchIntent(String pkg){if(pkg.equals(settingsPackage()))return new Intent(android.provider.Settings.ACTION_SETTINGS).setPackage(pkg);Intent i=getPackageManager().getLaunchIntentForPackage(pkg);if(i==null)i=getPackageManager().getLeanbackLaunchIntentForPackage(pkg);return i;}
+    private void launch(String pkg){Intent i=launchIntent(pkg);try{if(i==null)throw new ActivityNotFoundException();startActivity(i);}catch(Exception e){Toast.makeText(this,"Could not open this app",Toast.LENGTH_SHORT).show();}}
     private Bitmap icon(String pkg,int size){Drawable drawable;try{drawable=getPackageManager().getApplicationIcon(pkg);}catch(Exception e){drawable=getResources().getDrawable(android.R.drawable.sym_def_app_icon,null);}Bitmap b=Bitmap.createBitmap(dp(size),dp(size),Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(b);drawable.setBounds(0,0,b.getWidth(),b.getHeight());drawable.draw(canvas);return b;}
-    private void original(){Intent i=new Intent();i.setClassName("com.htc.htcrayolauncher","com.htc.activity.HomeActivity");try{startActivity(i);}catch(Exception e){Toast.makeText(this,"No se pudo abrir Canon",Toast.LENGTH_SHORT).show();}}
+    private void original(){Intent i=new Intent();i.setClassName("com.htc.htcrayolauncher","com.htc.activity.HomeActivity");try{startActivity(i);}catch(Exception e){Toast.makeText(this,"Could not open Canon",Toast.LENGTH_SHORT).show();}}
     private class BatteryView extends View{
         int level=-1;boolean charging=false;final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
         BatteryView(){super(MainActivity.this);}

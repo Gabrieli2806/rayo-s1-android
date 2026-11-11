@@ -1,0 +1,8 @@
+# Rayo S1 integrated panel: standard actions verified in the working 8.1 map.
+# Relative cursor motion and BTN_LEFT/RIGHT/MIDDLE remain InputReader mouse events.
+key 102 HOME
+key 114 VOLUME_DOWN
+key 115 VOLUME_UP
+key 139 MENU
+key 158 BACK
+key 232 DPAD_CENTER

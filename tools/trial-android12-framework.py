@@ -120,12 +120,17 @@ def main():
     before_boot = checked('shell', 'cat', '/proc/sys/kernel/random/boot_id')
     private = '/data/local/tmp/rayo12-framework-'+uuid.uuid4().hex[:12]
     checked('shell', '/sbin/busybox', 'mkdir', '-m', '0700', private)
-    if reuse:
+    same_system = reuse and current_md5 == md5s[payloads[0][0].name]
+    if reuse and not same_system:
         checked('shell', '/sbin/busybox', 'rm', SYSTEM)
-    else:
+    elif not reuse:
         checked('shell', '/sbin/busybox', 'mkdir', '-m', '0700', DATA_DIR)
-    uploads = [(payloads[0][0], SYSTEM), (payloads[2][0], private+'/trial.img'),
+    uploads = [(payloads[2][0], private+'/trial.img'),
                (logs/'original-recovery.img', private+'/original.img')]
+    if not same_system:
+        uploads.insert(0, (payloads[0][0], SYSTEM))
+    else:
+        print('Reusing checksum-identical, verified and unmapped system file.', flush=True)
     if not reuse:
         uploads.insert(1, (payloads[1][0], DATA_DIR+'/userdata.ext4'))
     for path, remote in uploads:

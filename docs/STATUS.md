@@ -1,5 +1,19 @@
 # Reference checkpoint — November 10, 2026
 
+## Latest continuation state — November 11, 2026
+
+Android 12 reached TV Settings and the lightweight local Rayo Home; the owner
+confirmed both. Google Home/GSF were removed from isolated trial data and GMS
+installation failed without installing. The selected UI target is a simplified
+TV design without Google services. Normal boot has not been promoted to Android 12.
+
+**Recovery restoration pending verification:** trial `20261110-231858-d4343a03`
+lost USB before a normal return was observed. Its RESULT explicitly records
+`normal_v14_returned=false` and `original_recovery_restored=false`. Do not start
+another trial or assume factory recovery is currently present. See
+[the next steps](ANDROID12_NEXT_STEPS.md). The older checkpoints below retain
+their historical observations and do not override this latest state.
+
 ## Android 12 native research update
 
 Android 12 native composition now projects correctly on this unit: the owner confirmed the color pattern in `20261110-160923-6301117b`. Source-built Android 12 init, root USB, Binder32/HwBinder, Mali EGL/GLES, allocator, factory-adapted composer and SurfaceFlinger ran on the unchanged original kernel. A readback returned all eight expected RGBA samples. The full pinned source and TV product file build are available. This is a native graphics test, **not** an ART/framework/app or Google TV Home boot. Normal boot remains 8.1 v14; the watchdog returned there and original recovery was restored and hash-verified after the successful test. See [ANDROID12_NATIVE_LAB.md](ANDROID12_NATIVE_LAB.md).

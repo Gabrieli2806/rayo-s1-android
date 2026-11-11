@@ -34,8 +34,8 @@ PRODUCT_PACKAGES += \
     LeanbackIME \
     TvProvision
 
-# Original Google TV Home/services are a separate integration stage; no
-# lookalike launcher is selected as a substitute. Settings/ADB bootstrap only.
+# The owner's current target is a lightweight local TV-style launcher without
+# Google services. Its APK is tested separately before image integration.
 # The isolated trial packager integrates OEM blobs, init, namespaces and
 # rollback guards separately. Normal product image generation stays disabled.
 PRODUCT_BUILD_SYSTEM_IMAGE := false

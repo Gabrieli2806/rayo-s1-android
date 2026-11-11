@@ -1,6 +1,6 @@
 # Google TV 12: original UI target and port preparation
 
-Current checkpoint: November 10, 2026. The owner requested Android 12 with the original Google TV menu/UI; a lookalike is not the selected target. Source-built Android 12 has reached System UI, projected wallpaper and cursor movement in a bounded recovery-slot trial. Settings/service integration remains incomplete and Google TV Home has not yet been tested. Normal startup remains Android 8.1 v14. See [the framework trial record](ANDROID12_FRAMEWORK_TRIAL.md). The reference inspection below records the earlier research stage.
+Current checkpoint: November 10, 2026. The owner now prefers recreating a simplified Google TV style in a lightweight launcher without Google services. This supersedes the earlier original-UI-only constraint. Source-built Android 12 reached usable TV Settings in a bounded trial; the owner navigated its options. Original Google TV Home drew its loading UI but requires privileged integration and Google dependencies. That route is deferred in favor of the local launcher. Normal startup remains Android 8.1 v14. See [the framework trial record](ANDROID12_FRAMEWORK_TRIAL.md). The reference inspection below records the earlier research stage.
 
 ## What was inspected
 

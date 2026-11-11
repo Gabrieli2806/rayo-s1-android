@@ -245,3 +245,25 @@ framework reboot. The earlier Settings closure remains unresolved. No stable
 GUI pass is claimed. Normal v14 returned and factory recovery was restored and
 hash-verified. A point-in-time dumpsys reported 415318 KiB Free RAM (including
 reclaimable caches), not a sustained performance benchmark.
+
+`20261110-230611-0dcca803`: the same solid-color candidate passed the stable
+Settings focus check with unchanged system_server. The owner confirmed opening
+Settings options and explained that exiting left no home menu. Continuous logs
+showed application-requested activity finishes without a Settings process death.
+The normal v14 return and factory recovery restoration were verified.
+
+The owner then selected a simplified local Google-TV-style interface without
+Google services. See [the lightweight launcher](LIGHTWEIGHT_TV_LAUNCHER.md).
+
+`20261110-231858-d4343a03`: the local 0.3 development launcher installed into
+isolated data and became the default Home. Captures showed the dark UI, owner
+logo, app icon rail, clock/battery broadcast and Android TV Settings access.
+The owner confirmed seeing Home and Settings. Google Home was uninstalled;
+GSF had already been removed and GMS had failed to install. This is not proof
+of radio, media, battery accuracy or prolonged stability.
+
+The host later lost USB before observing normal return. Its RESULT correctly
+records normal return and factory recovery restoration as false. Preserve this
+failure record. The independently saved factory recovery image still passes
+its complete size/MD5 check on the PC. Follow the guarded restoration step in
+[the continuation checklist](ANDROID12_NEXT_STEPS.md) before further trials.

@@ -29,6 +29,8 @@ def main():
     parser.add_argument('--source', type=Path, required=True)
     parser.add_argument('--reuse-data-manifest', type=Path,
                         help='Retain the UUID of an earlier isolated trial data image')
+    parser.add_argument('--local-launcher', action='store_true',
+                        help='Include the separately built and signed lightweight launcher')
     args = parser.parse_args()
     if os.name != 'posix':
         raise SystemExit('Use native Linux/WSL ext4 to preserve the product layout')
@@ -51,12 +53,24 @@ def main():
     system, ramdisk, mini = (work/name for name in ('system', 'ramdisk', 'graphics'))
     shutil.copytree(product/'system', system, symlinks=True)
     shutil.copytree(product/'root', ramdisk, symlinks=True)
+    if args.local_launcher:
+        apk = ROOT/'outputs/Rayo-Dark-TV.apk'
+        record = json.loads((ROOT/'outputs/Rayo-Dark-TV.build.json').read_text(encoding='utf-8-sig'))
+        if (record.get('package') != 'local.rayo.launcher' or record.get('google_services') is not False
+                or digest(apk) != record['sha256']):
+            raise SystemExit('Rebuild and verify the lightweight launcher first')
+        destination = system/'app/RayoDark/RayoDark.apk'
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(apk, destination)
     # Declare the board's actual radio so SystemServer publishes WifiManager.
     # This is also required by the stock TV Settings connectivity screen.
     shutil.copyfile(args.source/'frameworks/native/data/etc/android.hardware.wifi.xml',
                     system/'etc/permissions/android.hardware.wifi.xml')
     shutil.copyfile(args.source/'frameworks/native/data/etc/android.hardware.usb.host.xml',
                     system/'etc/permissions/android.hardware.usb.host.xml')
+    shutil.copyfile(ROOT/'work/android12/framework/ekt2101.kl', system/'usr/keylayout/ekt2101.kl')
+    for name in ('rk29-keypad.kl', '20050030_pwm.kl'):
+        shutil.copyfile(ROOT/'work/android81/input-keymaps-oreo'/name, system/'usr/keylayout'/name)
     mini.mkdir()
 
     def copy(relative, original=None):
@@ -403,6 +417,7 @@ dalvik.vm.usejitprofiles=false
     spec.loader.exec_module(verify)
     verified = verify.inspect(image.read_bytes(), (ROOT/'local/device-kit/original/recovery.img').read_bytes(), True)
     manifest = {'purpose': 'Temporary full-framework bringup; not a validated ROM or Google TV Home',
+        'local_launcher': record if args.local_launcher else None,
         'system': {'path': system_image.name, 'bytes': size, 'sha256': digest(system_image)},
         'data': {'path': data_image.name, 'bytes': data_image.stat().st_size, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
         'recovery': verified, 'watchdog_seconds': 600, 'device_written': False,

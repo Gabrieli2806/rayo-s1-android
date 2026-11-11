@@ -1,5 +1,11 @@
 # Rayo S1 — experimental Android 8.1
 
+**Current Android 12 work:** the owner confirmed the local lightweight Home and
+TV Settings. No Google services are selected. The last temporary trial lost USB
+before normal return/recovery restoration could be verified; restore that state
+first on the next connection. See [the continuation checklist](docs/ANDROID12_NEXT_STEPS.md).
+The historical 8.1 recovery statement below is not proof of the current recovery slot.
+
 AOSP `android-8.1.0_r81` adaptation for **this Canon Rayo S1 unit**: RK3128 ARMv7, Mali-400, and approximately 1 GB RAM. Includes Rayo Dark TV, the Rockchip compositor adapter, HwBinder, input and connectivity fixes, tools, and documentation for continuing on another PC.
 
 **Verified on November 9, 2026, checkpoint v14:** Android 8.1 boots, projects correctly, supports the integrated buttons, and reconnects Wi-Fi with validated internet. The owner confirmed speaker audio and a projected AVC/AAC sample using the Rockchip decoder after a complete reboot. Bluetooth enables automatically and the owner confirmed nearby devices appear; pairing remains untested because no accessory was available. Aurora Store 4.8.4 is installed. Extended stability, power, and broader media validation remain pending.

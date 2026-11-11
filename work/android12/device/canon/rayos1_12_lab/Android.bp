@@ -91,3 +91,13 @@ cc_binary {
     stl: "none",
     cflags: ["-Wall", "-Wextra", "-Werror"],
 }
+
+cc_library_shared {
+    name: "librayo12_bt_timer_compat",
+    stem: "libtg",
+    vendor: true,
+    srcs: ["bt_timer_compat.c"],
+    shared_libs: ["libdl"],
+    stl: "none",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}
