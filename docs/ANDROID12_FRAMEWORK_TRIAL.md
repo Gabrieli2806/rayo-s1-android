@@ -235,3 +235,13 @@ being marked for client composition. The opt-in
 selecting upstream's existing null-handle/client-composition path for solid
 colors. It does not replace buffers, colors or fences with fabricated values.
 This source fix requires a rebuilt libhwc2on1adapter and on-device validation.
+
+`20261110-230032-ddcdd7be`: the rebuilt quirk was active; Wi-Fi and Ethernet
+framework services were published and MainSettings acquired display focus.
+The owner saw Settings, then reported it closing before trying the power menu.
+The captured kernel log explicitly records `shutdown,userrequested` from
+system_server, so the final return cannot be classified as a spontaneous
+framework reboot. The earlier Settings closure remains unresolved. No stable
+GUI pass is claimed. Normal v14 returned and factory recovery was restored and
+hash-verified. A point-in-time dumpsys reported 415318 KiB Free RAM (including
+reclaimable caches), not a sustained performance benchmark.
