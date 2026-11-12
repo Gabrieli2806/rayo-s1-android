@@ -208,6 +208,7 @@ def main():
     stable_pid = None
     stable_since = 0
     error = None
+    deadline = watchdog+150
     try:
         checked('shell', 'stop', 'flash_recovery')
         written = True
@@ -218,7 +219,10 @@ def main():
         print('Recovery trial readback verified; requesting isolated framework boot. Logs: '+str(logs), flush=True)
         command('shell', 'setprop', 'sys.powerctl', 'reboot,recovery')
         started = time.monotonic()
-        while time.monotonic()-started < watchdog+150:
+        # A boot-success watchdog ends on a completed boot, so a rehearsal of an
+        # installed-boot image stays up until the operator requests the reboot.
+        deadline = 4*3600 if manifest.get('boot_success_watchdog') else watchdog+150
+        while time.monotonic()-started < deadline:
             time.sleep(3)
             version = command('shell', 'getprop', 'ro.build.version.release', timeout=5).stdout.strip()
             if version == b'12':
@@ -298,7 +302,7 @@ def main():
     finally:
         # Remain available to the independent watchdog even after a diagnostic
         # failure. Never write restoration blocks in an unidentified environment.
-        while written and not returned and time.monotonic()-started < watchdog+250:
+        while written and not returned and time.monotonic()-started < deadline+100:
             if normal() and boot_id() not in (None, before_boot):
                 returned = True
                 break

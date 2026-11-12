@@ -53,6 +53,9 @@ def main():
                         help='Use this already grown private data image; requires --reuse-data-manifest')
     parser.add_argument('--watchdog-seconds', type=int, default=600,
                         help='Independent return-to-normal timer packaged in the ramdisk (600-14400)')
+    parser.add_argument('--installed-boot', action='store_true',
+                        help='Start the framework without a host trigger and end the watchdog on a '
+                             'completed boot; also emit the image for the boot slot')
     parser.add_argument('--preopt-filter', default='speed', choices=('speed', 'verify', 'none'),
                         help='Host ahead-of-time compiler filter for packaged applications')
     args = parser.parse_args()
@@ -521,6 +524,12 @@ def main():
         raise SystemExit('Unexpected pinned framework boot dispatch')
     init_rc.write_text(text.replace('on late-init\n', 'on rayo12-framework-start\n'))
     rc = (ROOT/'work/android12/framework/init.rayo12.framework.rc').read_text()
+    if args.installed_boot:
+        # No host is required: start the framework at the normal late-init
+        # point and tell the bootstrap's boot-success watchdog when Android
+        # reports a completed boot.
+        rc += ('\non late-init\n    trigger rayo12-framework-start\n'
+               '\non property:sys.boot_completed=1\n    write /dev/.rayo12-boot-ok 1\n')
     (system/'etc/init/rayo12.framework.rc').write_text(rc)
     subprocess.run([str(host/'host_init_verifier'),
                     '--property-contexts='+str(system/'etc/selinux/plat_property_contexts'),
@@ -565,6 +574,7 @@ ro.rayo.graphics.legacy_sphal=true
 ro.rayo.cgroup.legacy=true
 ro.rayo.audio.legacy_stream_abi=true
 ro.rayo.audio.pcm_soft_start=true
+ro.audio.flinger_standbytime_ms=1800000
 debug.rayo.graphics.client_blend=1
 debug.hwui.use_buffer_age=false
 debug.hwui.use_partial_updates=false
@@ -774,12 +784,26 @@ dalvik.vm.usejitprofiles=false
         raise SystemExit('Rebuild the bootstrap with the bounded data size and watchdog records')
     (ramdisk/'rayo12-stage1.cfg').write_text('system_sha256='+digest(system_image)+'\nsystem_bytes='+str(size)+'\n')
     image = work/'rayo12-framework-recovery.img'
+    boot_image = None
+    if args.installed_boot:
+        if b'boot_success_fallback=recovery' not in init.read_bytes():
+            raise SystemExit('Rebuild the bootstrap with the boot-success watchdog')
+        # Boot-slot image first: a failed boot restarts into the recovery slot,
+        # which must then hold the rescue system. The recovery-slot rehearsal
+        # image is identical except that it falls back to the normal boot slot.
+        boot_image = work/'rayo12-framework-boot.img'
+        (ramdisk/'rayo12-boot-mode.cfg').write_text('boot_success_fallback=recovery\n')
+        subprocess.run(['python3', str(ROOT/'tools/pack-recovery.py'), '--ramdisk', str(ramdisk), '--output', str(boot_image),
+                        '--cmdline', 'buildvariant=eng androidboot.selinux=permissive androidboot.init_fatal_reboot_target=normal'], check=True)
+        (ramdisk/'rayo12-boot-mode.cfg').write_text('boot_success_fallback=normal\n')
     subprocess.run(['python3', str(ROOT/'tools/pack-recovery.py'), '--ramdisk', str(ramdisk), '--output', str(image),
                     '--cmdline', 'buildvariant=eng androidboot.selinux=permissive androidboot.init_fatal_reboot_target=normal'], check=True)
     spec = importlib.util.spec_from_file_location('verify', ROOT/'tools/verify-rayo-boot.py')
     verify = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(verify)
     verified = verify.inspect(image.read_bytes(), (ROOT/'local/device-kit/original/recovery.img').read_bytes(), True)
+    verified_boot = (verify.inspect(boot_image.read_bytes(), (ROOT/'local/device-kit/original/recovery.img').read_bytes(), True)
+                     if boot_image else None)
     manifest = {'purpose': 'Guarded full-framework trial candidate; not a validated stable ROM',
         'gabos_apps': gabos_apps,
         'software_media': args.software_media,
@@ -796,7 +820,8 @@ dalvik.vm.usejitprofiles=false
         'play_store': args.play_store,
         'host_preopt': preopt_records,
         'graphics': graphics, 'bootstrap_sha256': digest(init),
-        'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': True,
+        'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': not args.installed_boot,
+        'boot_success_watchdog': args.installed_boot, 'boot': verified_boot,
         'android12_init_md5': hashlib.md5((system/'bin/init').read_bytes()).hexdigest(),
         'software_key_crypto': {'sha256': digest(crypto), 'fips': False,
             'scope': 'Software Keymaster, keystore2 and zygote children use the non-FIPS backend; '

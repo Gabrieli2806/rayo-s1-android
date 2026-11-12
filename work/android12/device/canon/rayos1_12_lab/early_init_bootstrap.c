@@ -8,7 +8,9 @@
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/mount.h>
+#include <linux/reboot.h>
 #include <sys/reboot.h>
+#include <sys/syscall.h>
 #include <sys/stat.h>
 #include <sys/sysmacros.h>
 #include <sys/utsname.h>
@@ -72,6 +74,24 @@ static unsigned watchdog_seconds(void) {
     if (fields != 1 || seconds < 600 || seconds > 14400) return 600;
     return seconds;
 }
+
+/* Optional second record for an installed system. "normal" and "recovery"
+ * select a boot-success watchdog: it ends once Android init reports a completed
+ * boot through the marker below, and otherwise restarts into the named slot,
+ * which must hold the rescue system. Anything else keeps the unconditional
+ * trial timer. Returns 0 trial, 1 fall back to normal boot, 2 to recovery. */
+#define RAYO_BOOT_OK "/dev/.rayo12-boot-ok"
+static int watchdog_fallback(void) {
+    char line[64] = {0};
+    FILE* config = fopen("/rayo12-boot-mode.cfg", "re");
+    if (!config) return 0;
+    char* read = fgets(line, sizeof(line), config);
+    fclose(config);
+    if (!read) return 0;
+    if (strcmp(line, "boot_success_fallback=normal\n") == 0) return 1;
+    if (strcmp(line, "boot_success_fallback=recovery\n") == 0) return 2;
+    return 0;
+}
 #endif
 
 int main(int argc, char** argv) {
@@ -102,7 +122,25 @@ int main(int argc, char** argv) {
             }
             usleep(100000);
         }
-        sleep(watchdog_seconds());
+        int fallback = watchdog_fallback();
+        unsigned limit = watchdog_seconds();
+        if (fallback == 0) {
+            sleep(limit);
+        } else {
+            for (unsigned waited = 0; waited < limit; waited += 5) {
+                if (access(RAYO_BOOT_OK, F_OK) == 0) _exit(0);
+                sleep(5);
+            }
+            if (access(RAYO_BOOT_OK, F_OK) == 0) _exit(0);
+        }
+        sync();
+        if (fallback == 2) {
+            for (;;) {
+                syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2,
+                        LINUX_REBOOT_CMD_RESTART2, "recovery");
+                sleep(10);
+            }
+        }
 #else
         sleep(180);
 #endif
