@@ -17,13 +17,16 @@ import android.util.Log;
 import android.widget.TextView;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 import org.json.JSONObject;
+import local.gabos.ui.GabosUi;
 
 /** Development-only radio checks. Never record network credentials or nearby identities. */
 public class MainActivity extends Activity {
     private final Handler handler = new Handler();
     private final JSONObject result = new JSONObject();
-    private TextView screen;
+    private TextView screen, ram, storage, platform, wifi, bluetooth;
+    private GabosUi ui;
     private BluetoothAdapter adapter;
     private int found;
     private int frameCount;
@@ -41,17 +44,25 @@ public class MainActivity extends Activity {
     };
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        screen = new TextView(this); screen.setTextColor(Color.WHITE); screen.setBackgroundColor(0xff10151d);
-        screen.setTextSize(18); screen.setPadding(24, 16, 24, 16);
-        LinearLayout body=new LinearLayout(this);body.setOrientation(1);body.setBackgroundColor(0xff10151d);
-        body.addView(screen);
-        Button refresh=new Button(this);refresh.setText("Refresh system information");body.addView(refresh);refresh.setOnClickListener(v->systemInfo());
-        Button radios=new Button(this);radios.setText("Wi-Fi and Bluetooth settings");body.addView(radios);radios.setOnClickListener(v->startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS)));
-        Button tone=new Button(this);tone.setText("Play a short speaker test");body.addView(tone);tone.setOnClickListener(v->{
+        ui = new GabosUi(this);
+        LinearLayout body = ui.page("Diagnostics", "Hardware and system status of this projector.");
+        LinearLayout stats = ui.row(body, 26);
+        ram = ui.stat(stats, "MEMORY FREE", "-"); storage = ui.stat(stats, "STORAGE FREE", "-");
+        platform = ui.stat(stats, "ANDROID", "-");
+        LinearLayout radios = ui.row(body, 18);
+        wifi = ui.stat(radios, "WI-FI", "-"); bluetooth = ui.stat(radios, "BLUETOOTH", "-");
+        LinearLayout actions = ui.row(body, 26);
+        android.view.View refresh = ui.tile(actions, "Refresh", GabosUi.BLUE_TOP, GabosUi.BLUE_BOTTOM, v->systemInfo());
+        ui.tile(actions, "Network", v->{startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));ui.fade();});
+        ui.tile(actions, "Speaker test", v->{
             try { final ToneGenerator generator=new ToneGenerator(AudioManager.STREAM_MUSIC,25);generator.startTone(ToneGenerator.TONE_PROP_BEEP,1000);handler.postDelayed(()->generator.release(),1200); }
             catch(RuntimeException e){record("audio_test_error",e.getClass().getSimpleName());}
         });
-        ScrollView scroll=new ScrollView(this);scroll.addView(body);setContentView(scroll); systemInfo();
+        LinearLayout card = ui.card(body, 34);
+        card.addView(ui.text("DETAILS", 12, GabosUi.DIM));
+        screen = ui.text("", 14, GabosUi.INK); screen.setPadding(0, ui.dp(12), 0, 0); screen.setLineSpacing(ui.dp(4), 1); card.addView(screen);
+        refresh.post(refresh::requestFocus);
+        systemInfo();
         if ("frames".equals(getIntent().getStringExtra("test"))) {
             // Exclude service discovery and the expensive first window draw from steady-state callbacks.
             handler.postDelayed(()->{
@@ -113,10 +124,28 @@ public class MainActivity extends Activity {
             result.put(key, value);
             byte[] data = result.toString(2).getBytes(StandardCharsets.UTF_8);
             try (FileOutputStream stream = openFileOutput("radio-result.json", MODE_PRIVATE)) { stream.write(data); }
-            screen.setText("GabOS Diagnostics\n\n"+result.toString(2));
+            render();
             Log.i("GabOSRadioProbe", key+"="+value);
         } catch (Exception e) { Log.e("GabOSRadioProbe", "Could not write diagnostic result", e); }
     }
+    private void render() {
+        if (screen == null) return;
+        if (result.has("ram_available_mib")) ram.setText(result.optLong("ram_available_mib")+" / "+result.optLong("ram_total_mib")+" MiB");
+        if (result.has("data_available_mib")) storage.setText(result.optLong("data_available_mib")+" MiB");
+        if (result.has("android_version")) platform.setText(result.optString("android_version")+"  -  API "+result.optInt("sdk"));
+        if (result.has("wifi_enabled")) wifi.setText(result.optBoolean("wifi_enabled")?"On":"Off");
+        if (result.has("bluetooth_present")) {
+            int state=result.optInt("bluetooth_state",-1);
+            bluetooth.setText(!result.optBoolean("bluetooth_present")?"Not present":state==BluetoothAdapter.STATE_ON?"On":state==BluetoothAdapter.STATE_OFF?"Off":"Changing");
+        }
+        StringBuilder lines=new StringBuilder();
+        for (Iterator<String> keys=result.keys(); keys.hasNext();) {
+            String key=keys.next();
+            lines.append(key.replace('_',' ')).append(":  ").append(result.opt(key)).append('\n');
+        }
+        screen.setText(lines.toString().trim());
+    }
+    @Override public void onBackPressed() { super.onBackPressed(); ui.fade(); }
     @Override protected void onDestroy() {
         measuringFrames=false; Choreographer.getInstance().removeFrameCallback(frameProbe);
         end(); handler.removeCallbacksAndMessages(null);

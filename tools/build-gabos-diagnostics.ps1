@@ -9,7 +9,7 @@ $gabosWork=Join-Path $gabosRoot ('local/diagnostics-build/'+(Get-Date -Format 'y
 $gabosClasses=Join-Path $gabosWork 'classes'
 $gabosDex=Join-Path $gabosWork 'dex'
 New-Item -ItemType Directory -Force $gabosClasses,$gabosDex | Out-Null
-& javac -source 8 -target 8 -encoding UTF-8 -classpath $gabosJar -d $gabosClasses (Join-Path $gabosSource 'MainActivity.java')
+& javac -source 8 -target 8 -encoding UTF-8 -classpath $gabosJar -d $gabosClasses @(Get-ChildItem $gabosSource -Filter '*.java' | ForEach-Object FullName) (Join-Path $gabosRoot 'work/gabos-ui/GabosUi.java')
 if($LASTEXITCODE -ne 0){throw 'Diagnostics Java compilation failed'}
 $gabosFiles=@(Get-ChildItem $gabosClasses -Recurse -Filter '*.class' | ForEach-Object FullName)
 & (Join-Path $gabosBuild 'd8.bat') --min-api 26 --lib $gabosJar --output $gabosDex @gabosFiles

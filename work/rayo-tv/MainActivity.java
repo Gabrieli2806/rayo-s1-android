@@ -230,7 +230,7 @@ public class MainActivity extends Activity {
     private String label(String pkg){try{return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg,0)).toString();}catch(Exception e){return "App";}}
     private Intent launchIntent(String pkg){Intent i=getPackageManager().getLeanbackLaunchIntentForPackage(pkg);if(i==null)i=getPackageManager().getLaunchIntentForPackage(pkg);return i;}
     private void launch(String pkg){open(launchIntent(pkg));}
-    private void open(Intent intent){try{if(intent==null)throw new ActivityNotFoundException();startActivity(intent);}catch(Exception e){Toast.makeText(this,"Could not open this app",Toast.LENGTH_SHORT).show();}}
+    private void open(Intent intent){try{if(intent==null)throw new ActivityNotFoundException();startActivity(intent);overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);}catch(Exception e){Toast.makeText(this,"Could not open this app",Toast.LENGTH_SHORT).show();}}
 
     private class GearView extends View{
         final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
