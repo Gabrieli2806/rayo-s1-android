@@ -1,145 +1,245 @@
 package local.rayo.launcher;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.*;
 import android.content.pm.*;
-import android.os.*;
 import android.graphics.*;
 import android.graphics.drawable.*;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.*;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
 import android.widget.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * GabOS Home: a single-activity TV launcher with a local, offline profile name.
+ * No network access, account service, recommendation feed or background service.
+ */
 public class MainActivity extends Activity {
-    private static final int BG=0xff0c0f14, CARD=0xff20252e, WHITE=0xfff5f6f8, DIM=0xffa4acb9, CYAN=0xff43cce8;
-    private final Handler handler=new Handler();
-    private LinearLayout root, body;
-    private TextView clock, batteryLabel;
-    private BatteryView batteryIcon;
-    private int page=0, battery=-1;
-    private boolean charging=false, plugged=false, receiverRegistered=false, created=false;
-    private int lastPackageCount=-1;
+    private static final int INK=0xfff1f3f4, DIM=0xff9aa0a6, CARD=0xff1b222d, FOCUS=0xffffffff;
+    private static final int[] TINTS={0xff3b4a8f,0xff2f6f73,0xff7a4a2e,0xff5b3f86,0xff2e5f8a,0xff7b3550,0xff46683a,0xff6a5a2c};
+    private static final int COLUMNS=7;
+    private final Handler handler=new Handler(Looper.getMainLooper());
+    private final HashMap<String,Bitmap> art=new HashMap<>();
+    private TextView clock, greeting, date, status, profileName, profileInitial;
     private String focusedPackage="";
     private View preferredFocus;
+    private int battery=-1, lastPackageCount=-1;
+    private boolean plugged=false, receiverRegistered=false, created=false;
     private final BroadcastReceiver batteryReceiver=new BroadcastReceiver(){
         @Override public void onReceive(Context context, Intent intent){
             int level=intent.getIntExtra(BatteryManager.EXTRA_LEVEL,-1), scale=intent.getIntExtra(BatteryManager.EXTRA_SCALE,-1);
-            battery=level>=0 && scale>0 ? Math.round(level*100f/scale) : -1;
-            int status=intent.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
-            charging=status==BatteryManager.BATTERY_STATUS_CHARGING;
+            battery=level>=0&&scale>0?Math.round(level*100f/scale):-1;
             plugged=intent.getIntExtra(BatteryManager.EXTRA_PLUGGED,0)!=0;
             updateStatus();
         }
     };
     private final Runnable tick=new Runnable(){public void run(){updateStatus();handler.postDelayed(this,30000);}};
+
     private int dp(float value){return (int)(value*getResources().getDisplayMetrics().density+.5f);}
-    @Override public void onCreate(Bundle state){super.onCreate(state);render(0);created=true;handler.post(tick);}
-    @Override protected void onResume(){super.onResume();if(!receiverRegistered){registerReceiver(batteryReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));receiverRegistered=true;}if(created&&getPackageManager().getInstalledApplications(0).size()!=lastPackageCount)render(page);updateStatus();}
+    private SharedPreferences prefs(){return getSharedPreferences("profile",MODE_PRIVATE);}
+    private String name(){return prefs().getString("name","");}
+
+    @Override public void onCreate(Bundle state){
+        super.onCreate(state);render();created=true;handler.post(tick);
+        if(name().isEmpty()&&!prefs().getBoolean("asked",false))askName();
+    }
+    @Override protected void onResume(){
+        super.onResume();
+        if(!receiverRegistered){registerReceiver(batteryReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));receiverRegistered=true;}
+        if(created&&packageCount()!=lastPackageCount){art.clear();render();}
+        updateStatus();
+    }
     @Override protected void onPause(){if(receiverRegistered){unregisterReceiver(batteryReceiver);receiverRegistered=false;}super.onPause();}
     @Override protected void onDestroy(){handler.removeCallbacks(tick);super.onDestroy();}
-    @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(page!=0||getPackageManager().getInstalledApplications(0).size()!=lastPackageCount){focusedPackage="";render(0);}else updateStatus();}
-    @Override public void onBackPressed(){if(page!=0)render(0);}
-    private TextView text(String value,int size,int color){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);t.setFontFeatureSettings("kern");return t;}
-    private GradientDrawable rounded(int fill,int radius,int stroke){GradientDrawable g=new GradientDrawable();g.setColor(fill);g.setCornerRadius(dp(radius));if(stroke!=0)g.setStroke(dp(2),stroke);return g;}
-    private int brand(){return getResources().getIdentifier("brand","drawable",getPackageName());}
+    @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);if(packageCount()!=lastPackageCount){art.clear();render();}else updateStatus();}
+    @Override public void onBackPressed(){}
+    private int packageCount(){return getPackageManager().getInstalledApplications(0).size();}
+
+    private TextView text(String value,float size,int color){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);t.setIncludeFontPadding(false);return t;}
+    private GradientDrawable rounded(int fill,float radius){GradientDrawable g=new GradientDrawable();g.setColor(fill);g.setCornerRadius(dp(radius));return g;}
+
     private void updateStatus(){
-        if(clock!=null)clock.setText(new SimpleDateFormat("HH:mm",Locale.getDefault()).format(new Date()));
-        if(batteryLabel!=null){batteryLabel.setText(battery<0?"—":battery+"%"+(plugged?(charging&&battery<100?" · Charging":" · Connected"):""));batteryLabel.setTextColor(battery>=0&&battery<=15&&!plugged?0xffffb36b:DIM);}
-        if(batteryIcon!=null){batteryIcon.level=battery;batteryIcon.charging=plugged;batteryIcon.invalidate();}
-    }
-    private void render(int requestedPage){
-        if(requestedPage==2){launch(settingsPackage());return;}
-        page=requestedPage;preferredFocus=null;
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        root=new LinearLayout(this);root.setOrientation(1);root.setPadding(dp(42),dp(24),dp(42),dp(12));
-        root.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff111b24,BG,0xff12131d}));
-        header();
-        ScrollView scroll=new ScrollView(this);scroll.setClipToPadding(false);scroll.setVerticalScrollBarEnabled(false);scroll.setFillViewport(false);
-        body=new LinearLayout(this);body.setOrientation(1);body.setPadding(0,dp(18),0,dp(8));body.setClipChildren(false);scroll.addView(body);
-        root.addView(scroll,new LinearLayout.LayoutParams(-1,0,1));
-        if(page==0)home();else appGrid();
-        TextView footer=text("Your space. Your apps.",12,0xff687383);footer.setPadding(dp(5),dp(4),0,0);root.addView(footer);
-        setContentView(root);lastPackageCount=getPackageManager().getInstalledApplications(0).size();updateStatus();
-        if(preferredFocus!=null){final View focus=preferredFocus;focus.post(()->focus.requestFocus());}
-    }
-    private void header(){
-        LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setClipChildren(false);
-        ImageView logo=new ImageView(this);logo.setImageResource(brand());row.addView(logo,new LinearLayout.LayoutParams(dp(38),dp(38)));
-        TextView name=text("GabOS",15,WHITE);name.setLetterSpacing(.18f);name.setTypeface(null,Typeface.BOLD);LinearLayout.LayoutParams np=new LinearLayout.LayoutParams(-2,-2);np.setMargins(dp(10),0,dp(34),0);row.addView(name,np);
-        String[] names={"Home","Apps","Settings"};
-        for(int i=0;i<names.length;i++){
-            final int destination=i;final boolean selected=page==i;
-            TextView tab=text(names[i],17,selected?0xff11151d:DIM);tab.setGravity(Gravity.CENTER);tab.setPadding(dp(20),dp(10),dp(20),dp(10));tab.setTypeface(null,Typeface.BOLD);
-            tab.setBackground(rounded(selected?WHITE:Color.TRANSPARENT,24,0));tab.setFocusable(true);tab.setClickable(true);
-            tab.setOnClickListener(v->{focusedPackage="";render(destination);});
-            tab.setOnFocusChangeListener((v,focus)->{tab.setBackground(rounded(focus?0xff36434f:selected?WHITE:Color.TRANSPARENT,24,focus?CYAN:0));tab.setTextColor(focus?WHITE:selected?0xff11151d:DIM);});
-            LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-2,-2);p.setMargins(0,0,dp(6),0);row.addView(tab,p);
+        Date now=new Date();
+        if(clock!=null)clock.setText(new SimpleDateFormat("HH:mm",Locale.getDefault()).format(now));
+        if(date!=null)date.setText(new SimpleDateFormat("EEEE, MMMM d",Locale.getDefault()).format(now));
+        if(greeting!=null){
+            int hour=Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            String part=hour<5?"Good night":hour<12?"Good morning":hour<19?"Good afternoon":"Good evening";
+            greeting.setText(name().isEmpty()?part:part+", "+name());
         }
-        row.addView(new View(this),new LinearLayout.LayoutParams(0,1,1));
-        batteryIcon=new BatteryView();row.addView(batteryIcon,new LinearLayout.LayoutParams(dp(27),dp(16)));
-        batteryLabel=text("",13,DIM);batteryLabel.setPadding(dp(7),0,dp(20),0);row.addView(batteryLabel);
-        clock=text("",20,WHITE);clock.setTypeface(null,Typeface.BOLD);row.addView(clock);root.addView(row,new LinearLayout.LayoutParams(-1,dp(48)));
+        if(status!=null){
+            NetworkInfo network=((ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+            String line=network!=null&&network.isConnected()?"Online":"Offline";
+            if(battery>=0)line+="   ·   Battery "+battery+"%"+(plugged?" (plugged in)":"");
+            status.setText(line);
+        }
+        if(profileName!=null){
+            String n=name();profileName.setText(n.isEmpty()?"Set name":n);
+            profileInitial.setText(n.isEmpty()?"+":n.substring(0,1).toUpperCase(Locale.getDefault()));
+        }
     }
-    private void home(){
-        FrameLayout hero=new FrameLayout(this);hero.setBackground(rounded(0xff18242e,24,0));
-        ImageView mark=new ImageView(this);mark.setImageResource(brand());mark.setAlpha(.65f);mark.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        FrameLayout.LayoutParams mp=new FrameLayout.LayoutParams(dp(284),dp(284),Gravity.RIGHT|Gravity.CENTER_VERTICAL);mp.setMargins(0,0,dp(45),0);hero.addView(mark,mp);
-        LinearLayout copy=new LinearLayout(this);copy.setOrientation(1);copy.setGravity(Gravity.CENTER_VERTICAL);copy.setPadding(dp(32),dp(22),0,dp(20));
-        TextView eyebrow=text("MADE FOR YOUR SCREEN",11,CYAN);eyebrow.setLetterSpacing(.15f);eyebrow.setTypeface(null,Typeface.BOLD);copy.addView(eyebrow);
-        TextView title=text("Ready when you are.",40,WHITE);title.setTypeface(Typeface.create("sans-serif-medium",Typeface.NORMAL));title.setPadding(0,dp(7),0,dp(5));copy.addView(title);
-        TextView description=text("Videos, music and your favorite apps.\nTogether in one place.",16,DIM);description.setLineSpacing(dp(3),1);copy.addView(description);
-        final String feature=installed("org.smarttube.stable")?"org.smarttube.stable":settingsPackage();
-        LinearLayout play=new LinearLayout(this);play.setGravity(Gravity.CENTER_VERTICAL);play.setPadding(dp(16),dp(9),dp(22),dp(9));play.setBackground(rounded(WHITE,28,0));play.setFocusable(true);play.setClickable(true);play.setContentDescription("Open "+label(feature));
-        ImageView icon=new ImageView(this);icon.setImageBitmap(icon(feature,28));play.addView(icon,new LinearLayout.LayoutParams(dp(28),dp(28)));
-        TextView caption=text("Open "+label(feature),16,0xff11151d);caption.setTypeface(null,Typeface.BOLD);caption.setPadding(dp(10),0,0,0);play.addView(caption);
-        play.setOnClickListener(v->launch(feature));play.setOnFocusChangeListener((v,focus)->play.setBackground(rounded(focus?0xffc8f6ff:WHITE,28,focus?CYAN:0)));
-        LinearLayout.LayoutParams pp=new LinearLayout.LayoutParams(-2,-2);pp.setMargins(0,dp(18),0,0);copy.addView(play,pp);
-        hero.addView(copy,new FrameLayout.LayoutParams(-1,-1));body.addView(hero,new LinearLayout.LayoutParams(-1,dp(272)));
-        LinearLayout heading=new LinearLayout(this);heading.setGravity(Gravity.CENTER_VERTICAL);heading.setPadding(dp(4),dp(24),dp(4),dp(8));
-        TextView titleApps=text("Your apps",21,WHITE);titleApps.setTypeface(null,Typeface.BOLD);heading.addView(titleApps,new LinearLayout.LayoutParams(0,-2,1));
-        TextView all=text("View all  ›",14,DIM);all.setPadding(dp(14),dp(8),dp(14),dp(8));all.setFocusable(true);all.setBackground(rounded(Color.TRANSPARENT,18,0));all.setOnClickListener(v->render(1));all.setOnFocusChangeListener((v,f)->all.setBackground(rounded(f?CARD:Color.TRANSPARENT,18,f?CYAN:0)));heading.addView(all);body.addView(heading);
-        HorizontalScrollView rail=new HorizontalScrollView(this);rail.setHorizontalScrollBarEnabled(false);rail.setClipToPadding(false);rail.setClipChildren(false);
-        LinearLayout apps=new LinearLayout(this);apps.setOrientation(0);apps.setClipChildren(false);apps.setPadding(dp(5),dp(8),dp(10),dp(12));
-        List<App> available=apps();for(App app:available){View tile=appTile(app,166,104);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(166),-2);p.setMargins(0,0,dp(15),0);apps.addView(tile,p);if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;}
-        rail.addView(apps);body.addView(rail,new LinearLayout.LayoutParams(-1,-2));
-        if(preferredFocus==null)preferredFocus=play;
+
+    private void render(){
+        preferredFocus=null;
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        ScrollView scroll=new ScrollView(this);scroll.setVerticalScrollBarEnabled(false);scroll.setClipToPadding(false);scroll.setFillViewport(true);
+        scroll.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff0d0f13,0xff0e131c,0xff101d36}));
+        LinearLayout page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setClipChildren(false);page.setClipToPadding(false);
+        page.setPadding(dp(58),dp(40),dp(58),dp(40));
+        scroll.addView(page,new ScrollView.LayoutParams(-1,-2));
+
+        LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setClipChildren(false);
+        TextView title=text("Home",32,INK);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        header.addView(profileChip());
+        clock=text("",20,INK);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,-2);cp.setMargins(dp(22),0,0,0);header.addView(clock,cp);
+        page.addView(header,new LinearLayout.LayoutParams(-1,dp(48)));
+
+        LinearLayout system=row(page,dp(20));
+        View settings=systemTile("Settings",0xff1a47a0,0xff0f2f73,true,v->open(new Intent(android.provider.Settings.ACTION_SETTINGS)));
+        system.addView(settings,tileParams());
+        if(installed("com.android.documentsui"))system.addView(systemTile("Files",0xff25303f,0xff1a222d,false,v->launch("com.android.documentsui")),tileParams());
+
+        List<App> apps=apps();LinearLayout line=null;int index=0;
+        for(App app:apps){
+            if(index%COLUMNS==0)line=row(page,dp(index==0?26:18));
+            View tile=appTile(app);line.addView(tile,tileParams());
+            if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;
+            index++;
+        }
+        if(preferredFocus==null)preferredFocus=settings;
+
+        LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setGravity(Gravity.CENTER_VERTICAL);
+        card.setPadding(dp(22),dp(20),dp(22),dp(20));
+        GradientDrawable surface=new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{0xff1a2231,0xff18294a});surface.setCornerRadius(dp(6));card.setBackground(surface);
+        TextView brand=text("GabOS",12,DIM);brand.setLetterSpacing(.12f);card.addView(brand);
+        greeting=text("",26,INK);greeting.setPadding(0,dp(14),0,dp(6));card.addView(greeting);
+        date=text("",14,DIM);card.addView(date);
+        status=text("",13,DIM);status.setPadding(0,dp(10),0,0);card.addView(status);
+        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,dp(156));sp.setMargins(0,dp(34),0,0);page.addView(card,sp);
+
+        setContentView(scroll);lastPackageCount=packageCount();updateStatus();
+        final View focus=preferredFocus;focus.post(()->focus.requestFocus());
     }
-    private View appTile(final App app,int width,int height){
-        LinearLayout group=new LinearLayout(this);group.setOrientation(1);group.setGravity(Gravity.CENTER_HORIZONTAL);group.setClipChildren(false);group.setFocusable(true);group.setClickable(true);group.setContentDescription(app.name);
-        FrameLayout face=new FrameLayout(this);face.setBackground(rounded(CARD,18,0));
-        ImageView image=new ImageView(this);image.setImageBitmap(icon(app.pkg,68));image.setScaleType(ImageView.ScaleType.FIT_CENTER);FrameLayout.LayoutParams ip=new FrameLayout.LayoutParams(dp(68),dp(68),Gravity.CENTER);face.addView(image,ip);group.addView(face,new LinearLayout.LayoutParams(-1,dp(height)));
-        TextView caption=text(app.name,14,DIM);caption.setGravity(Gravity.CENTER);caption.setSingleLine(true);caption.setEllipsize(TextUtils.TruncateAt.END);caption.setPadding(dp(3),dp(10),dp(3),dp(4));group.addView(caption,new LinearLayout.LayoutParams(-1,-2));
-        group.setOnClickListener(v->launch(app.pkg));group.setOnFocusChangeListener((v,focus)->{face.setBackground(rounded(focus?0xff354652:CARD,18,focus?WHITE:0));caption.setTextColor(focus?WHITE:DIM);group.animate().scaleX(focus?1.035f:1f).scaleY(focus?1.035f:1f).setDuration(120).start();if(focus)focusedPackage=app.pkg;});
-        return group;
+
+    private LinearLayout row(LinearLayout page,int top){
+        LinearLayout r=new LinearLayout(this);r.setClipChildren(false);r.setClipToPadding(false);
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,top,0,0);page.addView(r,p);return r;
     }
-    private void appGrid(){
-        TextView title=text("All apps",30,WHITE);title.setTypeface(null,Typeface.BOLD);title.setPadding(dp(4),dp(8),0,dp(22));body.addView(title);
-        List<App> list=apps();LinearLayout row=null;int n=0;
-        for(App app:list){if(n%5==0){row=new LinearLayout(this);row.setClipChildren(false);body.addView(row,new LinearLayout.LayoutParams(-1,-2));}View tile=appTile(app,180,112);LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,-2,1);p.setMargins(dp(7),dp(7),dp(7),dp(12));row.addView(tile,p);if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;n++;}
-        if(row!=null)while(n++%5!=0)row.addView(new View(this),new LinearLayout.LayoutParams(0,1,1));
+    private LinearLayout.LayoutParams tileParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(148),dp(83));p.setMargins(0,0,dp(18),0);return p;}
+
+    /** White outline and slight growth, drawn as a foreground so the art is not rebuilt. */
+    private void focusable(final View tile,final String pkg){
+        tile.setFocusable(true);tile.setClickable(true);
+        final GradientDrawable ring=new GradientDrawable();ring.setColor(Color.TRANSPARENT);ring.setCornerRadius(dp(6));ring.setStroke(dp(2),FOCUS);
+        tile.setOnFocusChangeListener((v,focus)->{
+            v.setForeground(focus?ring:null);v.setElevation(focus?dp(8):0);
+            v.animate().scaleX(focus?1.08f:1f).scaleY(focus?1.08f:1f).setDuration(110).start();
+            if(focus&&pkg!=null)focusedPackage=pkg;
+        });
     }
-    private String settingsPackage(){return installed("com.android.tv.settings")?"com.android.tv.settings":"com.android.settings";}
+
+    private View profileChip(){
+        LinearLayout chip=new LinearLayout(this);chip.setGravity(Gravity.CENTER_VERTICAL);chip.setPadding(dp(6),dp(5),dp(16),dp(5));
+        chip.setBackground(rounded(0x26ffffff,24));chip.setContentDescription("Profile name");
+        profileInitial=text("",15,0xff0d0f13);profileInitial.setGravity(Gravity.CENTER);profileInitial.setTypeface(Typeface.DEFAULT_BOLD);
+        GradientDrawable dot=new GradientDrawable();dot.setShape(GradientDrawable.OVAL);dot.setColor(0xffd2e3fc);profileInitial.setBackground(dot);
+        chip.addView(profileInitial,new LinearLayout.LayoutParams(dp(30),dp(30)));
+        profileName=text("",15,INK);profileName.setPadding(dp(10),0,0,0);profileName.setMaxWidth(dp(220));profileName.setSingleLine(true);profileName.setEllipsize(TextUtils.TruncateAt.END);chip.addView(profileName);
+        chip.setFocusable(true);chip.setClickable(true);chip.setOnClickListener(v->askName());
+        chip.setOnFocusChangeListener((v,focus)->{chip.setBackground(rounded(focus?0xffe8eaed:0x26ffffff,24));profileName.setTextColor(focus?0xff0d0f13:INK);});
+        return chip;
+    }
+
+    private void askName(){
+        final EditText field=new EditText(this);field.setSingleLine(true);field.setText(name());field.setSelection(field.getText().length());
+        field.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PERSON_NAME|InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        field.setImeOptions(EditorInfo.IME_ACTION_DONE);field.setHint("Your name");
+        FrameLayout frame=new FrameLayout(this);frame.setPadding(dp(24),dp(8),dp(24),0);frame.addView(field);
+        final AlertDialog dialog=new AlertDialog.Builder(this,android.R.style.Theme_Material_Dialog_Alert)
+            .setTitle("Who is watching?").setMessage("This name stays on this device. No account is created.")
+            .setView(frame).setPositiveButton("Save",null).setNegativeButton("Skip",null).create();
+        final Runnable save=()->{
+            String value=field.getText().toString().trim();if(value.length()>24)value=value.substring(0,24);
+            prefs().edit().putString("name",value).putBoolean("asked",true).apply();updateStatus();dialog.dismiss();
+        };
+        dialog.setOnShowListener(d->{
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v->save.run());
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(v->{prefs().edit().putBoolean("asked",true).apply();dialog.dismiss();});
+        });
+        field.setOnEditorActionListener((v,action,event)->{if(action==EditorInfo.IME_ACTION_DONE){save.run();return true;}return false;});
+        dialog.show();
+    }
+
+    private View systemTile(String label,int from,int to,boolean gear,View.OnClickListener action){
+        FrameLayout tile=new FrameLayout(this);
+        GradientDrawable fill=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{from,to});fill.setCornerRadius(dp(6));tile.setBackground(fill);
+        tile.setContentDescription(label);
+        if(gear)tile.addView(new GearView(),new FrameLayout.LayoutParams(dp(30),dp(30),Gravity.CENTER));
+        else{TextView t=text(label,16,INK);t.setGravity(Gravity.CENTER);tile.addView(t,new FrameLayout.LayoutParams(-1,-1));}
+        focusable(tile,null);tile.setOnClickListener(action);return tile;
+    }
+
+    private View appTile(final App app){
+        ImageView tile=new ImageView(this);tile.setScaleType(ImageView.ScaleType.FIT_XY);tile.setImageBitmap(art(app));
+        tile.setContentDescription(app.name);focusable(tile,app.pkg);tile.setOnClickListener(v->launch(app.pkg));return tile;
+    }
+
+    /** One cached bitmap per application: its TV banner, or its icon and name on a tint. */
+    private Bitmap art(App app){
+        Bitmap cached=art.get(app.pkg);if(cached!=null)return cached;
+        int w=dp(148),h=dp(83);Bitmap bitmap=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(bitmap);
+        Path clip=new Path();clip.addRoundRect(new RectF(0,0,w,h),dp(6),dp(6),Path.Direction.CW);canvas.clipPath(clip);
+        Drawable banner=null;
+        try{banner=getPackageManager().getApplicationBanner(app.pkg);}catch(Exception ignored){}
+        if(banner!=null){banner.setBounds(0,0,w,h);banner.draw(canvas);}
+        else{
+            canvas.drawColor(TINTS[(app.pkg.hashCode()&0x7fffffff)%TINTS.length]);
+            Drawable icon;try{icon=getPackageManager().getApplicationIcon(app.pkg);}catch(Exception e){icon=getResources().getDrawable(android.R.drawable.sym_def_app_icon,null);}
+            int size=dp(36),left=dp(12),top=(h-size)/2;icon.setBounds(left,top,left+size,top+size);icon.draw(canvas);
+            Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);paint.setColor(INK);paint.setTextSize(dp(14));
+            float x=left+size+dp(10),room=w-x-dp(8);String[] words=app.name.split(" ");ArrayList<String> lines=new ArrayList<>();String current="";
+            for(String word:words){String next=current.isEmpty()?word:current+" "+word;if(paint.measureText(next)<=room||current.isEmpty())current=next;else{lines.add(current);current=word;}}
+            if(!current.isEmpty())lines.add(current);
+            while(lines.size()>3)lines.remove(lines.size()-1);
+            float step=dp(18),y=h/2f-(lines.size()-1)*step/2f+dp(5);
+            for(String lineText:lines){canvas.drawText(TextUtils.ellipsize(lineText,new android.text.TextPaint(paint),room,TextUtils.TruncateAt.END).toString(),x,y,paint);y+=step;}
+        }
+        art.put(app.pkg,bitmap);return bitmap;
+    }
+
     private static class App{final String pkg,name;App(String p,String n){pkg=p;name=n;}}
     private List<App> apps(){
         LinkedHashMap<String,App> result=new LinkedHashMap<>();
-        String[] pinned={"org.smarttube.stable","android.rk.RockVideoPlayer","com.android.music","com.ecloud.eshare.server","acr.browser.barebones","com.android.gallery3d","com.hotack.hotackkoreasettings"};
+        HashSet<String> hidden=new HashSet<>(Arrays.asList(getPackageName(),"com.android.tv.settings","com.android.settings","com.android.documentsui"));
+        String[] pinned={"org.smarttube.stable","com.aurora.store","local.gabos.media"};
         for(String pkg:pinned)if(installed(pkg)&&launchIntent(pkg)!=null)result.put(pkg,new App(pkg,label(pkg)));
-        List<ResolveInfo> found=new ArrayList<>();for(String category:new String[]{Intent.CATEGORY_LAUNCHER,"android.intent.category.LEANBACK_LAUNCHER"}){Intent i=new Intent(Intent.ACTION_MAIN);i.addCategory(category);found.addAll(getPackageManager().queryIntentActivities(i,0));}
+        List<ResolveInfo> found=new ArrayList<>();
+        for(String category:new String[]{Intent.CATEGORY_LEANBACK_LAUNCHER,Intent.CATEGORY_LAUNCHER}){Intent i=new Intent(Intent.ACTION_MAIN);i.addCategory(category);found.addAll(getPackageManager().queryIntentActivities(i,0));}
         Collections.sort(found,new ResolveInfo.DisplayNameComparator(getPackageManager()));
-        for(ResolveInfo info:found){String pkg=info.activityInfo.packageName;if(pkg.equals(getPackageName())||result.containsKey(pkg))continue;result.put(pkg,new App(pkg,info.loadLabel(getPackageManager()).toString()));}
+        for(ResolveInfo info:found){String pkg=info.activityInfo.packageName;if(hidden.contains(pkg)||result.containsKey(pkg))continue;result.put(pkg,new App(pkg,info.loadLabel(getPackageManager()).toString()));}
         return new ArrayList<>(result.values());
     }
     private boolean installed(String pkg){try{getPackageManager().getApplicationInfo(pkg,0);return true;}catch(PackageManager.NameNotFoundException e){return false;}}
-    private String label(String pkg){if(pkg.equals("org.smarttube.stable"))return "SmartTube";if(pkg.equals("android.rk.RockVideoPlayer"))return "Videos";if(pkg.equals("com.hotack.hotackkoreasettings"))return "Projector";if(pkg.equals("acr.browser.barebones"))return "Browser";if(pkg.equals("com.android.music"))return "Music";if(pkg.equals("com.android.gallery3d"))return "Gallery";if(pkg.equals("com.ecloud.eshare.server"))return "EShare";try{return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg,0)).toString();}catch(Exception e){return "App";}}
-    private Intent launchIntent(String pkg){if(pkg.equals(settingsPackage()))return new Intent(android.provider.Settings.ACTION_SETTINGS).setPackage(pkg);Intent i=getPackageManager().getLaunchIntentForPackage(pkg);if(i==null)i=getPackageManager().getLeanbackLaunchIntentForPackage(pkg);return i;}
-    private void launch(String pkg){Intent i=launchIntent(pkg);try{if(i==null)throw new ActivityNotFoundException();startActivity(i);}catch(Exception e){Toast.makeText(this,"Could not open this app",Toast.LENGTH_SHORT).show();}}
-    private Bitmap icon(String pkg,int size){Drawable drawable;try{drawable=getPackageManager().getApplicationIcon(pkg);}catch(Exception e){drawable=getResources().getDrawable(android.R.drawable.sym_def_app_icon,null);}Bitmap b=Bitmap.createBitmap(dp(size),dp(size),Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(b);drawable.setBounds(0,0,b.getWidth(),b.getHeight());drawable.draw(canvas);return b;}
-    private void original(){Intent i=new Intent();i.setClassName("com.htc.htcrayolauncher","com.htc.activity.HomeActivity");try{startActivity(i);}catch(Exception e){Toast.makeText(this,"Could not open Canon",Toast.LENGTH_SHORT).show();}}
-    private class BatteryView extends View{
-        int level=-1;boolean charging=false;final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
-        BatteryView(){super(MainActivity.this);}
-        @Override protected void onDraw(Canvas c){super.onDraw(c);float w=getWidth(),h=getHeight();int color=level>=0&&level<=15&&!charging?0xffffb36b:charging?CYAN:DIM;paint.setColor(color);paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(1.5f));c.drawRoundRect(dp(1),dp(1),w-dp(4),h-dp(1),dp(3),dp(3),paint);paint.setStyle(Paint.Style.FILL);c.drawRoundRect(w-dp(3),h*.32f,w,h*.68f,dp(1),dp(1),paint);if(level>=0)c.drawRoundRect(dp(4),dp(4),dp(4)+(w-dp(11))*Math.max(0,Math.min(level,100))/100f,h-dp(4),dp(1),dp(1),paint);}
+    private String label(String pkg){try{return getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(pkg,0)).toString();}catch(Exception e){return "App";}}
+    private Intent launchIntent(String pkg){Intent i=getPackageManager().getLeanbackLaunchIntentForPackage(pkg);if(i==null)i=getPackageManager().getLaunchIntentForPackage(pkg);return i;}
+    private void launch(String pkg){open(launchIntent(pkg));}
+    private void open(Intent intent){try{if(intent==null)throw new ActivityNotFoundException();startActivity(intent);}catch(Exception e){Toast.makeText(this,"Could not open this app",Toast.LENGTH_SHORT).show();}}
+
+    private class GearView extends View{
+        final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
+        GearView(){super(MainActivity.this);}
+        @Override protected void onDraw(Canvas c){
+            float cx=getWidth()/2f,cy=getHeight()/2f,r=Math.min(cx,cy);
+            paint.setColor(INK);paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(r*.16f);paint.setStrokeCap(Paint.Cap.ROUND);
+            for(int i=0;i<8;i++){double a=Math.PI*i/4;c.drawLine(cx+(float)Math.cos(a)*r*.62f,cy+(float)Math.sin(a)*r*.62f,cx+(float)Math.cos(a)*r*.9f,cy+(float)Math.sin(a)*r*.9f,paint);}
+            c.drawCircle(cx,cy,r*.58f,paint);c.drawCircle(cx,cy,r*.2f,paint);
+        }
     }
 }

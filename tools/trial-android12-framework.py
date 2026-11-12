@@ -72,6 +72,13 @@ def main():
             raise RuntimeError('ADB command failed: '+result.stderr.decode(errors='replace'))
         return result.stdout.decode(errors='replace').strip()
 
+    def boot_id():
+        # USB can drop between two reads while the device is rebooting; a failed
+        # read is "unknown", never an error that aborts the controller.
+        result = command('shell', 'cat', '/proc/sys/kernel/random/boot_id', timeout=10)
+        value = result.stdout.decode(errors='replace').strip()
+        return value if result.returncode == 0 and len(value) == 36 else None
+
     def normal():
         return (command('shell', 'getprop', 'ro.build.version.release', timeout=5).stdout.strip() == b'8.1.0'
                 and command('shell', 'getprop', 'sys.boot_completed', timeout=5).stdout.strip() == b'1')
@@ -155,7 +162,9 @@ def main():
     if backup.returncode or len(backup.stdout) != 33554432 or hashlib.md5(backup.stdout).hexdigest() != RECOVERY:
         raise SystemExit('Fresh independent recovery backup failed')
     (logs/'original-recovery.img').write_bytes(backup.stdout)
-    before_boot = checked('shell', 'cat', '/proc/sys/kernel/random/boot_id')
+    before_boot = boot_id()
+    if before_boot is None:
+        raise SystemExit('Could not read the baseline boot identifier')
     private = '/data/local/tmp/rayo12-framework-'+uuid.uuid4().hex[:12]
     checked('shell', '/sbin/busybox', 'mkdir', '-m', '0700', private)
     if reuse and not same_system:
@@ -277,8 +286,8 @@ def main():
                         elif window.returncode == 0 and b'FallbackHome' not in window.stdout:
                             settings_opened = False
             elif version == b'8.1.0' and normal():
-                current = checked('shell', 'cat', '/proc/sys/kernel/random/boot_id')
-                if current != before_boot:
+                current = boot_id()
+                if current is not None and current != before_boot:
                     returned = True
                     break
         if not returned:
@@ -290,7 +299,7 @@ def main():
         # Remain available to the independent watchdog even after a diagnostic
         # failure. Never write restoration blocks in an unidentified environment.
         while written and not returned and time.monotonic()-started < watchdog+250:
-            if normal() and checked('shell', 'cat', '/proc/sys/kernel/random/boot_id') != before_boot:
+            if normal() and boot_id() not in (None, before_boot):
                 returned = True
                 break
             time.sleep(3)

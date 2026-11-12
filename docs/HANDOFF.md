@@ -14,7 +14,74 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
-## Google TV direction (latest owner decision, supersedes "no Google services")
+## Current direction: lightweight GabOS without Google (owner decision after run gtv-02)
+
+Run `20261111-211628-cf5e53bf` booted `gabos-gtv-02` (Google TV Home, GSF, Play
+services, Play Store; 1200 MiB system, 704 MiB grown data, 3600 s watchdog).
+Measured over USB, not through the lens unless stated:
+
+- Boot completed about 60 s after the framework trigger; system_server stayed
+  up for the whole session. The owner confirmed the menus looked correct.
+- Every host-compiled package reported `status=speed`; the launcher's recorded
+  class-loader context matched the host one.
+- Google check-in succeeded and Home showed its profile chooser. No account was
+  added. Google packages used roughly 750 MiB PSS on the 1 GB board.
+- Google TV Home does **not** run without Play services ("Google Play Services
+  not available", permanent loading skeleton). With Play services enabled and
+  no account/Play Store its "basic TV" mode worked, but still needs Play
+  services and shows a fixed sign-in banner. It has no local profile.
+
+The owner then chose: **no Google packages at all**, a GabOS launcher redesigned
+to look like that basic mode with an offline profile name, and stability and
+low memory first. If that is good, promote it to primary and remove the other
+systems step by step. The Google TV section below is kept as tested history;
+`--google-tv/--google-services/--play-store` remain available but are not the
+target.
+
+Changes made for that direction:
+
+- **GabOS Home 0.6** (`work/rayo-tv/MainActivity.java`): "Home" page with a
+  Settings tile (native TV Settings), Files, banner-style app tiles, a greeting
+  card and a local name chip. The name is stored only in the app's preferences.
+  About 15 MiB PSS in the live session versus about 320 MiB for Google's Home.
+- **GabOS Keyboard** (`KeyboardService.java`, same APK): the D-pad-only Leanback
+  keyboard could not be used with the projector pointer (owner report: stuck on
+  one key). The new keyboard accepts pointer clicks and D-pad. It was installed
+  in the live session; the owner typed a name with it and a D-pad plus pointer
+  test over USB entered characters. The packager now drops LeanbackIME when the
+  launcher carries the keyboard, and the boot script selects it.
+- **Cold-start stall root cause**: libhidl sleeps one second in every
+  `getService()` on products that do not enforce the VINTF manifest. Each
+  graphical process made about seven such lookups, matching the observed 7.2 to
+  7.5 s first frames ("Davey") and the earlier eight-second cold opens.
+  `tools/apply-android12-hidl-compat.py` removes only that fixed delay under
+  `ro.rayo.hidl.no_legacy_wait`; the packager declares the registered
+  configstore service and passthrough mapper 2.0 and refuses unpatched
+  libhidlbase copies. **The effect is not yet measured on the device.**
+- The controller no longer aborts when a USB read fails during reboot. In run
+  gtv-02 that race stopped it before the framework trigger; the same preflight
+  (PID 1, mounts, init MD5) was then done by hand.
+- `tools/archive-device-staging.py` moved 44 superseded lab artifacts from
+  userdata to `local/device-staging-archive/` after per-item checksum
+  comparison (829 to 1710 MiB free before gtv-02). No installed system, its
+  data, or the on-device copies of the normal boot image were touched.
+- Aurora Store rendered and was browsed in that session (earlier it was blank);
+  one crash was an application-side duplicate-key error in its list UI.
+
+Next candidate, **not yet booted**: `outputs/android12-framework/gabos-lite-01`
+(880 MiB system, same 704 MiB data UUID retained on the device, 3600 s watchdog,
+no Google packages).
+
+```powershell
+python -u tools/trial-android12-framework.py --candidate outputs/android12-framework/gabos-lite-01 --reuse-known-artifacts --execute
+```
+
+Gates before promotion: cold-start timing with the HIDL change, no boot
+regressions from it, keyboard in native Settings (Wi-Fi password), owner lens
+checks, repeated boots, then a written promotion/rollback plan. The device
+clock shows UTC; the time zone is unset.
+
+## Google TV direction (tested history; superseded by the section above)
 
 The owner now wants a stable Android 12 with the Google TV Home, working Google
 services, and eventually GabOS as the only installed system. Earlier notes in

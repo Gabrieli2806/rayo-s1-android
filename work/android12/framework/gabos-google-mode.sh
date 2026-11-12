@@ -81,6 +81,12 @@ apply_launcher_mode() {
 
 case "$ACTION" in
     boot)
+        # The projector is driven by a pointer and a D-pad; select the GabOS
+        # keyboard, which accepts both, whenever the launcher provides it.
+        if ime list -a -s 2>/dev/null | grep -q '^local.rayo.launcher/.KeyboardService$'; then
+            ime enable local.rayo.launcher/.KeyboardService >/dev/null 2>&1 || true
+            ime set local.rayo.launcher/.KeyboardService >/dev/null 2>&1 || true
+        fi
         GMS_PROP="$(getprop persist.gabos.gms.enabled)"
         if [ -z "$GMS_PROP" ]; then
             GMS_PROP="$(getprop ro.gabos.gms.default)"

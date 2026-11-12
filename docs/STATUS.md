@@ -1,5 +1,14 @@
 # Reference checkpoint — November 10, 2026
 
+## Lightweight direction after the Google TV trial — November 11, 2026 (night)
+
+Run `20261111-211628-cf5e53bf` booted the Google TV candidate `gabos-gtv-02`:
+Home, check-in and host-compiled applications worked, but the Google packages
+used about 750 MiB PSS and Home cannot run without Play services. The owner
+chose a Google-free GabOS with a redesigned launcher (Home 0.6, offline name)
+and a pointer-capable keyboard. `gabos-lite-01` is packaged and **not yet
+booted**; its HIDL cold-start fix is unmeasured. See [HANDOFF.md](HANDOFF.md).
+
 ## Google TV candidate prepared offline — November 11, 2026 (evening)
 
 The owner now targets Google TV Home with working Google services. Candidate

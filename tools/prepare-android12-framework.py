@@ -43,7 +43,10 @@ def main():
     parser.add_argument('--google-tv', action='store_true',
                         help='Include the adapted ADT-3 Google TV Home GUI and runtime mode switcher')
     parser.add_argument('--google-services', action='store_true',
-                        help='Include Google Services Framework, Play services and the TV Play Store')
+                        help='Include Google Services Framework and Play services, which Google TV Home '
+                             'requires to be present even in its account-free basic mode')
+    parser.add_argument('--play-store', action='store_true',
+                        help='Also include the TV Play Store and PartnerSetup for a signed-in configuration')
     parser.add_argument('--data-mib', type=int, default=256,
                         help='Size of a newly created private data image (256-3072 MiB)')
     parser.add_argument('--data-image', type=Path,
@@ -57,6 +60,8 @@ def main():
         parser.error('--legacy-media requires --software-media for explicit OMX declarations')
     if args.google_services and not args.google_tv:
         parser.error('--google-services requires --google-tv')
+    if args.play_store and not args.google_services:
+        parser.error('--play-store requires --google-services')
     if not 256 <= args.data_mib <= 3072 or not 600 <= args.watchdog_seconds <= 14400:
         parser.error('Data size or watchdog window is outside the bootstrap limits')
     if args.data_image and not args.reuse_data_manifest:
@@ -93,6 +98,14 @@ def main():
         destination = system/'app/RayoDark/RayoDark.apk'
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(apk, destination)
+        # The launcher package carries the pointer- and D-pad-capable GabOS
+        # keyboard. The D-pad-only Leanback keyboard could not be operated with
+        # the projector's pointer (owner report, run 20261111-211628).
+        with zipfile.ZipFile(apk) as archive:
+            has_keyboard = b'KeyboardService' in archive.read('classes.dex')
+        leanback_ime = system/'product/app/LeanbackIME'
+        if has_keyboard and leanback_ime.is_dir():
+            shutil.rmtree(leanback_ime)
     gabos_apps = []
     if args.gabos_apps:
         if not (system/'priv-app/DocumentsUI/DocumentsUI.apk').is_file():
@@ -203,13 +216,14 @@ def main():
                 ref_dir/'apks/PrebuiltGmsCorePano.apk',
                 system/'product/priv-app/PrebuiltGmsCorePano/PrebuiltGmsCorePano.apk',
                 audit_by_file['PrebuiltGmsCorePano.apk']['sha256'])
-            # The TV Play Store lets Play services validate and update itself;
-            # no device-type feature is declared to bypass that check.
-            stage_apk_with_libs(ref_dir/'extra/apks/Tubesky.apk',
-                                system/'product/priv-app/Tubesky/Tubesky.apk')
-            stage_apk_with_libs(
-                ref_dir/'extra/apks/PartnerSetupPrebuilt.apk',
-                system/'product/priv-app/PartnerSetupPrebuilt/PartnerSetupPrebuilt.apk')
+            if args.play_store:
+                # Only for a signed-in configuration. Device run gtv-02 showed
+                # basic-mode Home working with the store disabled.
+                stage_apk_with_libs(ref_dir/'extra/apks/Tubesky.apk',
+                                    system/'product/priv-app/Tubesky/Tubesky.apk')
+                stage_apk_with_libs(
+                    ref_dir/'extra/apks/PartnerSetupPrebuilt.apk',
+                    system/'product/priv-app/PartnerSetupPrebuilt/PartnerSetupPrebuilt.apk')
             for src_rel, dst_rel in (
                     ('extra/config/privapp-permissions-google-se.xml',
                      'system_ext/etc/permissions/privapp-permissions-google-se.xml'),
@@ -285,6 +299,26 @@ def main():
         ET.SubElement(hal, 'name').text = package
         ET.SubElement(hal, 'transport').text = 'hwbinder'
         ET.SubElement(hal, 'version').text = '7.0'
+        declaration = ET.SubElement(hal, 'interface')
+        ET.SubElement(declaration, 'name').text = interface
+        ET.SubElement(declaration, 'instance').text = 'default'
+    # With the fixed HIDL lookup delay removed, every HAL that is registered on
+    # the board must be declared so late starters are awaited normally. Run
+    # 20261111-211628 showed configstore registered and the passthrough mapper
+    # used, both undeclared.
+    declared = {hal.findtext('name') for hal in device_manifest.getroot().findall('hal')}
+    for package, transport, version, interface in (
+            ('android.hardware.configstore', 'hwbinder', '1.1', 'ISurfaceFlingerConfigs'),
+            ('android.hardware.graphics.mapper', 'passthrough', '2.0', 'IMapper')):
+        if package in declared:
+            continue
+        hal = ET.SubElement(device_manifest.getroot(), 'hal', {'format': 'hidl'})
+        ET.SubElement(hal, 'name').text = package
+        node = ET.SubElement(hal, 'transport')
+        node.text = transport
+        if transport == 'passthrough':
+            node.set('arch', '32')
+        ET.SubElement(hal, 'version').text = version
         declaration = ET.SubElement(hal, 'interface')
         ET.SubElement(declaration, 'name').text = interface
         ET.SubElement(declaration, 'instance').text = 'default'
@@ -535,6 +569,7 @@ debug.rayo.graphics.client_blend=1
 debug.hwui.use_buffer_age=false
 debug.hwui.use_partial_updates=false
 ro.rayo.keystore.legacy_pid_sid=true
+ro.rayo.hidl.no_legacy_wait=true
 ro.hardware.hwcomposer=rayo12
 ro.opengles.version=131072
 debug.renderengine.backend=gles
@@ -551,7 +586,7 @@ dalvik.vm.usejitprofiles=false
     if args.legacy_media:
         defaults += 'ro.rayo.media.legacy_omx=true\n'
     if args.google_tv:
-        defaults += ('ro.gabos.launcher.default='+('google_tv_account' if args.google_services else 'google_tv')+'\n'
+        defaults += ('ro.gabos.launcher.default='+('google_tv_account' if args.play_store else 'google_tv')+'\n'
                      'ro.gabos.gms.default='+('1' if args.google_services else '0')+'\n')
         if args.google_services:
             # Standard client identifiers read by Play services and the store.
@@ -562,6 +597,11 @@ dalvik.vm.usejitprofiles=false
                      'ro.rayo.bluetooth.legacy_hci=true\n'
                      'bluetooth.enable_timeout_ms=8000\n'
                      'wifi.interface=wlan0\nro.bt.bdaddr_path=/data/misc/bluetooth/bdaddr\n')
+    # The isolated legacy namespace keeps its own factory-era transport library.
+    hidl_copies = [path for path in system.rglob('libhidlbase.so')
+                   if path.is_file() and not path.is_symlink() and 'legacy' not in path.parts]
+    if not hidl_copies or any(b'ro.rayo.hidl.no_legacy_wait' not in path.read_bytes() for path in hidl_copies):
+        raise SystemExit('Rebuild every packaged libhidlbase with the opt-in lookup-delay removal')
     if b'ro.rayo.audio.pcm_soft_start' not in (system/'lib/hw/android.hardware.audio@7.0-impl.so').read_bytes():
         raise SystemExit('Rebuild the PCM soft-start audio implementation first')
     tv_apks = list(system.rglob('TvSettings.apk'))
@@ -753,6 +793,7 @@ dalvik.vm.usejitprofiles=false
                      **({'replaces': data_replaces} if data_replaces else {})),
         'recovery': verified, 'watchdog_seconds': args.watchdog_seconds, 'device_written': False,
         'google_tv': google_tv_records, 'google_services': args.google_services,
+        'play_store': args.play_store,
         'host_preopt': preopt_records,
         'graphics': graphics, 'bootstrap_sha256': digest(init),
         'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': True,

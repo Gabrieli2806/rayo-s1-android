@@ -1,5 +1,12 @@
 # Lightweight TV launcher
 
+**Current version: GabOS Home 0.6.** One "Home" page: Settings and Files tiles,
+banner-style application tiles, a greeting card and an offline profile name
+(stored only in the launcher's preferences). The same APK contains GabOS
+Keyboard, an input method usable with both the projector pointer and a D-pad.
+The only permission is ACCESS_NETWORK_STATE for the online/offline label. The
+paragraphs below describe the earlier 0.1-0.5 design and history.
+
 The owner's latest target is a simplified Google TV style without Google
 services. This supersedes the earlier original-Google-Home-only requirement.
 The local Rayo launcher supplies dark navigation, app icons, a horizontal app

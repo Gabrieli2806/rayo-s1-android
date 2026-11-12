@@ -15,6 +15,7 @@ python3 "$rayo_root/tools/apply-android12-audio-soft-start.py" --source "$rayo_s
 python3 "$rayo_root/tools/apply-android12-crypto-lab.py" --source "$rayo_source"
 python3 "$rayo_root/tools/apply-android12-keystore-compat.py" --source "$rayo_source"
 python3 "$rayo_root/tools/apply-android12-bluetooth-compat.py" --source "$rayo_source"
+python3 "$rayo_root/tools/apply-android12-hidl-compat.py" --source "$rayo_source"
 mkdir -p "$rayo_source/device/canon"
 cp -a "$rayo_root/work/android12/device/canon/rayos1_12_lab" "$rayo_source/device/canon/"
 cp -a "$rayo_root/work/android12/device/canon/rayos1_tv12" "$rayo_source/device/canon/"

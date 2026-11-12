@@ -3,7 +3,23 @@
 Read [HANDOFF.md](HANDOFF.md) first for exact device guards, artifact paths,
 commands, private-cache requirements and the owner's latest UI decisions.
 
-## Priority 0: Google TV candidate `gabos-gtv-01`
+## Priority 0: lightweight candidate `gabos-lite-01`
+
+The owner dropped Google packages after run gtv-02 (see [HANDOFF.md](HANDOFF.md)).
+Open gates:
+
+1. First guarded boot of `gabos-lite-01`; confirm no regression from the HIDL
+   lookup-delay removal (graphics, audio, keystore, radios all start).
+2. Measure cold/warm starts of Settings, Files, SmartTube and Aurora against
+   the 7 s first-frame stalls recorded in run gtv-02.
+3. GabOS Home 0.6 and GabOS Keyboard through the lens: pointer and D-pad,
+   name entry, Wi-Fi password entry in native Settings.
+4. Repeated boots and a long session; RAM headroom during SmartTube playback.
+5. Promotion plan: Android 12 system on the 2 GiB `system` partition, data
+   directly on userdata, verified host backups and a tested rollback before any
+   older system is removed. Still not started.
+
+## Historical: Google TV candidate `gabos-gtv-01`
 
 The owner's current target is a stable Android 12 with Google TV Home and working
 Google services, then GabOS as the only system. See the Google TV section of

@@ -58,13 +58,14 @@ The owner wants the actual Android TV Settings, with working transparency and vi
 
 The final offline continuation image is `outputs/android12-framework/gabos-full-redraw-01`. The GPU fallback alone did not fix gray flicker; the owner confirmed that failure. A runtime test with both `debug.hwui.use_buffer_age=false` and `debug.hwui.use_partial_updates=false` and a TV Settings restart corrected the internal capture. Those flags are now baked offline; fresh-boot, lens and performance validation remain pending. The last device trial returned to v14 and restored factory recovery/readback. Follow `docs/HANDOFF.md` rather than assuming the final offline image was installed or declaring the pop/media/power issues fixed.
 
-## Google TV direction
+## Lightweight direction (latest)
 
-The owner's latest goal supersedes the earlier "no Google services" choice: a
-stable Android 12 with Google TV Home and working Google services, then GabOS as
-the only system. Offline candidate `outputs/android12-framework/gabos-gtv-01` is
-prepared and unbooted. Keep original Google package signatures, do not spoof
-certification or fingerprints, and leave account registration/sign-in to the
-owner. Do not package the reference framework/settings overlays unchanged. Space
-on userdata is the main constraint; never lower the reserve guard to fit. Follow
-the Google TV section of `docs/HANDOFF.md`.
+After the Google TV trial (run `20261111-211628-cf5e53bf`) the owner chose a
+GabOS **without any Google packages**: Google TV Home needs Play services, which
+cost about 750 MiB on this 1 GB board. Target: the redesigned GabOS Home (basic
+Google-TV-like layout, offline profile name), the GabOS pointer/D-pad keyboard,
+native TV Settings and Files, stability and low memory first, then promotion to
+primary and stepwise removal of the older systems. Do not modify or re-sign
+Google APKs to fake an offline profile. Keep `ro.rayo.hidl.no_legacy_wait`
+paired with complete HAL declarations. Space on userdata is tight; never lower
+the reserve guard. Follow the first section of `docs/HANDOFF.md`.
