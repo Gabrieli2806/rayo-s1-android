@@ -129,13 +129,19 @@ def main():
         reuse = True
     same_system = reuse and current_md5 == md5s[payloads[0][0].name]
     available = int(checked('shell', 'df', '-k', '/realdata').splitlines()[-1].split()[3])*1024
-    # A replaced data image is staged beside the old one and renamed only after
-    # its checksum is verified, so the old file is not counted as reclaimed.
+    # A replaced data image is staged beside the old one and renamed after its
+    # checksum is verified when that fits. Otherwise the old file, whose exact
+    # contents were just matched to the retained host copy, is removed first.
     freed = 0 if same_system else old_system_bytes
+    staged_data = True
     needed = ((0 if same_system else system_bytes)+(data_bytes if replace_data or not reuse else 0)
               +(64+768)*MIB)
     print('Physical data space: available %d MiB, reclaimed by replacement %d MiB, required with reserve %d MiB'
           % (available//MIB, freed//MIB, needed//MIB), flush=True)
+    if replace_data and available+freed < needed:
+        staged_data = False
+        freed += old_data_bytes
+        print('Staging beside the old data does not fit; it will be removed before upload.', flush=True)
     if available+freed < needed:
         raise SystemExit('Insufficient reserved physical data space')
     print('Verified baseline, independent recovery, empty BCB, new isolated data path, and space reserve.', flush=True)
@@ -164,7 +170,9 @@ def main():
         print('Reusing checksum-identical, verified and unmapped system file.', flush=True)
     if not reuse or replace_data:
         uploads.insert(0 if same_system else 1,
-                       (payloads[1][0], DATA_DIR+'/userdata.ext4'+('.new' if replace_data else '')))
+                       (payloads[1][0], DATA_DIR+'/userdata.ext4'+('.new' if replace_data and staged_data else '')))
+    if replace_data and not staged_data:
+        checked('shell', '/sbin/busybox', 'rm', DATA_DIR+'/userdata.ext4')
     for path, remote in uploads:
         expected = RECOVERY if path.name == 'original-recovery.img' else md5s[path.name]
         print('Uploading and verifying '+path.name, flush=True)
@@ -173,7 +181,7 @@ def main():
         checked('shell', '/sbin/busybox', 'chmod', '0600', remote)
         if checked('shell', 'md5sum', remote, timeout=slow).split()[0] != expected:
             raise RuntimeError('Upload checksum mismatch: '+remote)
-    if replace_data:
+    if replace_data and staged_data:
         # The identical prior contents remain in the host run they were pulled into.
         checked('shell', '/sbin/busybox', 'mv', '-f', DATA_DIR+'/userdata.ext4.new', DATA_DIR+'/userdata.ext4')
         checked('shell', '/sbin/busybox', 'sync')
