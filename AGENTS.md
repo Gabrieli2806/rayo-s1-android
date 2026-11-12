@@ -69,3 +69,14 @@ primary and stepwise removal of the older systems. Do not modify or re-sign
 Google APKs to fake an offline profile. Keep `ro.rayo.hidl.no_legacy_wait`
 paired with complete HAL declarations. Space on userdata is tight; never lower
 the reserve guard. Follow the first section of `docs/HANDOFF.md`.
+
+## Current boot layout (November 12, 2026)
+
+GabOS Android 12 is the normal boot; the recovery slot holds Android 8.1 v14 as
+the rescue system, and the factory recovery is kept as verified copies (host and
+`/realdata/gabos-rescue/`). This supersedes earlier statements that v14 is the
+normal boot or that factory recovery is installed. Use
+`tools/promote-android12.py --action rollback --execute` to undo. System updates
+are file replacements on userdata plus a new rehearsed boot image; keep the
+boot-success watchdog and the rescue slot until the older systems are removed
+under a separate plan.

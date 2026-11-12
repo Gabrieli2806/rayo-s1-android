@@ -3,7 +3,15 @@
 Read [HANDOFF.md](HANDOFF.md) first for exact device guards, artifact paths,
 commands, private-cache requirements and the owner's latest UI decisions.
 
-## Priority 0: lightweight candidate `gabos-lite-01`
+## Done: GabOS promoted (November 12, 2026)
+
+`gabos-lite-03` is the normal boot; v14 is the rescue slot. Next: owner checks
+through the lens (audio transient, keyboard in Settings, SmartTube), longer
+sessions and cold power cycles, Settings/Files resource overlays in the GabOS
+look, then a layout plan to remove 7.1.2 and v14 and give GabOS the system
+partition and the reclaimed userdata space.
+
+## Earlier priority: lightweight candidate `gabos-lite-01`
 
 The owner dropped Google packages after run gtv-02 (see [HANDOFF.md](HANDOFF.md)).
 Open gates:

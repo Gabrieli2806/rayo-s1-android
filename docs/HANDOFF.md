@@ -14,6 +14,42 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
+## GabOS Android 12 is the normal boot (November 12, 2026)
+
+`gabos-lite-03` (Google-free, Home 0.6, GabOS Keyboard, restyled Media 0.2 and
+Diagnostics 0.4, HIDL delay removal, 30-minute audio standby) was rehearsed in
+run `20261112-135918-42a50670` (boot completed, normal return, factory recovery
+restored), then promoted by `tools/promote-android12.py`
+(`local/android12-promotion/`):
+
+| Partition | Content | MD5 |
+|---|---|---|
+| boot | GabOS Android 12 installed-boot image | `04d49f41bef0bea2d601aec27fe1240f` |
+| recovery | Android 8.1 v14 rescue system | `7a3ac489b05f0f2e9cde16280551511a` |
+
+The boot image starts the framework without a host and runs a boot-success
+watchdog (900 s): if Android 12 does not report a completed boot it restarts into
+the recovery slot, which now boots v14 with root ADB. Promotion boot and one
+additional reboot both returned Android 12 with `ro.bootmode=emmc`, the boot-ok
+marker, stable system_server, GabOS Home focused and validated Wi-Fi.
+
+Rescue and rollback:
+- From v14 (rescue) or GabOS: `python tools/promote-android12.py --action rollback --execute`
+  writes boot = v14 and recovery = factory from `/realdata/gabos-rescue/`.
+- The factory recovery is no longer installed in the recovery slot. Its verified
+  copies are in `local/device-kit/original/`, every run record and on the device
+  at `/realdata/gabos-rescue/factory-recovery.img`.
+- Still preserved, not removed: Android 7.1.2 system partition, v14 system/data
+  files on userdata, kernel, uboot, trust, resource.
+
+Measured in the rehearsal (ActivityManager TotalTime, cold / warm): TV Settings
+1153 / 280 ms, Files 2267 / 411 ms, Media 649 / 117 ms, Diagnostics 778 / 170 ms.
+Before the HIDL change, first frames took 7.2 to 7.5 s. Memory after boot:
+about 499 of 997 MiB available. Not yet checked: the audio transient with the
+longer standby (owner listening), SmartTube playback, Bluetooth accessories,
+real power-off, long sessions. Removing the older systems is the next stage and
+needs its own layout plan (the 2 GiB system partition and userdata space).
+
 ## Current direction: lightweight GabOS without Google (owner decision after run gtv-02)
 
 Run `20261111-211628-cf5e53bf` booted `gabos-gtv-02` (Google TV Home, GSF, Play

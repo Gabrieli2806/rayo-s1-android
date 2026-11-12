@@ -1,5 +1,11 @@
 # Reference checkpoint — November 10, 2026
 
+## GabOS Android 12 promoted to normal boot — November 12, 2026
+
+Boot = GabOS Android 12 (`gabos-lite-03`), recovery = Android 8.1 v14 rescue with
+a boot-success watchdog. Two consecutive boots verified. Older systems are kept.
+See [HANDOFF.md](HANDOFF.md).
+
 ## Lightweight direction after the Google TV trial — November 11, 2026 (night)
 
 Run `20261111-211628-cf5e53bf` booted the Google TV candidate `gabos-gtv-02`:
