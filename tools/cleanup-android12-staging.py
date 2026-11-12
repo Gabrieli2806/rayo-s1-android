@@ -63,7 +63,25 @@ def main():
         if original_md5 != ORIGINAL or trial_md5 not in known:
             continue
         records.append({'directory': directory, 'trial_md5': trial_md5, 'host_trial': known[trial_md5]})
-    print(json.dumps({'known_pairs': len(records), 'reclaim_bytes': len(records)*67108864,
+    repair_records = []
+    if args.framework and len(directories[:2]) == 2 and all(
+            checked('shell', 'md5sum', d+'/original.img').split()[0] == ORIGINAL for d in directories[:2]):
+        repair_prefix = '/data/local/tmp/rayo12-recovery-repair-'
+        repair_listing = subprocess.run(prefix+['shell', '/sbin/busybox ls -1td '+repair_prefix+'* 2>/dev/null'],
+                                        capture_output=True, timeout=30).stdout.decode(errors='replace').strip()
+        for directory in [p for p in repair_listing.splitlines()
+                          if re.fullmatch(re.escape(repair_prefix)+r'[0-9a-f]{12}', p)]:
+            if not checked('shell', '/sbin/busybox', 'ls', '-ld', directory).startswith('d'):
+                continue
+            names = set(checked('shell', '/sbin/busybox', 'ls', '-1', directory).splitlines())
+            if names != {'original.img'}:
+                continue
+            if checked('shell', 'md5sum', directory+'/original.img').split()[0] != ORIGINAL:
+                continue
+            repair_records.append({'directory': directory, 'original_md5': ORIGINAL})
+    reclaim_bytes = len(records)*67108864 + len(repair_records)*33554432
+    print(json.dumps({'known_pairs': len(records), 'known_repair_copies': len(repair_records),
+                      'reclaim_bytes': reclaim_bytes,
                       'retained_newest_directories': directories[:2], 'execute': args.execute}, indent=2), flush=True)
     if not args.execute:
         return
@@ -72,6 +90,10 @@ def main():
         directory = record['directory']
         # Exact files only; no recursive deletion, wildcard or partition write.
         checked('shell', '/sbin/busybox', 'rm', directory+'/trial.img', directory+'/original.img')
+        checked('shell', '/sbin/busybox', 'rmdir', directory)
+    for record in repair_records:
+        directory = record['directory']
+        checked('shell', '/sbin/busybox', 'rm', directory+'/original.img')
         checked('shell', '/sbin/busybox', 'rmdir', directory)
     baseline()
     print('Removed checksum-known duplicate staging pairs; normal boot and factory recovery verified.')

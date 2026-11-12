@@ -1,5 +1,15 @@
 # Reference checkpoint — November 10, 2026
 
+## Google TV candidate prepared offline — November 11, 2026 (evening)
+
+The owner now targets Google TV Home with working Google services. Candidate
+`outputs/android12-framework/gabos-gtv-01` packages the original ADT-3 Google TV
+Home, GSF, Play services and TV Play Store, host-compiled applications, a
+1024 MiB grown private data image and a 3600 s watchdog. **It has not been
+booted.** Nothing here about Google components is device evidence. Normal boot
+is still Android 8.1 v14 as of the last recorded run `20261111-200245-2009d634`.
+See [HANDOFF.md](HANDOFF.md).
+
 ## Latest continuation state — November 11, 2026
 
 Android 12 reached TV Settings and the lightweight local Rayo Home; the owner

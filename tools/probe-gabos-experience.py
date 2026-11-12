@@ -45,7 +45,7 @@ def main():
         shell('input','keyevent','4')
         print(package,result['apps'][package]['expected_resumed'],flush=True)
     if shell('getprop','ro.rayo.media.legacy_omx')=='true':
-        probe=subprocess.run(prefix+['shell','/system/bin/rayo12_omx_plugin_probe'],capture_output=True,text=True,timeout=25)
+        probe=subprocess.run(prefix+['shell','/system/bin/rayo12_omx_plugin_probe','/system/lib/librayo12_omx_plugin.so','--create'],capture_output=True,text=True,timeout=25)
         result['factory_omx_enumeration']={'exit_code':probe.returncode,'stdout':probe.stdout,'stderr':probe.stderr}
         print(result['factory_omx_enumeration'],flush=True)
     shell('am','force-stop','local.rayo.validation')

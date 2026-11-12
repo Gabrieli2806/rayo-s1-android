@@ -15,6 +15,7 @@ BASE = '/dev/block/platform/1021c000.rksdmmc/by-name/'
 BOOT = '7a3ac489b05f0f2e9cde16280551511a'
 RECOVERY = 'b32f971e7dfce13c708d264c6221844d'
 SYSTEM = '/realdata/local/tmp/rayo12-framework-system.raw.img'
+MIB = 1024*1024
 DATA_DIR = '/realdata/rayo12-framework-data'
 
 
@@ -24,14 +25,24 @@ def main():
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--reuse-known-artifacts', action='store_true',
                         help='Replace a verified unmapped prior system and retain its isolated data UUID')
+    parser.add_argument('--pull-data', action='store_true',
+                        help='Also copy a private data image larger than 512 MiB to the host run record')
+    parser.add_argument('--replace-data', action='store_true',
+                        help='Replace the retained private data with the candidate image grown from it')
     args = parser.parse_args()
     candidate = args.candidate.resolve()
     manifest = json.loads((candidate/'MANIFEST.json').read_text())
-    if manifest.get('watchdog_seconds') != 600 or manifest.get('device_written') is not False:
+    watchdog = manifest.get('watchdog_seconds')
+    system_bytes, data_bytes = manifest['system']['bytes'], manifest['data']['bytes']
+    # The same bounds are enforced by the PID 1 bootstrap inside the ramdisk.
+    if (not isinstance(watchdog, int) or not 600 <= watchdog <= 14400
+            or manifest.get('device_written') is not False
+            or system_bytes % (16*MIB) or not 800*MIB <= system_bytes <= 2047*MIB
+            or data_bytes % 4096 or not 256*MIB <= data_bytes <= 3072*MIB):
         raise SystemExit('Unexpected framework trial manifest')
     original = ROOT/'local/device-kit/original/recovery.img'
-    payloads = [(candidate/manifest['system']['path'], manifest['system'], 800*1024*1024),
-                (candidate/manifest['data']['path'], manifest['data'], 256*1024*1024),
+    payloads = [(candidate/manifest['system']['path'], manifest['system'], system_bytes),
+                (candidate/manifest['data']['path'], manifest['data'], data_bytes),
                 (candidate/'rayo12-framework-recovery.img', manifest['recovery'], 33554432)]
     md5s = {}
     for path, record, size in payloads:
@@ -74,13 +85,17 @@ def main():
     if bcb.returncode or len(bcb.stdout) != 32 or any(bcb.stdout):
         raise SystemExit('BCB is not empty')
     reuse = False
+    replace_data = False
+    old_system_bytes = old_data_bytes = 0
     exists = [command('shell', '/sbin/busybox', 'test', '-e', path).returncode for path in (SYSTEM, DATA_DIR)]
     if exists != [1, 1]:
         if not args.reuse_known_artifacts or exists != [0, 0]:
             raise SystemExit('Existing framework artifacts require explicit verified reuse')
         if not checked('shell', '/sbin/busybox', 'ls', '-ld', SYSTEM).startswith('-'):
             raise SystemExit('Existing system is not a regular file')
-        current_md5 = checked('shell', 'md5sum', SYSTEM, timeout=90).split()[0]
+        old_system_bytes = int(checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', SYSTEM))
+        old_data_bytes = int(checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', DATA_DIR+'/userdata.ext4'))
+        current_md5 = checked('shell', 'md5sum', SYSTEM, timeout=240).split()[0]
         known = False
         for record in (ROOT/'outputs/android12-framework').glob('*/MANIFEST.json'):
             prior = json.loads(record.read_text())
@@ -99,12 +114,29 @@ def main():
         if (not known or not completed or backing.returncode or b'rayo12-framework' in backing.stdout
                 or superblock.returncode or len(superblock.stdout) != 1024
                 or superblock.stdout[56:58] != b'\x53\xef'
-                or superblock.stdout[104:120] != uuid.UUID(manifest['data']['uuid']).bytes
-                or checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', DATA_DIR+'/userdata.ext4') != '268435456'):
+                or superblock.stdout[104:120] != uuid.UUID(manifest['data']['uuid']).bytes):
             raise SystemExit('Prior framework artifacts are not verified, isolated, and unmapped')
+        if old_data_bytes != data_bytes:
+            # A grown image may replace the device file only while that file is
+            # still byte-identical to the host copy it was grown from.
+            replaces = manifest['data'].get('replaces') or {}
+            if (not args.replace_data or replaces.get('bytes') != old_data_bytes
+                    or checked('shell', 'md5sum', DATA_DIR+'/userdata.ext4', timeout=240).split()[0]
+                    != replaces.get('md5')):
+                raise SystemExit('Device private data differs from the image this candidate grows; '
+                                 'no replacement without --replace-data and an exact match')
+            replace_data = True
         reuse = True
+    same_system = reuse and current_md5 == md5s[payloads[0][0].name]
     available = int(checked('shell', 'df', '-k', '/realdata').splitlines()[-1].split()[3])*1024
-    if available+(800*1024*1024 if reuse else 0) < (800+(0 if reuse else 256)+64+768)*1024*1024:
+    # A replaced data image is staged beside the old one and renamed only after
+    # its checksum is verified, so the old file is not counted as reclaimed.
+    freed = 0 if same_system else old_system_bytes
+    needed = ((0 if same_system else system_bytes)+(data_bytes if replace_data or not reuse else 0)
+              +(64+768)*MIB)
+    print('Physical data space: available %d MiB, reclaimed by replacement %d MiB, required with reserve %d MiB'
+          % (available//MIB, freed//MIB, needed//MIB), flush=True)
+    if available+freed < needed:
         raise SystemExit('Insufficient reserved physical data space')
     print('Verified baseline, independent recovery, empty BCB, new isolated data path, and space reserve.', flush=True)
     if not args.execute:
@@ -120,7 +152,6 @@ def main():
     before_boot = checked('shell', 'cat', '/proc/sys/kernel/random/boot_id')
     private = '/data/local/tmp/rayo12-framework-'+uuid.uuid4().hex[:12]
     checked('shell', '/sbin/busybox', 'mkdir', '-m', '0700', private)
-    same_system = reuse and current_md5 == md5s[payloads[0][0].name]
     if reuse and not same_system:
         checked('shell', '/sbin/busybox', 'rm', SYSTEM)
     elif not reuse:
@@ -131,15 +162,21 @@ def main():
         uploads.insert(0, (payloads[0][0], SYSTEM))
     else:
         print('Reusing checksum-identical, verified and unmapped system file.', flush=True)
-    if not reuse:
-        uploads.insert(1, (payloads[1][0], DATA_DIR+'/userdata.ext4'))
+    if not reuse or replace_data:
+        uploads.insert(0 if same_system else 1,
+                       (payloads[1][0], DATA_DIR+'/userdata.ext4'+('.new' if replace_data else '')))
     for path, remote in uploads:
         expected = RECOVERY if path.name == 'original-recovery.img' else md5s[path.name]
         print('Uploading and verifying '+path.name, flush=True)
-        checked('push', str(path), remote, timeout=180)
+        slow = 120+path.stat().st_size//(3*MIB)  # seconds at a pessimistic 3 MiB/s
+        checked('push', str(path), remote, timeout=slow)
         checked('shell', '/sbin/busybox', 'chmod', '0600', remote)
-        if checked('shell', 'md5sum', remote, timeout=90).split()[0] != expected:
+        if checked('shell', 'md5sum', remote, timeout=slow).split()[0] != expected:
             raise RuntimeError('Upload checksum mismatch: '+remote)
+    if replace_data:
+        # The identical prior contents remain in the host run they were pulled into.
+        checked('shell', '/sbin/busybox', 'mv', '-f', DATA_DIR+'/userdata.ext4.new', DATA_DIR+'/userdata.ext4')
+        checked('shell', '/sbin/busybox', 'sync')
     checked('shell', '/sbin/busybox', 'chmod', '0444', SYSTEM)
     for name, expected in (('boot', BOOT), ('recovery', RECOVERY)):
         if checked('shell', 'md5sum', BASE+name).split()[0] != expected:
@@ -164,7 +201,7 @@ def main():
         print('Recovery trial readback verified; requesting isolated framework boot. Logs: '+str(logs), flush=True)
         command('shell', 'setprop', 'sys.powerctl', 'reboot,recovery')
         started = time.monotonic()
-        while time.monotonic()-started < 750:
+        while time.monotonic()-started < watchdog+150:
             time.sleep(3)
             version = command('shell', 'getprop', 'ro.build.version.release', timeout=5).stdout.strip()
             if version == b'12':
@@ -213,11 +250,13 @@ def main():
                     if pid != stable_pid:
                         stable_pid, stable_since, settings_opened = pid, time.monotonic(), False
                     if not settings_opened:
-                        result = command('shell', 'am', 'start', '-a', 'android.settings.SETTINGS', timeout=15)
-                        (logs/'open-settings.txt').write_bytes(result.stdout+result.stderr)
-                        combined = result.stdout+result.stderr
-                        settings_opened = (result.returncode == 0 and b'Starting:' in combined
-                                           and b'Error:' not in combined and b"Can't find service" not in combined)
+                        pre_window = command('shell', 'dumpsys', 'window', 'displays', timeout=15)
+                        if pre_window.returncode == 0 and b'FallbackHome' not in pre_window.stdout:
+                            result = command('shell', 'am', 'start', '-a', 'android.settings.SETTINGS', timeout=15)
+                            (logs/'open-settings.txt').write_bytes(result.stdout+result.stderr)
+                            combined = result.stdout+result.stderr
+                            settings_opened = (result.returncode == 0 and b'Starting:' in combined
+                                               and b'Error:' not in combined and b"Can't find service" not in combined)
                     if settings_opened and time.monotonic()-stable_since >= 45:
                         window = command('shell', 'dumpsys', 'window', 'displays', timeout=15)
                         (logs/'settings-window.txt').write_bytes(window.stdout+window.stderr)
@@ -227,6 +266,8 @@ def main():
                         if window.returncode == 0 and focused:
                             boot_complete = True
                             print('Settings focused with the same system_server for at least 45 seconds; physical inspection still required.', flush=True)
+                        elif window.returncode == 0 and b'FallbackHome' not in window.stdout:
+                            settings_opened = False
             elif version == b'8.1.0' and normal():
                 current = checked('shell', 'cat', '/proc/sys/kernel/random/boot_id')
                 if current != before_boot:
@@ -240,7 +281,7 @@ def main():
     finally:
         # Remain available to the independent watchdog even after a diagnostic
         # failure. Never write restoration blocks in an unidentified environment.
-        while written and not returned and time.monotonic()-started < 850:
+        while written and not returned and time.monotonic()-started < watchdog+250:
             if normal() and checked('shell', 'cat', '/proc/sys/kernel/random/boot_id') != before_boot:
                 returned = True
                 break
@@ -256,8 +297,10 @@ def main():
                 raise RuntimeError('Factory recovery restoration readback differs')
             restored = True
             print('Normal Android 8.1 returned; factory recovery restored and hash verified.', flush=True)
-            data = command('pull', DATA_DIR+'/userdata.ext4', str(logs/'private-data-after.ext4'), timeout=120)
-            (logs/'private-data-pull.txt').write_bytes(data.stdout+data.stderr)
+            if data_bytes <= 512*MIB or args.pull_data:
+                data = command('pull', DATA_DIR+'/userdata.ext4', str(logs/'private-data-after.ext4'),
+                               timeout=120+data_bytes//(3*MIB))
+                (logs/'private-data-pull.txt').write_bytes(data.stdout+data.stderr)
         (logs/'RESULT.json').write_text(json.dumps({'candidate': manifest, 'android12_usb_seen': seen,
             'boot_completed_reported': boot_reported,
             'framework_boot_completed': boot_complete, 'normal_v14_returned': returned,

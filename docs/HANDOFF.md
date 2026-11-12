@@ -14,7 +14,85 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
-## Latest user decisions
+## Google TV direction (latest owner decision, supersedes "no Google services")
+
+The owner now wants a stable Android 12 with the Google TV Home, working Google
+services, and eventually GabOS as the only installed system. Earlier notes in
+this and other documents that say "do not add Google services" are historical.
+Native Android TV Settings with transparency, native Files and the guarded trial
+lifecycle remain required. Promotion/removal of older systems is still gated on
+demonstrated stability.
+
+Prepared offline, **not yet booted on the device**:
+`outputs/android12-framework/gabos-gtv-01` (WSL staging
+`~/android/rayo12-framework-candidates/candidate-_j9d9ubc`).
+
+- Original, unmodified and not re-signed ADT-3 Google TV 12 packages: Home
+  (`launcherx`), its stubs and TV system library, Google Services Framework,
+  Play services (Pano), the TV Play Store and PartnerSetup, with the reference
+  privileged allowlists. `tools/prepare-android12-framework.py --google-tv
+  --google-services` stages them. The reference resource overlays are not
+  packaged (see the comment in the packager); Katniss/Assistant, SetupWraith and
+  Cast are not included.
+- `/system/bin/gabos-google-mode` (started once at boot-complete) selects the
+  Home activity and Play-services state from `persist.gabos.launcher.mode` /
+  `persist.gabos.gms.enabled`: `google_tv_account` (default with services),
+  `google_tv` (apps-only Home) or `gabos_light`. GabOS Home stays installed as
+  the fallback. Its component switching is untested on the device.
+- No certification bypass, fingerprint spoofing or device-type feature is used.
+  An uncertified device normally must be registered by the owner with their own
+  account at Google's uncertified-device page using the GSF Android ID before
+  sign-in works. The agent does not configure a personal account.
+- Host AOT: `tools/android12_dexpreopt.py` compiles every packaged application
+  with the source-built host dex2oat (`speed`) against the packaged boot image.
+  The eng product only compiled the boot image/system server and the board runs
+  with JIT disabled, so applications were previously interpreted. Whether the
+  runtime accepts each odex (class-loader context match) must be confirmed with
+  `dumpsys package dexopt` on the device; cold-start gains are unmeasured.
+- The system image is now sized from its contents (1200 MiB here, 800 MiB
+  minimum). The private data image is 1024 MiB, grown offline by
+  `tools/grow-android12-data.py` from the copy pulled in run
+  `20261111-200245-2009d634` with the same UUID/features. The controller
+  replaces the device file only with `--replace-data` and only if the device
+  copy still has that run's exact MD5; the new file is staged and renamed after
+  checksum verification.
+- The bootstrap now reads the data size (256 MiB-3 GiB, exact match required)
+  and the independent watchdog window (`/rayo12-watchdog.cfg`, 600-14400 s,
+  default/fallback 600) from the ramdisk. This candidate uses 3600 s so Google
+  first-run setup and owner checks fit in one session; return early with
+  `adb shell setprop sys.powerctl reboot`.
+
+Physical userdata is 4409 MB in total. The new images need the controller's
+printed space check to pass with the unchanged 768 MiB reserve; if it does not,
+shrink the data image or drop preopt for the largest packages rather than
+lowering the guard or deleting older systems early.
+
+First device session (owner connects the projector on normal v14):
+
+```powershell
+. ./local/setup/enter-project-env.ps1
+python tools/cleanup-android12-staging.py --framework            # plan only first
+python -u tools/trial-android12-framework.py --candidate outputs/android12-framework/gabos-gtv-01 --reuse-known-artifacts --replace-data            # plan/space check
+python -u tools/trial-android12-framework.py --candidate outputs/android12-framework/gabos-gtv-01 --reuse-known-artifacts --replace-data --execute
+```
+
+Then check, in order: boot completes with stable system_server; `gabos-google-mode
+status`; `dumpsys package dexopt` for odex acceptance; Home projected; Play
+services/GSF processes without crash loops; RAM (`dumpsys meminfo`); only then
+owner registration/sign-in and Play Store.
+
+### Runs after the previous handoff
+
+- `20261111-183038-8dc4616f` (`gabos-full-redraw-01`): framework booted, but the
+  controller did not observe the normal return. Factory recovery was restored
+  afterwards with `tools/restore-framework-recovery.py` (see its
+  `RECOVERY-RESTORATION.json`). The cause of the missed return was not recorded.
+- `20261111-191901-5a2f5249`: returned and restored; framework gate not reached.
+- `20261111-200245-2009d634`: fresh boot of `gabos-full-redraw-01` completed,
+  returned to v14, factory recovery restored. This is the latest verified device
+  state on record; re-verify hashes before any new trial.
+
+## Latest user decisions (before the Google TV decision)
 
 - Home 0.5 Settings must open the actual Android TV Settings, without a custom
   GabOS settings page/app. The Control prototype was removed from packaging.

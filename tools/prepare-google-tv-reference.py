@@ -25,6 +25,28 @@ APKS = {
     'GoogleServicesFramework.apk': ('system', '/system/system_ext/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk'),
     'SystemUI.apk': ('system', '/system/system_ext/priv-app/SystemUI/SystemUI.apk'),
 }
+EXTRA_FILES = {
+    'apks/BackdropStub.apk': ('product', '/priv-app/BackdropStub/BackdropStub.apk'),
+    'apks/TVRecommendationsStub.apk': ('product', '/priv-app/TVRecommendationsStub/TVRecommendationsStub.apk'),
+    'apks/TVLauncherStub.apk': ('product', '/app/TVLauncherStub/TVLauncherStub.apk'),
+    'apks/PartnerSetupPrebuilt.apk': ('product', '/priv-app/PartnerSetupPrebuilt/PartnerSetupPrebuilt.apk'),
+    'apks/Tubesky.apk': ('product', '/priv-app/Tubesky/Tubesky.apk'),
+    'framework/com.android.libraries.tv.tvsystem.jar': ('system', '/system/system_ext/framework/com.android.libraries.tv.tvsystem.jar'),
+    'config/com.android.libraries.tv.tvsystem.xml': ('system', '/system/system_ext/etc/permissions/com.android.libraries.tv.tvsystem.xml'),
+    'config/privapp-permissions-google-se.xml': ('system', '/system/system_ext/etc/permissions/privapp-permissions-google-se.xml'),
+    'config/privapp-permissions-google.xml': ('system', '/system/etc/permissions/privapp-permissions-google.xml'),
+    'config/privapp-permissions-google-p.xml': ('product', '/etc/permissions/privapp-permissions-google-p.xml'),
+    'config/split-permissions-google.xml': ('product', '/etc/permissions/split-permissions-google.xml'),
+    'config/default-atv-amati-permissions.xml': ('product', '/etc/default-permissions/default-atv-amati-permissions.xml'),
+    'config/default-atv-permissions.xml': ('product', '/etc/default-permissions/default-atv-permissions.xml'),
+    'config/google.xml': ('product', '/etc/sysconfig/google.xml'),
+    'config/google_atv.xml': ('product', '/etc/sysconfig/google_atv.xml'),
+    'config/atv-component-overrides.xml': ('product', '/etc/sysconfig/atv-component-overrides.xml'),
+    'config/google-hiddenapi-package-whitelist.xml': ('product', '/etc/sysconfig/google-hiddenapi-package-whitelist.xml'),
+    'overlay/GoogleTvConfigOverlayX.apk': ('product', '/overlay/GoogleTvConfigOverlayX.apk'),
+    'overlay/TvSettingsGoogleResOverlay.apk': ('product', '/overlay/TvSettingsGoogleResOverlay.apk'),
+    'overlay/GTVSSettingsProviderOverlayX.apk': ('product', '/overlay/GTVSSettingsProviderOverlayX.apk'),
+}
 
 
 def linux_path(path):
@@ -85,6 +107,13 @@ def main():
         destination.parent.mkdir(exist_ok=True)
         subprocess.run(prefix+['debugfs', '-R', f'dump {source} "{linux_path(destination)}"',
                               linux_path(partitions/'product.raw.img')], check=True)
+    for rel, (partition, source) in EXTRA_FILES.items():
+        destination = directory/'extra'/rel
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(prefix+['debugfs', '-R', f'dump {source} "{linux_path(destination)}"',
+                              linux_path(partitions/(partition+'.raw.img'))], check=True)
+        if not destination.is_file() or destination.stat().st_size < 64:
+            raise SystemExit('Expected extra artifact was not extracted: '+rel)
     properties = subprocess.check_output(prefix+['debugfs', '-R', 'cat /build.prop',
                                                 linux_path(partitions/'vendor.raw.img')], text=True)
     values = dict(line.split('=', 1) for line in properties.splitlines()

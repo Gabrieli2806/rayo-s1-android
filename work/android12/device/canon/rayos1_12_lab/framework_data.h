@@ -1,10 +1,18 @@
 /* Dedicated file-backed data, never the original Android data tree. */
+
+/* The packager records the exact private data size. Accept only whole 4 KiB
+ * images between the original 256 MiB trial size and 3 GiB; the file on
+ * physical userdata must match the recorded size exactly. */
+#define RAYO_DATA_MIN_BYTES 268435456ULL
+#define RAYO_DATA_MAX_BYTES 3221225472ULL
+
 static void mount_framework_data(void) {
     char hex[33] = {0}, trailing;
     unsigned long long bytes = 0;
     FILE* config = fopen("/rayo12-framework-data.cfg", "re");
     if (!config || fscanf(config, "data_uuid=%32[0-9a-f]\ndata_bytes=%llu %c", hex, &bytes, &trailing) != 2 ||
-        strlen(hex) != 32 || bytes != 268435456ULL) fatal("framework data manifest");
+        strlen(hex) != 32 || bytes < RAYO_DATA_MIN_BYTES || bytes > RAYO_DATA_MAX_BYTES || (bytes & 4095ULL))
+        fatal("framework data manifest");
     fclose(config);
     unsigned char expected[16];
     for (unsigned i = 0; i < 16; ++i) {
@@ -40,5 +48,6 @@ static void mount_framework_data(void) {
     close(data);
     mount_checked("/dev/block/loop6", "/data", "ext4", MS_NODEV|MS_NOSUID|MS_NOATIME, NULL);
     close(loop);
-    fprintf(stderr, "RAYO12_FRAMEWORK: private 256 MiB data mounted; original data tree not bound\n");
+    fprintf(stderr, "RAYO12_FRAMEWORK: private %llu MiB data mounted; original data tree not bound\n",
+            bytes >> 20);
 }

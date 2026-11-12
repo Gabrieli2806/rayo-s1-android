@@ -40,9 +40,27 @@ def main():
                         help='Declare source OMX software codecs for baseline media validation')
     parser.add_argument('--legacy-media', action='store_true',
                         help='Opt into the experimental source facade over factory OMX C APIs')
+    parser.add_argument('--google-tv', action='store_true',
+                        help='Include the adapted ADT-3 Google TV Home GUI and runtime mode switcher')
+    parser.add_argument('--google-services', action='store_true',
+                        help='Include Google Services Framework, Play services and the TV Play Store')
+    parser.add_argument('--data-mib', type=int, default=256,
+                        help='Size of a newly created private data image (256-3072 MiB)')
+    parser.add_argument('--data-image', type=Path,
+                        help='Use this already grown private data image; requires --reuse-data-manifest')
+    parser.add_argument('--watchdog-seconds', type=int, default=600,
+                        help='Independent return-to-normal timer packaged in the ramdisk (600-14400)')
+    parser.add_argument('--preopt-filter', default='speed', choices=('speed', 'verify', 'none'),
+                        help='Host ahead-of-time compiler filter for packaged applications')
     args = parser.parse_args()
     if args.legacy_media and not args.software_media:
         parser.error('--legacy-media requires --software-media for explicit OMX declarations')
+    if args.google_services and not args.google_tv:
+        parser.error('--google-services requires --google-tv')
+    if not 256 <= args.data_mib <= 3072 or not 600 <= args.watchdog_seconds <= 14400:
+        parser.error('Data size or watchdog window is outside the bootstrap limits')
+    if args.data_image and not args.reuse_data_manifest:
+        parser.error('--data-image requires --reuse-data-manifest for its expected UUID')
     if os.name != 'posix':
         raise SystemExit('Use native Linux/WSL ext4 to preserve the product layout')
     product = args.product_out.resolve()
@@ -90,6 +108,119 @@ def main():
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(apk, target)
             gabos_apps.append(metadata)
+
+    mode_script = system/'bin/gabos-google-mode'
+    shutil.copyfile(ROOT/'work/android12/framework/gabos-google-mode.sh', mode_script)
+    mode_script.chmod(0o755)
+    google_tv_records = []
+    if args.google_tv:
+        ref_dir = ROOT/'local/google-tv-reference'
+        audit = json.loads((ref_dir/'component-audit.json').read_text(encoding='utf-8'))
+        if audit.get('source_archive_sha256') != '91f7efe7cccfc507a80366c0edb32991df931620ecfc7d2aa765e7b233dc01f1':
+            raise SystemExit('Run prepare-google-tv-reference.py and inspect-google-tv-reference.py first')
+        audit_by_file = {item['file']: item for item in audit.get('inspected_packages', [])}
+        # Reclaim the unused CJK font collections and sanitizer runtime. The
+        # instrumented ART files stay until their removal has its own device test.
+        for unused_rel in ('fonts/NotoSerifCJK-Regular.ttc', 'fonts/NotoSansCJK-Regular.ttc',
+                           'lib/libclang_rt.asan-arm-android.so'):
+            unused_path = system/unused_rel
+            if unused_path.is_file():
+                unused_path.unlink()
+        cts_dir = system/'priv-app/CtsShimPrivPrebuilt'
+        if cts_dir.is_dir():
+            shutil.rmtree(cts_dir)
+
+        def stage_apk_with_libs(src_apk, dst_apk, expected_sha256=None):
+            if not src_apk.is_file():
+                raise SystemExit('Missing Google TV reference APK: '+str(src_apk))
+            actual = digest(src_apk)
+            if expected_sha256 and actual != expected_sha256:
+                raise SystemExit('Google TV reference APK checksum mismatch: '+src_apk.name)
+            dst_apk.parent.mkdir(parents=True, exist_ok=True)
+            # Original bytes and signatures are preserved; nothing is re-signed.
+            shutil.copyfile(src_apk, dst_apk)
+            dst_apk.chmod(0o644)
+            with zipfile.ZipFile(src_apk) as zf:
+                for member in zf.infolist():
+                    name = member.filename
+                    # System applications are scanned with pre-extracted
+                    # libraries beside the APK.
+                    if name.startswith('lib/armeabi-v7a/') and name.endswith('.so'):
+                        lib_dst = dst_apk.parent/'lib/arm'/Path(name).name
+                        lib_dst.parent.mkdir(parents=True, exist_ok=True)
+                        lib_dst.write_bytes(zf.read(member))
+                        lib_dst.chmod(0o644)
+            google_tv_records.append({'file': src_apk.name, 'target': str(dst_apk.relative_to(system)),
+                                      'sha256': actual, 'signature': 'original'})
+
+        def stage_file(src_rel, dst_rel):
+            src_file = ref_dir/src_rel
+            if not src_file.is_file():
+                raise SystemExit('Missing Google TV reference file: '+src_rel)
+            dst_file = system/dst_rel
+            dst_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src_file, dst_file)
+            dst_file.chmod(0o644)
+            google_tv_records.append({'file': src_rel, 'target': dst_rel, 'sha256': digest(src_file)})
+
+        stage_apk_with_libs(
+            ref_dir/'apks/TVLauncherXStablePrebuilt.apk',
+            system/'product/priv-app/TVLauncherXStablePrebuilt/TVLauncherXStablePrebuilt.apk',
+            audit_by_file['TVLauncherXStablePrebuilt.apk']['sha256'])
+        for stub_name, stub_dst in (
+                ('BackdropStub.apk', 'product/priv-app/BackdropStub/BackdropStub.apk'),
+                ('TVRecommendationsStub.apk', 'product/priv-app/TVRecommendationsStub/TVRecommendationsStub.apk'),
+                ('TVLauncherStub.apk', 'product/app/TVLauncherStub/TVLauncherStub.apk')):
+            stage_apk_with_libs(ref_dir/'extra/apks'/stub_name, system/stub_dst)
+        # The reference resource overlays are deliberately not packaged: the
+        # framework overlay names packages absent here (for example the services
+        # extension, which the package manager requires to exist), the settings
+        # overlay points native TV Settings at absent slice providers, and the
+        # provider overlay enables sleep timeouts before suspend is validated.
+        for src_rel, dst_rel in (
+                ('extra/framework/com.android.libraries.tv.tvsystem.jar',
+                 'system_ext/framework/com.android.libraries.tv.tvsystem.jar'),
+                ('extra/config/com.android.libraries.tv.tvsystem.xml',
+                 'system_ext/etc/permissions/com.android.libraries.tv.tvsystem.xml'),
+                ('config/privapp-permissions-atv-amati-product.xml',
+                 'product/etc/permissions/privapp-permissions-atv-amati-product.xml'),
+                ('config/privapp-permissions-atv-product.xml',
+                 'product/etc/permissions/privapp-permissions-atv-product.xml'),
+                ('extra/config/default-atv-amati-permissions.xml',
+                 'product/etc/default-permissions/default-atv-amati-permissions.xml'),
+                ('extra/config/default-atv-permissions.xml',
+                 'product/etc/default-permissions/default-atv-permissions.xml'),
+                ('config/amati_experience.xml', 'product/etc/sysconfig/amati_experience.xml'),
+                ('extra/config/google-hiddenapi-package-whitelist.xml',
+                 'product/etc/sysconfig/google-hiddenapi-package-whitelist.xml')):
+            stage_file(src_rel, dst_rel)
+        if args.google_services:
+            stage_apk_with_libs(
+                ref_dir/'apks/GoogleServicesFramework.apk',
+                system/'system_ext/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk',
+                audit_by_file['GoogleServicesFramework.apk']['sha256'])
+            stage_apk_with_libs(
+                ref_dir/'apks/PrebuiltGmsCorePano.apk',
+                system/'product/priv-app/PrebuiltGmsCorePano/PrebuiltGmsCorePano.apk',
+                audit_by_file['PrebuiltGmsCorePano.apk']['sha256'])
+            # The TV Play Store lets Play services validate and update itself;
+            # no device-type feature is declared to bypass that check.
+            stage_apk_with_libs(ref_dir/'extra/apks/Tubesky.apk',
+                                system/'product/priv-app/Tubesky/Tubesky.apk')
+            stage_apk_with_libs(
+                ref_dir/'extra/apks/PartnerSetupPrebuilt.apk',
+                system/'product/priv-app/PartnerSetupPrebuilt/PartnerSetupPrebuilt.apk')
+            for src_rel, dst_rel in (
+                    ('extra/config/privapp-permissions-google-se.xml',
+                     'system_ext/etc/permissions/privapp-permissions-google-se.xml'),
+                    ('config/privapp-permissions-google-p.xml',
+                     'product/etc/permissions/privapp-permissions-google-p.xml'),
+                    ('extra/config/privapp-permissions-google.xml',
+                     'etc/permissions/privapp-permissions-google.xml'),
+                    ('extra/config/split-permissions-google.xml',
+                     'product/etc/permissions/split-permissions-google.xml'),
+                    ('extra/config/google.xml', 'product/etc/sysconfig/google.xml')):
+                stage_file(src_rel, dst_rel)
 
     # Declare the board's actual radio so SystemServer publishes WifiManager.
     # This is also required by the stock TV Settings connectivity screen.
@@ -419,6 +550,13 @@ dalvik.vm.usejitprofiles=false
 '''
     if args.legacy_media:
         defaults += 'ro.rayo.media.legacy_omx=true\n'
+    if args.google_tv:
+        defaults += ('ro.gabos.launcher.default='+('google_tv_account' if args.google_services else 'google_tv')+'\n'
+                     'ro.gabos.gms.default='+('1' if args.google_services else '0')+'\n')
+        if args.google_services:
+            # Standard client identifiers read by Play services and the store.
+            defaults += ('ro.com.google.clientidbase=android-google\n'
+                         'ro.com.google.gmsversion=12_202110\n')
     if args.radios_product_out:
         defaults += ('ro.rayo.bluetooth.legacy_vendor_sphal=true\n'
                      'ro.rayo.bluetooth.legacy_hci=true\n'
@@ -500,10 +638,24 @@ dalvik.vm.usejitprofiles=false
                     contexts.append('/system'+line)
     context_file = work/'file_contexts'
     context_file.write_text('\n'.join(expanded_sorted(contexts))+'\n')
+    preopt_records = []
+    if args.preopt_filter != 'none':
+        # The eng product compiles only the boot image and system server, and
+        # the board runs without JIT; compile every packaged application here.
+        from android12_dexpreopt import has_dex, preopt
+        selections = {str(apk.relative_to(system)): args.preopt_filter
+                      for apk in sorted(system.rglob('*.apk'))
+                      if 'overlay' not in apk.relative_to(system).parts and has_dex(apk)}
+        preopt_records = preopt(system, out, 'rayos1_tv12', selections, work)
     env = dict(os.environ, MKE2FS_CONFIG=str(host/'mke2fs.conf'))
     features = 'none,extent,filetype,sparse_super,large_file,dir_index,ext_attr,flex_bg,uninit_bg,dir_nlink,extra_isize'
     system_image = work/'rayo12-framework-system.raw.img'
-    size = 800*1024*1024
+    # Keep the long-validated 800 MiB image when the tree fits; otherwise grow
+    # in 16 MiB steps with filesystem overhead and a small margin.
+    tree_bytes = sum(path.lstat().st_size+4096 for path in system.rglob('*'))
+    size = max(800, -(-(tree_bytes*104//100+16*1024*1024)//(16*1024*1024))*16)*1024*1024
+    if size > 2047*1024*1024:
+        raise SystemExit('System tree exceeds the bootstrap image limit')
     subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256', '-O', features,
                     '-F', str(system_image), str(size//4096)], env=env, check=True)
     subprocess.run([str(host/'e2fsdroid'), '-e', '-f', str(system), '-a', '/system', '-S', str(context_file), str(system_image)], check=True)
@@ -553,9 +705,33 @@ dalvik.vm.usejitprofiles=false
             if attribute.read_bytes().rstrip(b'\0') != ('u:object_r:'+label+':s0').encode():
                 raise SystemExit('Radio executable label differs: '+name)
     data_uuid = uuid.UUID(json.loads(args.reuse_data_manifest.read_text())['data']['uuid']) if args.reuse_data_manifest else uuid.uuid4()
-    subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256', '-O', features,
-                    '-U', str(data_uuid), '-F', str(data_image), str(256*1024*1024//4096)], env=env, check=True)
-    (ramdisk/'rayo12-framework-data.cfg').write_text('data_uuid='+data_uuid.hex+'\ndata_bytes=268435456\n')
+    data_replaces = None
+    if args.data_image:
+        # A grown copy of the retained private data (tools/grow-android12-data.py).
+        grown = json.loads(Path(str(args.data_image)+'.json').read_text(encoding='utf-8'))
+        if grown.get('sha256') != digest(args.data_image) or grown.get('uuid') != str(data_uuid):
+            raise SystemExit('Grown data image does not match its record')
+        data_replaces = {'md5': grown['source_md5'], 'bytes': grown['source_bytes'],
+                         'source_run': grown['source_run']}
+        shutil.copyfile(args.data_image, data_image)
+        with data_image.open('rb') as stream:
+            stream.seek(1024)
+            superblock = stream.read(1024)
+        compat, incompat, ro_compat = struct.unpack_from('<III', superblock, 92)
+        if (superblock[56:58] != bytes((0x53, 0xef)) or superblock[104:120] != data_uuid.bytes
+                or (compat & ~0x28) or (incompat & ~0x242) or (ro_compat & ~0x73)):
+            raise SystemExit('Grown data image identity or features differ from the bootstrap guard')
+    else:
+        subprocess.run([str(host/'mke2fs'), '-t', 'ext4', '-b', '4096', '-I', '256', '-O', features,
+                        '-U', str(data_uuid), '-F', str(data_image), str(args.data_mib*1024*1024//4096)], env=env, check=True)
+    data_bytes = data_image.stat().st_size
+    if data_bytes % 4096 or not 268435456 <= data_bytes <= 3221225472:
+        raise SystemExit('Private data image size is outside the bootstrap limits')
+    (ramdisk/'rayo12-framework-data.cfg').write_text('data_uuid='+data_uuid.hex+'\ndata_bytes='+str(data_bytes)+'\n')
+    (ramdisk/'rayo12-watchdog.cfg').write_text('watchdog_seconds='+str(args.watchdog_seconds)+'\n')
+    if (b'/rayo12-watchdog.cfg' not in init.read_bytes()
+            or b'private %llu MiB data mounted' not in init.read_bytes()):
+        raise SystemExit('Rebuild the bootstrap with the bounded data size and watchdog records')
     (ramdisk/'rayo12-stage1.cfg').write_text('system_sha256='+digest(system_image)+'\nsystem_bytes='+str(size)+'\n')
     image = work/'rayo12-framework-recovery.img'
     subprocess.run(['python3', str(ROOT/'tools/pack-recovery.py'), '--ramdisk', str(ramdisk), '--output', str(image),
@@ -564,7 +740,7 @@ dalvik.vm.usejitprofiles=false
     verify = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(verify)
     verified = verify.inspect(image.read_bytes(), (ROOT/'local/device-kit/original/recovery.img').read_bytes(), True)
-    manifest = {'purpose': 'Temporary full-framework bringup; not a validated ROM or Google TV Home',
+    manifest = {'purpose': 'Guarded full-framework trial candidate; not a validated stable ROM',
         'gabos_apps': gabos_apps,
         'software_media': args.software_media,
         'legacy_media': args.legacy_media,
@@ -573,8 +749,11 @@ dalvik.vm.usejitprofiles=false
         'radio_services': radio_records, 'radio_file_capabilities': radio_capabilities,
         'local_launcher': record if args.local_launcher else None,
         'system': {'path': system_image.name, 'bytes': size, 'sha256': digest(system_image)},
-        'data': {'path': data_image.name, 'bytes': data_image.stat().st_size, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
-        'recovery': verified, 'watchdog_seconds': 600, 'device_written': False,
+        'data': dict({'path': data_image.name, 'bytes': data_bytes, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
+                     **({'replaces': data_replaces} if data_replaces else {})),
+        'recovery': verified, 'watchdog_seconds': args.watchdog_seconds, 'device_written': False,
+        'google_tv': google_tv_records, 'google_services': args.google_services,
+        'host_preopt': preopt_records,
         'graphics': graphics, 'bootstrap_sha256': digest(init),
         'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': True,
         'android12_init_md5': hashlib.md5((system/'bin/init').read_bytes()).hexdigest(),

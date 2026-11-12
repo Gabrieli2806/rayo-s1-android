@@ -3,6 +3,29 @@
 Read [HANDOFF.md](HANDOFF.md) first for exact device guards, artifact paths,
 commands, private-cache requirements and the owner's latest UI decisions.
 
+## Priority 0: Google TV candidate `gabos-gtv-01`
+
+The owner's current target is a stable Android 12 with Google TV Home and working
+Google services, then GabOS as the only system. See the Google TV section of
+[HANDOFF.md](HANDOFF.md). Open gates, none passed yet:
+
+1. Device space check and first guarded boot of `gabos-gtv-01` (1200 MiB system,
+   1024 MiB grown data, 3600 s watchdog).
+2. Runtime acceptance of host-compiled odex files; cold/warm launch timing versus
+   the interpreted baseline.
+3. Google TV Home projected and navigable; fallback to GabOS Home works.
+4. Play services/GSF/Play Store stable without crash loops; RAM headroom on 1 GB.
+5. Owner-side uncertified-device registration, sign-in, Play Store install/update.
+6. Decide Katniss (search/Assistant) and a small GabOS framework overlay
+   (notification listener on low-RAM, TV account picker, network location) only
+   after measuring the base set.
+7. Promotion layout: Android 12 system on the 2 GiB `system` partition and data
+   directly on userdata needs its own plan, host backup verification and
+   rollback path before any older system is removed.
+
+The earlier priorities below still apply to the same candidate (it keeps the
+full-redraw, client-blend, soft-start and legacy-media changes).
+
 ## Priority 1: validate the final full-redraw candidate
 
 Final offline candidate `outputs/android12-framework/gabos-full-redraw-01` preserves

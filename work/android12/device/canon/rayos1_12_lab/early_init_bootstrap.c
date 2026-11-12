@@ -58,6 +58,20 @@ static int read_expected(char digest[65], unsigned long long* bytes) {
 
 #ifdef RAYO_FRAMEWORK_TRIAL
 #include "framework_data.h"
+
+/* The independent rescue timer always exists. The packaged ramdisk may extend
+ * it for supervised soak sessions; a missing, malformed or out-of-range record
+ * selects the original ten-minute window rather than a longer one. */
+static unsigned watchdog_seconds(void) {
+    unsigned seconds = 0;
+    char trailing;
+    FILE* config = fopen("/rayo12-watchdog.cfg", "re");
+    if (!config) return 600;
+    int fields = fscanf(config, "watchdog_seconds=%u %c", &seconds, &trailing);
+    fclose(config);
+    if (fields != 1 || seconds < 600 || seconds > 14400) return 600;
+    return seconds;
+}
 #endif
 
 int main(int argc, char** argv) {
@@ -88,7 +102,7 @@ int main(int argc, char** argv) {
             }
             usleep(100000);
         }
-        sleep(600);
+        sleep(watchdog_seconds());
 #else
         sleep(180);
 #endif

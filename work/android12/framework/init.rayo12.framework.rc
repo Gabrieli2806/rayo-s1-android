@@ -52,3 +52,15 @@ service rayo12_log_capture /system/bin/logcat -b all -v threadtime -f /data/rayo
     seclabel u:r:su:s0
     stdio_to_kmsg
     disabled
+
+on property:sys.boot_completed=1
+    start rayo12_google_mode
+
+service rayo12_google_mode /system/bin/sh /system/bin/gabos-google-mode boot
+    class late_start
+    user root
+    group root shell system
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+    oneshot
+    disabled
