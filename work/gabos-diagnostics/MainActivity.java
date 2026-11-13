@@ -37,6 +37,8 @@ public class MainActivity extends Activity {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final JSONObject result = new JSONObject();
     private GabosUi ui;
+    private TextView codecReport;
+    private boolean codecRunning;
     private TextView cpu, memory, storage, uptime, network, address, wifi, bluetooth, battery, light, panel, system;
     private BluetoothAdapter adapter;
     private int found, frameCount;
@@ -75,8 +77,14 @@ public class MainActivity extends Activity {
         });
         ui.tile(actions, "Network settings", v -> { startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS)); ui.fade(); });
         ui.tile(actions, "Bluetooth settings", v -> { startActivity(new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)); ui.fade(); });
+        ui.tile(actions, "Video decoders", v -> codecTest());
+        LinearLayout report = ui.card(body, 22);
+        report.addView(ui.text("VIDEO DECODERS", 14, GabosUi.DIM));
+        codecReport = ui.text("Run the video decoder test to check every format.", 17, GabosUi.INK);
+        codecReport.setPadding(0, ui.dp(12), 0, 0); codecReport.setLineSpacing(ui.dp(5), 1); report.addView(codecReport);
         tone.post(tone::requestFocus);
 
+        if ("codecs".equals(getIntent().getStringExtra("test"))) handler.postDelayed(this::codecTest, 3000);
         if ("frames".equals(getIntent().getStringExtra("test"))) {
             // Exclude service discovery and the expensive first window draw from steady-state callbacks.
             handler.postDelayed(() -> {
@@ -110,6 +118,48 @@ public class MainActivity extends Activity {
     private final Choreographer.FrameCallback frameProbe = new Choreographer.FrameCallback() {
         @Override public void doFrame(long time) { if (!measuringFrames) return; frameCount++; Choreographer.getInstance().postFrameCallback(this); }
     };
+
+    /** Full-screen surface for real decoder output while the codec test runs. */
+    private void codecTest() {
+        if (codecRunning) return;
+        codecRunning = true; codecReport.setText("Testing... this takes a few minutes. The screen shows the test pattern.");
+        final android.view.SurfaceView surface = new android.view.SurfaceView(this);
+        final android.widget.FrameLayout root = (android.widget.FrameLayout) getWindow().getDecorView().findViewById(android.R.id.content);
+        root.addView(surface, new android.widget.FrameLayout.LayoutParams(-1, -1));
+        surface.getHolder().addCallback(new android.view.SurfaceHolder.Callback() {
+            @Override public void surfaceCreated(android.view.SurfaceHolder holder) {
+                new Thread(() -> {
+                    org.json.JSONArray results = CodecTest.run(getCacheDir(), holder.getSurface());
+                    record("codec_results", results);
+                    final String summary = summarize(results);
+                    handler.post(() -> { root.removeView(surface); codecReport.setText(summary); codecRunning = false; });
+                }, "codec-test").start();
+            }
+            @Override public void surfaceChanged(android.view.SurfaceHolder holder, int f, int w, int h) { }
+            @Override public void surfaceDestroyed(android.view.SurfaceHolder holder) { }
+        });
+    }
+
+    private static String summarize(org.json.JSONArray results) {
+        StringBuilder text = new StringBuilder();
+        for (int i = 0; i < results.length(); i++) {
+            org.json.JSONObject entry = results.optJSONObject(i);
+            if (entry == null) continue;
+            text.append(entry.optString("mime").replace("video/", "")).append(' ').append(entry.optString("size")).append(":  ");
+            org.json.JSONArray decoders = entry.optJSONArray("decoders");
+            if (decoders == null) { text.append(entry.optString("error", "not tested")).append('\n'); continue; }
+            for (int d = 0; d < decoders.length(); d++) {
+                org.json.JSONObject r = decoders.optJSONObject(d);
+                String name = r.optString("decoder");
+                boolean hw = !(name.startsWith("c2.android.") || name.startsWith("OMX.google."));
+                text.append(hw ? "hardware " : "software ")
+                    .append(r.has("error") ? "FAILED" : r.optInt("frames_out") + "/" + r.optInt("frames_in") + " frames at " + r.optDouble("fps") + " fps")
+                    .append(d + 1 < decoders.length() ? ",  " : "");
+            }
+            text.append('\n');
+        }
+        return text.toString().trim();
+    }
 
     private static String read(String path) {
         try (FileInputStream in = new FileInputStream(path)) { byte[] b = new byte[512]; int n = in.read(b); return n > 0 ? new String(b, 0, n, StandardCharsets.US_ASCII).trim() : ""; }

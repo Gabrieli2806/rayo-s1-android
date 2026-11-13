@@ -65,7 +65,10 @@ def augment(system, product, native, root, work, copy, readelf, services=False, 
         queue.append(('rayo-live/lib/hw/audio.primary.rk30board.so',
                       system/'vendor/lib/hw/audio.primary.rk30board.so'))
     if legacy_media:
-        for name in ('libOMX_Core.so', 'libomxvpu_dec.so'):
+        # libomxvpu_dec.so dlopen()s librk_vpuapi.so when a component starts; it
+        # is not a NEEDED entry, and without it every real decode fails with
+        # OMX_ErrorUndefined (owner-reported SmartTube hang, Nov 13 2026).
+        for name in ('libOMX_Core.so', 'libomxvpu_dec.so', 'librk_vpuapi.so'):
             queue.append(('rayo-live/lib/'+name, legacy/name))
     staged = set()
     while queue:

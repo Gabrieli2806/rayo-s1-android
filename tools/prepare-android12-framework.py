@@ -353,10 +353,23 @@ def main():
                         if node.get('name') == 'OMX.rk.video_decoder.avc']
             if len(decoders) != 1:
                 raise SystemExit('Expected the verified v14 AVC entry')
-            # Prefer the experimental hardware entry over C2 software without changing its limits.
-            decoders[0].set('rank', '1')
+            # The other factory video decoders the facade exposes, with the
+            # limits and quirks of the factory 7.1.2 declaration.
+            factory_xml = subprocess.run(['debugfs', '-R', 'cat /etc/media_codecs.xml',
+                                          str(ROOT/'local/device-kit/original/system.img')],
+                                         capture_output=True, check=True).stdout
+            factory = {node.get('name'): node for node in ET.fromstring(factory_xml).findall('./Decoders/MediaCodec')}
+            for name in ('OMX.rk.video_decoder.vp8', 'OMX.rk.video_decoder.m4v',
+                         'OMX.rk.video_decoder.m2v', 'OMX.rk.video_decoder.h263'):
+                if name not in factory:
+                    raise SystemExit('Missing factory codec declaration: '+name)
+                decoders.append(factory[name])
             included = ET.Element('Included')
-            ET.SubElement(included, 'Decoders').append(decoders[0])
+            container = ET.SubElement(included, 'Decoders')
+            for node in decoders:
+                # Prefer the hardware entries over C2 software without changing their limits.
+                node.set('rank', '1')
+                container.append(node)
             ET.ElementTree(included).write(system/'vendor/etc/media_codecs_rayo.xml', encoding='unicode')
             init_media = system/'etc/init/init.rayo12.media.rc'
             init_media.write_text(
