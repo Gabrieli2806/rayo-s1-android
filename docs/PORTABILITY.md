@@ -1,3 +1,6 @@
+> Historical documents and lab tools referenced below were moved to the
+> `archive/research-history` branch for GabOS 1.0.
+
 # Continuing on another PC
 
 For the current GabOS Android 12 artifacts and continuation requirements, start

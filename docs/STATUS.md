@@ -1,3 +1,6 @@
+> Historical documents and lab tools referenced below were moved to the
+> `archive/research-history` branch for GabOS 1.0.
+
 # Reference checkpoint — November 10, 2026
 
 ## GabOS Android 12 promoted to normal boot — November 12, 2026
