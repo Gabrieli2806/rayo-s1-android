@@ -39,10 +39,9 @@ final class Projector {
 
     /** Factory range 1-4, factory default 3. */
     static int orientation(Context c){return prefs(c).getInt("rotate",3);}
-    static void setOrientation(Context c,int v){v=Math.max(1,Math.min(4,v));prefs(c).edit().putInt("rotate",v).apply();write(DLP+"panel_rotate",Integer.toString(v));}
+    static void setOrientation(Context c,int v){v=Math.max(1,Math.min(4,v));prefs(c).edit().putInt("rotate",v).apply();
+        write(DLP+"panel_autorotate_enable","0");write(DLP+"panel_rotate",Integer.toString(v));}
 
-    static boolean autoOrientation(Context c){return prefs(c).getBoolean("autorotate",true);}
-    static void setAutoOrientation(Context c,boolean on){prefs(c).edit().putBoolean("autorotate",on).apply();write(DLP+"panel_autorotate_enable",on?"1":"0");}
 
     /**
      * panel_rotate value for each placement picture: table, ceiling, table
@@ -54,16 +53,13 @@ final class Projector {
 
     /** Hardware keystone of the T113 warp processor; -1 means not set. */
     static int manualKeystone(Context c){return prefs(c).getInt("manual_keystone",0);}
-    static void setManualKeystone(Context c,int v){v=Math.max(-40,Math.min(40,v));prefs(c).edit().putInt("manual_keystone",v).apply();write(WARP+"panel_manual_keystone",Integer.toString(v));}
+    static void setManualKeystone(Context c,int v){v=Math.max(-40,Math.min(40,v));prefs(c).edit().putInt("manual_keystone",v).apply();
+        write(WARP+"panel_Keystone_enbale","0");write(WARP+"panel_manual_keystone",Integer.toString(v));}
 
-    static boolean autoKeystone(Context c){return prefs(c).getBoolean("keystone",true);}
-    static void setAutoKeystone(Context c,boolean on){prefs(c).edit().putBoolean("keystone",on).apply();write(WARP+"panel_Keystone_enbale",on?"1":"0");}
 
     static boolean lightWithScreen(Context c){return prefs(c).getBoolean("light_with_screen",true);}
     static void setLightWithScreen(Context c,boolean on){prefs(c).edit().putBoolean("light_with_screen",on).apply();}
 
-    static boolean antiPop(Context c){return prefs(c).getBoolean("anti_pop",true);}
-    static void setAntiPop(Context c,boolean on){prefs(c).edit().putBoolean("anti_pop",on).apply();}
 
     /** Turns the optical engine (light source) off or on; image content is untouched. */
     static void light(boolean on){write(DLP+"panel_pmu_off",on?"0":"1");}
@@ -78,9 +74,11 @@ final class Projector {
         light(true);
         if(p.contains("brightness"))write(DLP+"panel_brightness",Integer.toString(brightness(c)));
         if(p.contains("color"))write(DLP+"panel_color_temperature",Integer.toString(colorTemperature(c)));
-        if(p.contains("autorotate"))write(DLP+"panel_autorotate_enable",autoOrientation(c)?"1":"0");
-        if(p.contains("rotate")&&!autoOrientation(c))write(DLP+"panel_rotate",Integer.toString(orientation(c)));
-        if(p.contains("keystone"))write(WARP+"panel_Keystone_enbale",autoKeystone(c)?"1":"0");
-        if(p.contains("manual_keystone")&&!autoKeystone(c))write(WARP+"panel_manual_keystone",Integer.toString(manualKeystone(c)));
+        // The tilt sensor does not work on this unit (owner check): placement and
+        // keystone are always manual.
+        write(DLP+"panel_autorotate_enable","0");
+        write(DLP+"panel_rotate",Integer.toString(orientation(c)));
+        write(WARP+"panel_Keystone_enbale","0");
+        if(p.contains("manual_keystone"))write(WARP+"panel_manual_keystone",Integer.toString(manualKeystone(c)));
     }
 }

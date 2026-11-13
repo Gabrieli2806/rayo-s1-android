@@ -40,9 +40,8 @@ public class SettingsActivity extends Activity {
             first.post(first::requestFocus);
             r=ui.settingRow(page,"Color tone","0 is the factory setting. Higher values change the white balance.");
             ui.slider(r,0,7,1,Projector.colorTemperature(this),v->Projector.setColorTemperature(this,v));
-            r=ui.settingRow(page,"Automatic orientation","Flips the image using the tilt sensor.");
-            ui.toggle(r,Projector.autoOrientation(this),v->{Projector.setAutoOrientation(this,v==1);render();});
-            if(!Projector.autoOrientation(this)){
+            ui.settingRow(page,"Placement","Choose where the projector stands. The picture is flipped to match.");
+            {
                 LinearLayout placement=ui.row(page,14);
                 int current=0;
                 for(int i=0;i<Projector.PLACEMENT_VALUES.length;i++)if(Projector.PLACEMENT_VALUES[i]==Projector.orientation(this))current=i;
@@ -50,12 +49,8 @@ public class SettingsActivity extends Activity {
                         new boolean[]{false,true,false,true},new boolean[]{false,false,true,true},current,
                         i->Projector.setOrientation(this,Projector.PLACEMENT_VALUES[i]));
             }
-            r=ui.settingRow(page,"Automatic keystone","Straightens the image using the tilt sensor when the projector is angled.");
-            ui.toggle(r,Projector.autoKeystone(this),v->{Projector.setAutoKeystone(this,v==1);render();});
-            if(!Projector.autoKeystone(this)){
-                r=ui.settingRow(page,"Manual keystone","Narrows the top or the bottom of the image. 0 is straight.");
-                ui.slider(r,-40,40,2,Projector.manualKeystone(this),v->Projector.setManualKeystone(this,v));
-            }
+            r=ui.settingRow(page,"Keystone","Straightens the picture when the projector is tilted up or down. 0 is straight.");
+            ui.slider(r,-40,40,2,Projector.manualKeystone(this),v->Projector.setManualKeystone(this,v));
         }
 
         ui.section(page,"POWER AND LIGHT");
@@ -80,8 +75,6 @@ public class SettingsActivity extends Activity {
         int max=audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         r=ui.settingRow(page,"Volume",null);
         ui.slider(r,0,max,1,audio.getStreamVolume(AudioManager.STREAM_MUSIC),v->audio.setStreamVolume(AudioManager.STREAM_MUSIC,v,0));
-        r=ui.settingRow(page,"Prevent speaker pop","Keeps the speaker ready while the screen is on so sounds start cleanly.");
-        ui.toggle(r,Projector.antiPop(this),v->{Projector.setAntiPop(this,v==1);SystemService.refresh(this);});
 
         ui.section(page,"MORE");
         LinearLayout tiles=ui.row(page,14);

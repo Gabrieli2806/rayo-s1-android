@@ -53,7 +53,7 @@ public class SystemService extends Service {
     }
 
     private synchronized void updateSilence(boolean screenOn){
-        boolean want=screenOn&&Projector.antiPop(this);
+        boolean want=screenOn;
         if(want==silenceWanted&&(!want||silenceThread!=null&&silenceThread.isAlive()))return;
         silenceWanted=want;
         if(!want){if(silenceThread!=null)silenceThread.interrupt();silenceThread=null;return;}
