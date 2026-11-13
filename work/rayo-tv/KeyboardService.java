@@ -85,11 +85,23 @@ public class KeyboardService extends InputMethodService {
         }
     }
 
+    /** Visible confirmation that a key was taken: brief accent fill and a small press. */
+    private void flash(){
+        if(row>=grid.size()||column>=grid.get(row).size())return;
+        final TextView view=grid.get(row).get(column);
+        GradientDrawable shape=new GradientDrawable();shape.setCornerRadius(dp(6));shape.setColor(0xff8ab4f8);view.setBackground(shape);
+        view.setTextColor(0xff111418);
+        view.animate().cancel();view.setScaleX(.86f);view.setScaleY(.86f);
+        view.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
+        view.postDelayed(this::highlight,170);
+    }
+
     private void press(String key){
+        flash();
         InputConnection connection=getCurrentInputConnection();
         if(key.equals(SHIFT)){shift=!shift;build();return;}
         if(key.equals(SYMBOLS)||key.equals(LETTERS)){symbols=!symbols;build();return;}
-        if(connection==null){highlight();return;}
+        if(connection==null)return;
         if(key.equals(DELETE))connection.deleteSurroundingText(1,0);
         else if(key.equals(SPACE))connection.commitText(" ",1);
         else if(key.equals(DONE)){
@@ -104,7 +116,6 @@ public class KeyboardService extends InputMethodService {
             connection.commitText(shift&&!symbols?key.toUpperCase():key,1);
             if(shift&&!symbols){shift=false;build();return;}
         }
-        highlight();
     }
 
     /** The input window is not focusable, so D-pad navigation is handled here. */

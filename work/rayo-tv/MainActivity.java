@@ -24,7 +24,7 @@ import java.util.*;
 public class MainActivity extends Activity {
     private static final int INK=0xfff1f3f4, DIM=0xff9aa0a6, CARD=0xff1b222d, FOCUS=0xffffffff;
     private static final int[] TINTS={0xff3b4a8f,0xff2f6f73,0xff7a4a2e,0xff5b3f86,0xff2e5f8a,0xff7b3550,0xff46683a,0xff6a5a2c};
-    private static final int COLUMNS=7;
+    private static final int COLUMNS=5, TILE_W=188, TILE_H=106;
     private final Handler handler=new Handler(Looper.getMainLooper());
     private final HashMap<String,Bitmap> art=new HashMap<>();
     private TextView clock, greeting, date, status, profileName, profileInitial;
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
     private String name(){return prefs().getString("name","");}
 
     @Override public void onCreate(Bundle state){
-        super.onCreate(state);render();created=true;handler.post(tick);
+        super.onCreate(state);SystemService.start(this);render();created=true;handler.post(tick);
         if(name().isEmpty()&&!prefs().getBoolean("asked",false))askName();
     }
     @Override protected void onResume(){
@@ -96,13 +96,13 @@ public class MainActivity extends Activity {
         scroll.addView(page,new ScrollView.LayoutParams(-1,-2));
 
         LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setClipChildren(false);
-        TextView title=text("Home",32,INK);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        TextView title=text("Home",40,INK);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
         header.addView(profileChip());
-        clock=text("",20,INK);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,-2);cp.setMargins(dp(22),0,0,0);header.addView(clock,cp);
-        page.addView(header,new LinearLayout.LayoutParams(-1,dp(48)));
+        clock=text("",26,INK);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,-2);cp.setMargins(dp(26),0,0,0);header.addView(clock,cp);
+        page.addView(header,new LinearLayout.LayoutParams(-1,dp(60)));
 
         LinearLayout system=row(page,dp(20));
-        View settings=systemTile("Settings",0xff1a47a0,0xff0f2f73,true,v->open(new Intent(android.provider.Settings.ACTION_SETTINGS)));
+        View settings=systemTile("Settings",0xff1a47a0,0xff0f2f73,true,v->chooseSettings());
         system.addView(settings,tileParams());
         if(installed("com.android.documentsui"))system.addView(systemTile("Files",0xff25303f,0xff1a222d,false,v->launch("com.android.documentsui")),tileParams());
 
@@ -118,26 +118,56 @@ public class MainActivity extends Activity {
         LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setGravity(Gravity.CENTER_VERTICAL);
         card.setPadding(dp(22),dp(20),dp(22),dp(20));
         GradientDrawable surface=new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,new int[]{0xff1a2231,0xff18294a});surface.setCornerRadius(dp(6));card.setBackground(surface);
-        TextView brand=text("GabOS",12,DIM);brand.setLetterSpacing(.12f);card.addView(brand);
-        greeting=text("",26,INK);greeting.setPadding(0,dp(14),0,dp(6));card.addView(greeting);
-        date=text("",14,DIM);card.addView(date);
-        status=text("",13,DIM);status.setPadding(0,dp(10),0,0);card.addView(status);
-        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,dp(156));sp.setMargins(0,dp(34),0,0);page.addView(card,sp);
+        TextView brand=text("GabOS",15,DIM);brand.setLetterSpacing(.12f);card.addView(brand);
+        greeting=text("",34,INK);greeting.setPadding(0,dp(14),0,dp(8));card.addView(greeting);
+        date=text("",19,DIM);card.addView(date);
+        status=text("",17,DIM);status.setPadding(0,dp(10),0,0);card.addView(status);
+        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,-2);sp.setMargins(0,dp(34),0,0);page.addView(card,sp);
 
         setContentView(scroll);lastPackageCount=packageCount();updateStatus();
         final View focus=preferredFocus;focus.post(()->focus.requestFocus());
+    }
+
+    private void pressed(View v){
+        v.animate().cancel();v.setScaleX(.94f);v.setScaleY(.94f);
+        v.animate().scaleX(v.isFocused()?1.08f:1f).scaleY(v.isFocused()?1.08f:1f).setDuration(160).start();
+    }
+
+    /** Settings opens a choice between the projector's own settings and Android's. */
+    private void chooseSettings(){
+        final android.app.Dialog dialog=new android.app.Dialog(this,android.R.style.Theme_Translucent_NoTitleBar_Fullscreen);
+        FrameLayout scrim=new FrameLayout(this);scrim.setBackgroundColor(0xcc05070a);
+        LinearLayout panel=new LinearLayout(this);panel.setOrientation(LinearLayout.VERTICAL);panel.setPadding(dp(40),dp(32),dp(40),dp(36));
+        panel.setBackground(rounded(0xff161c26,12));panel.setClipChildren(false);panel.setClipToPadding(false);
+        panel.addView(text("Settings",34,INK));
+        TextView hint=text("Choose which settings to open.",18,DIM);hint.setPadding(0,dp(8),0,dp(22));panel.addView(hint);
+        LinearLayout choices=new LinearLayout(this);choices.setClipChildren(false);choices.setClipToPadding(false);
+        View gabos=choice(choices,"GabOS","Projector, light, sound",0xff1a47a0,0xff0f2f73,()->{dialog.dismiss();open(new Intent(this,SettingsActivity.class));});
+        choice(choices,"Android","Wi-Fi, Bluetooth, apps",0xff25303f,0xff1a222d,()->{dialog.dismiss();open(new Intent(android.provider.Settings.ACTION_SETTINGS));});
+        panel.addView(choices);
+        scrim.addView(panel,new FrameLayout.LayoutParams(-2,-2,Gravity.CENTER));
+        scrim.setOnClickListener(v->dialog.dismiss());
+        dialog.setContentView(scrim);dialog.show();gabos.post(gabos::requestFocus);
+    }
+
+    private View choice(LinearLayout row,String title,String detail,int top,int bottom,final Runnable action){
+        LinearLayout tile=new LinearLayout(this);tile.setOrientation(LinearLayout.VERTICAL);tile.setGravity(Gravity.CENTER_VERTICAL);tile.setPadding(dp(26),0,dp(26),0);
+        GradientDrawable fill=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{top,bottom});fill.setCornerRadius(dp(8));tile.setBackground(fill);
+        tile.addView(text(title,28,INK));TextView d=text(detail,17,0xffc8ccd2);d.setPadding(0,dp(10),0,0);tile.addView(d);
+        tile.setContentDescription(title);focusable(tile,null);tile.setOnClickListener(v->{pressed(v);action.run();});
+        LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(300),dp(150));p.setMargins(0,0,dp(24),0);row.addView(tile,p);return tile;
     }
 
     private LinearLayout row(LinearLayout page,int top){
         LinearLayout r=new LinearLayout(this);r.setClipChildren(false);r.setClipToPadding(false);
         LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,top,0,0);page.addView(r,p);return r;
     }
-    private LinearLayout.LayoutParams tileParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(148),dp(83));p.setMargins(0,0,dp(18),0);return p;}
+    private LinearLayout.LayoutParams tileParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(TILE_W),dp(TILE_H));p.setMargins(0,0,dp(22),0);return p;}
 
     /** White outline and slight growth, drawn as a foreground so the art is not rebuilt. */
     private void focusable(final View tile,final String pkg){
         tile.setFocusable(true);tile.setClickable(true);
-        final GradientDrawable ring=new GradientDrawable();ring.setColor(Color.TRANSPARENT);ring.setCornerRadius(dp(6));ring.setStroke(dp(2),FOCUS);
+        final GradientDrawable ring=new GradientDrawable();ring.setColor(Color.TRANSPARENT);ring.setCornerRadius(dp(8));ring.setStroke(dp(3),FOCUS);
         tile.setOnFocusChangeListener((v,focus)->{
             v.setForeground(focus?ring:null);v.setElevation(focus?dp(8):0);
             v.animate().scaleX(focus?1.08f:1f).scaleY(focus?1.08f:1f).setDuration(110).start();
@@ -148,10 +178,10 @@ public class MainActivity extends Activity {
     private View profileChip(){
         LinearLayout chip=new LinearLayout(this);chip.setGravity(Gravity.CENTER_VERTICAL);chip.setPadding(dp(6),dp(5),dp(16),dp(5));
         chip.setBackground(rounded(0x26ffffff,24));chip.setContentDescription("Profile name");
-        profileInitial=text("",15,0xff0d0f13);profileInitial.setGravity(Gravity.CENTER);profileInitial.setTypeface(Typeface.DEFAULT_BOLD);
+        profileInitial=text("",19,0xff0d0f13);profileInitial.setGravity(Gravity.CENTER);profileInitial.setTypeface(Typeface.DEFAULT_BOLD);
         GradientDrawable dot=new GradientDrawable();dot.setShape(GradientDrawable.OVAL);dot.setColor(0xffd2e3fc);profileInitial.setBackground(dot);
-        chip.addView(profileInitial,new LinearLayout.LayoutParams(dp(30),dp(30)));
-        profileName=text("",15,INK);profileName.setPadding(dp(10),0,0,0);profileName.setMaxWidth(dp(220));profileName.setSingleLine(true);profileName.setEllipsize(TextUtils.TruncateAt.END);chip.addView(profileName);
+        chip.addView(profileInitial,new LinearLayout.LayoutParams(dp(38),dp(38)));
+        profileName=text("",19,INK);profileName.setPadding(dp(10),0,0,0);profileName.setMaxWidth(dp(220));profileName.setSingleLine(true);profileName.setEllipsize(TextUtils.TruncateAt.END);chip.addView(profileName);
         chip.setFocusable(true);chip.setClickable(true);chip.setOnClickListener(v->askName());
         chip.setOnFocusChangeListener((v,focus)->{chip.setBackground(rounded(focus?0xffe8eaed:0x26ffffff,24));profileName.setTextColor(focus?0xff0d0f13:INK);});
         return chip;
@@ -181,20 +211,20 @@ public class MainActivity extends Activity {
         FrameLayout tile=new FrameLayout(this);
         GradientDrawable fill=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{from,to});fill.setCornerRadius(dp(6));tile.setBackground(fill);
         tile.setContentDescription(label);
-        if(gear)tile.addView(new GearView(),new FrameLayout.LayoutParams(dp(30),dp(30),Gravity.CENTER));
-        else{TextView t=text(label,16,INK);t.setGravity(Gravity.CENTER);tile.addView(t,new FrameLayout.LayoutParams(-1,-1));}
-        focusable(tile,null);tile.setOnClickListener(action);return tile;
+        if(gear)tile.addView(new GearView(),new FrameLayout.LayoutParams(dp(40),dp(40),Gravity.CENTER));
+        else{TextView t=text(label,20,INK);t.setGravity(Gravity.CENTER);tile.addView(t,new FrameLayout.LayoutParams(-1,-1));}
+        focusable(tile,null);tile.setOnClickListener(v->{pressed(v);action.onClick(v);});return tile;
     }
 
     private View appTile(final App app){
         ImageView tile=new ImageView(this);tile.setScaleType(ImageView.ScaleType.FIT_XY);tile.setImageBitmap(art(app));
-        tile.setContentDescription(app.name);focusable(tile,app.pkg);tile.setOnClickListener(v->launch(app.pkg));return tile;
+        tile.setContentDescription(app.name);focusable(tile,app.pkg);tile.setOnClickListener(v->{pressed(v);launch(app.pkg);});return tile;
     }
 
     /** One cached bitmap per application: its TV banner, or its icon and name on a tint. */
     private Bitmap art(App app){
         Bitmap cached=art.get(app.pkg);if(cached!=null)return cached;
-        int w=dp(148),h=dp(83);Bitmap bitmap=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(bitmap);
+        int w=dp(TILE_W),h=dp(TILE_H);Bitmap bitmap=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(bitmap);
         Path clip=new Path();clip.addRoundRect(new RectF(0,0,w,h),dp(6),dp(6),Path.Direction.CW);canvas.clipPath(clip);
         Drawable banner=null;
         try{banner=getPackageManager().getApplicationBanner(app.pkg);}catch(Exception ignored){}
@@ -202,13 +232,13 @@ public class MainActivity extends Activity {
         else{
             canvas.drawColor(TINTS[(app.pkg.hashCode()&0x7fffffff)%TINTS.length]);
             Drawable icon;try{icon=getPackageManager().getApplicationIcon(app.pkg);}catch(Exception e){icon=getResources().getDrawable(android.R.drawable.sym_def_app_icon,null);}
-            int size=dp(36),left=dp(12),top=(h-size)/2;icon.setBounds(left,top,left+size,top+size);icon.draw(canvas);
-            Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);paint.setColor(INK);paint.setTextSize(dp(14));
+            int size=dp(48),left=dp(14),top=(h-size)/2;icon.setBounds(left,top,left+size,top+size);icon.draw(canvas);
+            Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);paint.setColor(INK);paint.setTextSize(dp(18));
             float x=left+size+dp(10),room=w-x-dp(8);String[] words=app.name.split(" ");ArrayList<String> lines=new ArrayList<>();String current="";
             for(String word:words){String next=current.isEmpty()?word:current+" "+word;if(paint.measureText(next)<=room||current.isEmpty())current=next;else{lines.add(current);current=word;}}
             if(!current.isEmpty())lines.add(current);
             while(lines.size()>3)lines.remove(lines.size()-1);
-            float step=dp(18),y=h/2f-(lines.size()-1)*step/2f+dp(5);
+            float step=dp(22),y=h/2f-(lines.size()-1)*step/2f+dp(5);
             for(String lineText:lines){canvas.drawText(TextUtils.ellipsize(lineText,new android.text.TextPaint(paint),room,TextUtils.TruncateAt.END).toString(),x,y,paint);y+=step;}
         }
         art.put(app.pkg,bitmap);return bitmap;
