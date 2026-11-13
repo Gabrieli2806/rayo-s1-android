@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- The same dark starting window as Home, so opening the app never flashes. -->
+  <style name="GabOS" parent="@android:style/Theme.Material.NoActionBar">
+    <item name="android:windowBackground">@color/gabos_background</item>
+    <item name="android:colorAccent">#FFD2E3FC</item>
+    <item name="android:windowAnimationStyle">@style/GabOSFade</item>
+  </style>
+  <!-- The approval prompt floats over whatever is playing. -->
+  <style name="GabOS.Prompt">
+    <item name="android:windowBackground">@android:color/transparent</item>
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
+  </style>
+  <style name="GabOS.Viewer">
+    <item name="android:windowBackground">@android:color/black</item>
+    <item name="android:windowFullscreen">true</item>
+  </style>
+  <style name="GabOSFade" parent="@android:style/Animation.Activity">
+    <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+    <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
+    <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
+    <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
+  </style>
+  <color name="gabos_background">#FF0D0F13</color>
+</resources>

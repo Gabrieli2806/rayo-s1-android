@@ -43,10 +43,11 @@ OMX_ERRORTYPE guardedSendCommand(OMX_HANDLETYPE handle,OMX_COMMANDTYPE command,O
     return send(handle,command,param,data);
 }
 // Factory decoders exposed to Android 12, in the factory declaration order.
-// HEVC also needs the factory HEVC library at a path outside this namespace and
-// is therefore not listed until that is provided.
+// HEVC uses the factory HEVC library, staged as /vendor/lib/legacy/rkhevc.so
+// with the absolute dlopen() path in librk_vpuapi.so patched to match.
 constexpr const char* kDecoders[]={"OMX.rk.video_decoder.avc","OMX.rk.video_decoder.vp8",
-    "OMX.rk.video_decoder.m4v","OMX.rk.video_decoder.m2v","OMX.rk.video_decoder.h263"};
+    "OMX.rk.video_decoder.m4v","OMX.rk.video_decoder.m2v","OMX.rk.video_decoder.h263",
+    "OMX.rk.video_decoder.hevc"};
 constexpr size_t kMaxDecoders=sizeof(kDecoders)/sizeof(kDecoders[0]);
 class LegacyPlugin final : public OMXPluginBase {
     void* library_=nullptr;

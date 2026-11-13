@@ -54,9 +54,10 @@ service rayo12_log_capture /system/bin/logcat -b all -v threadtime -f /data/rayo
     disabled
 
 on property:sys.boot_completed=1
-    start rayo12_google_mode
+    start gabos_boot
 
-service rayo12_google_mode /system/bin/sh /system/bin/gabos-google-mode boot
+# GabOS 1.0 boot-completion setup: density, Home, keyboard and Share receiver.
+service gabos_boot /system/bin/sh /system/bin/gabos-boot
     class late_start
     user root
     group root shell system

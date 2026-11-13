@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GabOS Share: an arrow rising into a screen, on the GabOS blue. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="48dp" android:height="48dp" android:viewportWidth="48" android:viewportHeight="48">
+  <path android:fillColor="#FF1F4FB0" android:pathData="M24,2a22,22 0 1,1 0,44a22,22 0 1,1 0,-44z"/>
+  <path android:strokeColor="#FFFFFFFF" android:strokeWidth="3" android:strokeLineJoin="round" android:fillColor="#00000000" android:pathData="M12,13H36V31H12Z"/>
+  <path android:strokeColor="#FF8AB4F8" android:strokeWidth="3" android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000" android:pathData="M24,38V20M18.5,25.5L24,20L29.5,25.5"/>
+</vector>

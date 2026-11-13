@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">GabOS Share</string>
+  <string name="default_device_name">Proyector GabOS</string>
+  <string name="notification_ready">Listo para recibir fotos y videos</string>
+  <string name="unknown_sender">Alguien</string>
+
+  <string name="status_stopped">Iniciando…</string>
+  <string name="status_ready">Listo</string>
+  <string name="status_waiting">Esperando que aceptes a %1$s</string>
+  <string name="status_receiving">Recibiendo %1$d de %2$d · %3$d%%</string>
+  <string name="status_showing">Mostrando desde %1$s</string>
+  <string name="status_cancelled">%1$s canceló el envío</string>
+
+  <string name="main_subtitle">Envía fotos y videos desde un teléfono, tablet o computadora a este proyector.</string>
+  <string name="caption_name">NOMBRE DEL PROYECTOR</string>
+  <string name="caption_address">DIRECCIÓN</string>
+  <string name="caption_status">ESTADO</string>
+  <string name="how_title">Cómo enviar</string>
+  <string name="how_step1">Conecta tu teléfono a la misma red Wi-Fi que el proyector.</string>
+  <string name="how_step2">Abre la app GabOS Share en tu teléfono, o comparte fotos y videos con ella desde tu galería.</string>
+  <string name="how_step3">Elige este proyector, escoge Mostrar o Guardar y acepta la solicitud aquí.</string>
+  <string name="browser_hint">¿Sin app? Abre %1$s en cualquier navegador de la misma red.</string>
+  <string name="connect_wifi">Conecta el proyector a Wi-Fi para recibir fotos y videos.</string>
+  <string name="no_network">Sin red</string>
+  <string name="privacy_note">Cada envío necesita tu aprobación aquí. Mostrar reproduce los archivos una vez y los borra; Guardar los deja en Pictures/GabOS y Movies/GabOS.</string>
+  <string name="allow_prompts">Permitir avisos de solicitud</string>
+  <string name="overlay_unavailable">Este ajuste no está disponible en este dispositivo.</string>
+  <string name="close">Cerrar</string>
+  <string name="footer">GabOS · g2806.net</string>
+
+  <string name="accept">Aceptar</string>
+  <string name="decline">Rechazar</string>
+  <string name="approve_show_note">se muestran ahora, no se guarda nada</string>
+  <string name="approve_save_note">se guardan en el proyector</string>
+  <string name="approve_countdown">Se cierra en %1$d s</string>
+  <plurals name="ask_show_photos">
+    <item quantity="one">%1$s quiere mostrar %2$d foto</item>
+    <item quantity="other">%1$s quiere mostrar %2$d fotos</item>
+  </plurals>
+  <plurals name="ask_save_photos">
+    <item quantity="one">%1$s quiere guardar %2$d foto</item>
+    <item quantity="other">%1$s quiere guardar %2$d fotos</item>
+  </plurals>
+  <plurals name="ask_show_videos">
+    <item quantity="one">%1$s quiere mostrar %2$d video</item>
+    <item quantity="other">%1$s quiere mostrar %2$d videos</item>
+  </plurals>
+  <plurals name="ask_save_videos">
+    <item quantity="one">%1$s quiere guardar %2$d video</item>
+    <item quantity="other">%1$s quiere guardar %2$d videos</item>
+  </plurals>
+  <plurals name="ask_show_items">
+    <item quantity="one">%1$s quiere mostrar %2$d foto o video</item>
+    <item quantity="other">%1$s quiere mostrar %2$d fotos y videos</item>
+  </plurals>
+  <plurals name="ask_save_items">
+    <item quantity="one">%1$s quiere guardar %2$d foto o video</item>
+    <item quantity="other">%1$s quiere guardar %2$d fotos y videos</item>
+  </plurals>
+  <plurals name="saved_confirmation">
+    <item quantity="one">Se guardó %1$d archivo de %2$s en Pictures/GabOS o Movies/GabOS</item>
+    <item quantity="other">Se guardaron %1$d archivos de %2$s en Pictures/GabOS y Movies/GabOS</item>
+  </plurals>
+
+  <string name="previous">Anterior</string>
+  <string name="next">Siguiente</string>
+  <string name="viewer_missing">%1$s ya no está disponible</string>
+  <string name="viewer_unreadable">No se pudo abrir %1$s</string>
+  <string name="viewer_unplayable">%1$s no se puede reproducir en este proyector</string>
+</resources>

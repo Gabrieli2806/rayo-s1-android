@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GabOS Share for phones: sends photos and videos to a GabOS projector on the same Wi-Fi network. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.gabos.share.sender" android:versionCode="1" android:versionName="1.0">
+  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="25"/>
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+  <application android:label="@string/app_name" android:allowBackup="false" android:icon="@drawable/ic_launcher"
+      android:theme="@style/GabOS" android:usesCleartextTraffic="true">
+    <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:launchMode="singleTop"
+        android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+        android:windowSoftInputMode="adjustResize|stateHidden">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter android:label="@string/share_target">
+        <action android:name="android.intent.action.SEND"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="image/*"/>
+        <data android:mimeType="video/*"/>
+      </intent-filter>
+      <intent-filter android:label="@string/share_target">
+        <action android:name="android.intent.action.SEND_MULTIPLE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <data android:mimeType="image/*"/>
+        <data android:mimeType="video/*"/>
+        <data android:mimeType="*/*"/>
+      </intent-filter>
+    </activity>
+  </application>
+</manifest>

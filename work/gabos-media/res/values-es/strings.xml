@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">GabOS Multimedia</string>
+  <string name="title">Multimedia</string>
+  <string name="subtitle">Reproduce archivos de este proyector o de una memoria USB.</string>
+  <string name="video">Video</string>
+  <string name="music">Música</string>
+  <string name="photos">Fotos</string>
+  <string name="hint">Elige qué abrir. Los archivos se exploran con Archivos de Android.</string>
+  <string name="no_files">Archivos de Android no está instalado</string>
+  <string name="now_playing">REPRODUCIENDO</string>
+  <string name="loading">Cargando…</string>
+  <string name="playing">Reproduciendo</string>
+  <string name="paused">En pausa</string>
+  <string name="finished">Terminado</string>
+  <string name="playback_failed">Error de reproducción (%1$d, %2$d)</string>
+  <string name="play_pause">Reproducir / Pausa</string>
+  <string name="choose_another">Elegir otro</string>
+  <string name="unsupported">Tipo de archivo no compatible</string>
+  <string name="cannot_open">No se puede abrir este archivo: %1$s</string>
+  <string name="file">Archivo</string>
+</resources>

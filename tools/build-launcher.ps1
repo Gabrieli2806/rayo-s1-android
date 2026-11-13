@@ -16,7 +16,12 @@ $rayoClasses=Join-Path $rayoScratch 'classes'
 $rayoDex=Join-Path $rayoScratch 'dex'
 $rayoOutput=Join-Path $rayoRoot 'outputs/Rayo-Dark-TV.apk'
 New-Item -ItemType Directory -Force $rayoClasses,$rayoDex,(Split-Path $rayoOutput) | Out-Null
-& $rayoJava.Source -source 8 -target 8 -encoding UTF-8 -classpath $rayoAndroidJar -d $rayoClasses @(Get-ChildItem $rayoSource -Filter '*.java' | ForEach-Object FullName) (Join-Path $rayoRoot 'work/gabos-ui/GabosUi.java')
+# R.java lets the code use the English/Spanish string resources.
+$rayoGenerated=Join-Path $rayoScratch 'gen'
+New-Item -ItemType Directory -Force $rayoGenerated | Out-Null
+& (Join-Path $rayoBuildTools 'aapt.exe') package -f -m -J $rayoGenerated -M (Join-Path $rayoSource 'AndroidManifest.xml') -S (Join-Path $rayoSource 'res') -I $rayoAndroidJar
+if($LASTEXITCODE -ne 0){throw 'Launcher resource index generation failed'}
+& $rayoJava.Source -source 8 -target 8 -encoding UTF-8 -classpath $rayoAndroidJar -d $rayoClasses @(Get-ChildItem $rayoSource -Filter '*.java' | ForEach-Object FullName) @(Get-ChildItem $rayoGenerated -Recurse -Filter '*.java' | ForEach-Object FullName) (Join-Path $rayoRoot 'work/gabos-ui/GabosUi.java')
 if($LASTEXITCODE -ne 0){throw 'Launcher Java compilation failed'}
 $rayoClassFiles=@(Get-ChildItem $rayoClasses -Recurse -Filter '*.class' | ForEach-Object FullName)
 & (Join-Path $rayoBuildTools 'd8.bat') --min-api 21 --lib $rayoAndroidJar --output $rayoDex @rayoClassFiles

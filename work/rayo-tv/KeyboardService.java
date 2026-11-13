@@ -11,13 +11,16 @@ import android.view.inputmethod.InputConnection;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
+import local.gabos.ui.GabosUi;
 
 /**
  * GabOS Keyboard: a small on-screen keyboard usable both with the projector's
  * pointer (click any key) and with a D-pad (move the highlight, press OK).
- * It has no dictionary, network access, history or learning.
+ * It has no dictionary, network access, history or learning. Colours follow
+ * the shared GabOS theme (mode and accent).
  */
 public class KeyboardService extends InputMethodService {
+    // Internal key identifiers; the visible labels of the word keys come from strings.xml.
     private static final String SHIFT="⇧", DELETE="⌫", SPACE="space", DONE="Done", SYMBOLS="?123", LETTERS="abc";
     private static final String[][] ALPHA={
         {"1","2","3","4","5","6","7","8","9","0"},
@@ -42,27 +45,30 @@ public class KeyboardService extends InputMethodService {
 
     @Override public View onCreateInputView(){
         board=new LinearLayout(this);board.setOrientation(LinearLayout.VERTICAL);
-        board.setBackgroundColor(0xf2111418);board.setPadding(dp(150),dp(10),dp(150),dp(14));
-        build();return board;
+        board.setPadding(dp(150),dp(10),dp(150),dp(14));
+        GabosUi.loadTheme(this);build();return board;
     }
 
     @Override public void onStartInputView(EditorInfo info, boolean restarting){
         super.onStartInputView(info,restarting);
         symbols=false;shift=info!=null&&(info.inputType&EditorInfo.TYPE_TEXT_FLAG_CAP_WORDS)!=0;row=1;column=0;
-        if(board!=null)build();
+        if(board!=null){GabosUi.loadTheme(this);build();}
     }
 
     private void build(){
         board.removeAllViews();grid.clear();
+        board.setBackgroundColor(GabosUi.alpha(GabosUi.LIGHT?0xffeef1f5:0xff111418,0xf2));
         String[][] layout=symbols?SYMBOL:ALPHA;
         for(int r=0;r<layout.length;r++){
             LinearLayout line=new LinearLayout(this);line.setGravity(Gravity.CENTER);
             ArrayList<TextView> keys=new ArrayList<>();
             for(int c=0;c<layout[r].length;c++){
                 final String key=layout[r][c];final int kr=r,kc=c;
-                String shown=key.length()==1&&shift&&!symbols?key.toUpperCase():key;
+                String shown=key.equals(SPACE)?getString(R.string.key_space):key.equals(DONE)?getString(R.string.key_done)
+                        :key.equals(SYMBOLS)?getString(R.string.key_symbols):key.equals(LETTERS)?getString(R.string.key_letters)
+                        :key.length()==1&&shift&&!symbols?key.toUpperCase():key;
                 TextView view=new TextView(this);view.setText(shown);view.setTextSize(key.length()>1&&!key.equals(SHIFT)&&!key.equals(DELETE)?15:19);
-                view.setTextColor(0xfff1f3f4);view.setGravity(Gravity.CENTER);view.setTypeface(Typeface.DEFAULT);
+                view.setTextColor(GabosUi.INK);view.setGravity(Gravity.CENTER);view.setTypeface(Typeface.DEFAULT);
                 view.setClickable(true);
                 view.setOnClickListener(v->{row=kr;column=kc;press(key);});
                 view.setOnHoverListener((v,event)->{if(row!=kr||column!=kc){row=kr;column=kc;highlight();}return false;});
@@ -80,8 +86,8 @@ public class KeyboardService extends InputMethodService {
             boolean selected=r==row&&c==column;TextView view=grid.get(r).get(c);
             boolean lit=shift&&!symbols&&SHIFT.contentEquals(view.getText());
             GradientDrawable shape=new GradientDrawable();shape.setCornerRadius(dp(6));
-            shape.setColor(selected?0xffe8eaed:lit?0xff3c5a99:0xff2a2f37);view.setBackground(shape);
-            view.setTextColor(selected?0xff111418:0xfff1f3f4);
+            shape.setColor(selected?GabosUi.INK:lit?GabosUi.mix(GabosUi.PILL,GabosUi.ACCENT,.45f):GabosUi.PILL);view.setBackground(shape);
+            view.setTextColor(selected?GabosUi.BACKGROUND[0]:GabosUi.INK);
         }
     }
 
@@ -89,8 +95,8 @@ public class KeyboardService extends InputMethodService {
     private void flash(){
         if(row>=grid.size()||column>=grid.get(row).size())return;
         final TextView view=grid.get(row).get(column);
-        GradientDrawable shape=new GradientDrawable();shape.setCornerRadius(dp(6));shape.setColor(0xff8ab4f8);view.setBackground(shape);
-        view.setTextColor(0xff111418);
+        GradientDrawable shape=new GradientDrawable();shape.setCornerRadius(dp(6));shape.setColor(GabosUi.ACCENT);view.setBackground(shape);
+        view.setTextColor(GabosUi.ON_ACCENT);
         view.animate().cancel();view.setScaleX(.86f);view.setScaleY(.86f);
         view.animate().scaleX(1f).scaleY(1f).setDuration(150).start();
         view.postDelayed(this::highlight,170);

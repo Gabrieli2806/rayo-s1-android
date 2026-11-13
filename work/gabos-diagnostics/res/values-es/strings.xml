@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">GabOS Diagnóstico</string>
+  <string name="title">Diagnóstico</string>
+  <string name="subtitle">Estado en vivo de este proyector. Se actualiza cada dos segundos.</string>
+
+  <!-- Secciones y títulos -->
+  <string name="section_system">SISTEMA</string>
+  <string name="section_connections">CONEXIONES</string>
+  <string name="section_tests">PRUEBAS</string>
+  <string name="cap_processor">PROCESADOR</string>
+  <string name="cap_memory">MEMORIA LIBRE</string>
+  <string name="cap_storage">ALMACENAMIENTO LIBRE</string>
+  <string name="cap_uptime">ENCENDIDO DESDE HACE</string>
+  <string name="cap_software">SOFTWARE</string>
+  <string name="cap_battery">BATERÍA</string>
+  <string name="cap_internet">INTERNET</string>
+  <string name="cap_wifi">SEÑAL WI-FI</string>
+  <string name="cap_ip">DIRECCIÓN IP</string>
+  <string name="cap_bluetooth">BLUETOOTH</string>
+  <string name="cap_light">FUENTE DE LUZ</string>
+  <string name="cap_engine">MOTOR ÓPTICO</string>
+  <string name="cap_decoders">DECODIFICADORES DE VIDEO</string>
+
+  <!-- Pruebas -->
+  <string name="test_speaker">Probar altavoz</string>
+  <string name="test_network">Ajustes de red</string>
+  <string name="test_bluetooth">Ajustes de Bluetooth</string>
+  <string name="test_decoders">Decodificadores de video</string>
+
+  <!-- Valores -->
+  <string name="cpu_value">%1$d %%</string>
+  <string name="cpu_value_clock">%1$d %%  a %2$d MHz</string>
+  <string name="memory_value">%1$d de %2$d MiB</string>
+  <string name="storage_value">%1$d MiB</string>
+  <string name="uptime_hours">%1$d h %2$d min</string>
+  <string name="uptime_minutes">%1$d min %2$d s</string>
+  <string name="software_value">Android %1$s</string>
+  <string name="battery_value">%1$s %%  %2$s</string>
+  <string name="battery_charging">cargando</string>
+  <string name="battery_discharging">con batería</string>
+  <string name="battery_full">completa</string>
+  <string name="battery_not_charging">sin cargar</string>
+  <string name="battery_unknown">desconocido</string>
+  <string name="not_present">No presente</string>
+  <string name="net_offline">Sin conexión</string>
+  <string name="net_connected">Conectado</string>
+  <string name="net_no_internet">Sin internet</string>
+  <string name="state_on">Activado</string>
+  <string name="state_off">Desactivado</string>
+  <string name="state_changing">Cambiando</string>
+  <string name="not_connected">No conectado</string>
+  <string name="wifi_value">%1$d %%  (%2$d dBm)</string>
+  <string name="not_detected">No detectado</string>
+  <string name="light_value">LED %1$s</string>
+
+  <!-- Prueba de decodificadores -->
+  <string name="codec_idle">Ejecuta la prueba de decodificadores para revisar cada formato.</string>
+  <string name="codec_running">Probando… tarda unos minutos. La pantalla muestra el patrón de prueba.</string>
+  <string name="codec_line">%1$s %2$s:  %3$s</string>
+  <string name="codec_hardware">hardware %1$s</string>
+  <string name="codec_software">software %1$s</string>
+  <string name="codec_frames">%1$d/%2$d fotogramas a %3$.1f fps</string>
+  <string name="codec_failed">FALLÓ</string>
+  <string name="codec_not_tested">sin probar</string>
+  <string name="codec_no_encoder">no hay codificador para crear el clip de prueba</string>
+  <string name="codec_error">error (%1$s)</string>
+  <string name="codec_none">ningún decodificador</string>
+</resources>

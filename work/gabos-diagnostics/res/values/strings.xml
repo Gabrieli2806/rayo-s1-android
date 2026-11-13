@@ -1,1 +1,69 @@
-<resources><string name="app_name">GabOS Diagnostics</string></resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">GabOS Diagnostics</string>
+  <string name="title">Diagnostics</string>
+  <string name="subtitle">Live status of this projector. Updates every two seconds.</string>
+
+  <!-- Sections and captions -->
+  <string name="section_system">SYSTEM</string>
+  <string name="section_connections">CONNECTIONS</string>
+  <string name="section_tests">TESTS</string>
+  <string name="cap_processor">PROCESSOR</string>
+  <string name="cap_memory">MEMORY FREE</string>
+  <string name="cap_storage">STORAGE FREE</string>
+  <string name="cap_uptime">ON FOR</string>
+  <string name="cap_software">SOFTWARE</string>
+  <string name="cap_battery">BATTERY</string>
+  <string name="cap_internet">INTERNET</string>
+  <string name="cap_wifi">WI-FI SIGNAL</string>
+  <string name="cap_ip">IP ADDRESS</string>
+  <string name="cap_bluetooth">BLUETOOTH</string>
+  <string name="cap_light">LIGHT SOURCE</string>
+  <string name="cap_engine">OPTICAL ENGINE</string>
+  <string name="cap_decoders">VIDEO DECODERS</string>
+
+  <!-- Test tiles -->
+  <string name="test_speaker">Speaker test</string>
+  <string name="test_network">Network settings</string>
+  <string name="test_bluetooth">Bluetooth settings</string>
+  <string name="test_decoders">Video decoders</string>
+
+  <!-- Values -->
+  <string name="cpu_value">%1$d%%</string>
+  <string name="cpu_value_clock">%1$d%%  at %2$d MHz</string>
+  <string name="memory_value">%1$d of %2$d MiB</string>
+  <string name="storage_value">%1$d MiB</string>
+  <string name="uptime_hours">%1$d h %2$d min</string>
+  <string name="uptime_minutes">%1$d min %2$d s</string>
+  <string name="software_value">Android %1$s</string>
+  <string name="battery_value">%1$s%%  %2$s</string>
+  <string name="battery_charging">charging</string>
+  <string name="battery_discharging">on battery</string>
+  <string name="battery_full">full</string>
+  <string name="battery_not_charging">not charging</string>
+  <string name="battery_unknown">unknown</string>
+  <string name="not_present">Not present</string>
+  <string name="net_offline">Offline</string>
+  <string name="net_connected">Connected</string>
+  <string name="net_no_internet">No internet</string>
+  <string name="state_on">On</string>
+  <string name="state_off">Off</string>
+  <string name="state_changing">Changing</string>
+  <string name="not_connected">Not connected</string>
+  <string name="wifi_value">%1$d%%  (%2$d dBm)</string>
+  <string name="not_detected">Not detected</string>
+  <string name="light_value">LED %1$s</string>
+
+  <!-- Video decoder test -->
+  <string name="codec_idle">Run the video decoder test to check every format.</string>
+  <string name="codec_running">Testing… this takes a few minutes. The screen shows the test pattern.</string>
+  <string name="codec_line">%1$s %2$s:  %3$s</string>
+  <string name="codec_hardware">hardware %1$s</string>
+  <string name="codec_software">software %1$s</string>
+  <string name="codec_frames">%1$d/%2$d frames at %3$.1f fps</string>
+  <string name="codec_failed">FAILED</string>
+  <string name="codec_not_tested">not tested</string>
+  <string name="codec_no_encoder">no encoder to make the test clip</string>
+  <string name="codec_error">error (%1$s)</string>
+  <string name="codec_none">no decoder</string>
+</resources>

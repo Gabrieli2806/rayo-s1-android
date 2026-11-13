@@ -8,6 +8,28 @@ import subprocess
 import tarfile
 
 
+NUL = bytes(1)
+HEVC_NAME = 'rkhevc.so'
+HEVC_ORIGINAL = b'/system/lib/librk_hevcdec.so'
+HEVC_PATCHED = ('/vendor/lib/legacy/'+HEVC_NAME).encode()
+
+
+def patch_path(data, original, replacement):
+    """Replace one NUL-terminated absolute path in place, NUL padded."""
+    if len(replacement) > len(original):
+        raise SystemExit('Replacement library path is longer than the original')
+    needle = original+NUL
+    if data.count(needle) != 1 or data.count(original) != 1:
+        raise SystemExit('Expected exactly one '+original.decode()+' string in the factory library')
+    if data.count(replacement+NUL) != 0:
+        raise SystemExit('Factory library already contains '+replacement.decode())
+    offset = data.index(needle)
+    patched = data[:offset]+replacement.ljust(len(original), NUL)+data[offset+len(original):]
+    if len(patched) != len(data) or patched.count(replacement+NUL) != 1:
+        raise SystemExit('Library path patch verification failed')
+    return patched
+
+
 def augment(system, product, native, root, work, copy, readelf, services=False, surfaceflinger=False, audio=False, legacy_media=False):
     legacy = system/'vendor/lib/legacy'
     legacy.mkdir(parents=True)
@@ -70,6 +92,10 @@ def augment(system, product, native, root, work, copy, readelf, services=False, 
         # OMX_ErrorUndefined (owner-reported SmartTube hang, Nov 13 2026).
         for name in ('libOMX_Core.so', 'libomxvpu_dec.so', 'librk_vpuapi.so'):
             queue.append(('rayo-live/lib/'+name, legacy/name))
+        # librk_vpuapi.so dlopen()s the HEVC decoder by an absolute /system/lib
+        # path that the sphal namespace does not permit. Stage it in the legacy
+        # directory under a short name; the vpuapi copy is patched below.
+        queue.append(('rayo-live/lib/librk_hevcdec.so', legacy/HEVC_NAME))
     staged = set()
     while queue:
         source, destination = queue.pop()
@@ -90,6 +116,24 @@ def augment(system, product, native, root, work, copy, readelf, services=False, 
                     raise SystemExit('Unexpected absolute legacy dependency: '+name)
                 queue.append(('rayo-live/lib/'+name, legacy/name))
     archive.close()
+    if legacy_media:
+        hevc = legacy/HEVC_NAME
+        staged_names = {path.name for path in legacy.iterdir()}
+        missing = [name for name in needed(hevc) if name not in core and name not in staged_names]
+        if missing:
+            raise SystemExit('HEVC decoder dependencies missing from the legacy namespace: '+', '.join(missing))
+        vpuapi = legacy/'librk_vpuapi.so'
+        data = vpuapi.read_bytes()
+        patched = patch_path(data, HEVC_ORIGINAL, HEVC_PATCHED)
+        vpuapi.write_bytes(patched)
+        record = next(item for item in records if item['path'] == vpuapi.relative_to(system).as_posix())
+        record['patch'] = {'original_string': HEVC_ORIGINAL.decode(), 'patched_string': HEVC_PATCHED.decode(),
+                           'original_sha256': record['sha256'],
+                           'patched_sha256': hashlib.sha256(patched).hexdigest()}
+        record['sha256'] = record['patch']['patched_sha256']
+        # The factory IEP path (/system/lib/libiep.so, 21 bytes) cannot be
+        # redirected: the legacy directory prefix alone takes 19 bytes. Its
+        # dlopen keeps failing as before, which the AVC path already tolerates.
     # Both OEM paths must resolve to the one actual Mali inode.
     (system/'lib/egl').symlink_to('../vendor/lib/egl')
     default = [copy('lib/'+name) for name in

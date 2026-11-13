@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">GabOS Share</string>
+  <string name="share_target">Enviar al proyector</string>
+  <string name="subtitle">Envía fotos y videos a tu proyector GabOS.</string>
+  <string name="default_sender">Teléfono</string>
+
+  <string name="section_projector">Proyector</string>
+  <string name="searching">Buscando proyectores GabOS en tu red Wi-Fi…</string>
+  <string name="searching_more">Toca un proyector para enviarle.</string>
+  <string name="manual_hint">O escribe su dirección, p. ej. 192.168.1.20</string>
+  <string name="manual_use">Usar</string>
+  <string name="manual_name">Dirección escrita</string>
+  <string name="search_again">Buscar de nuevo</string>
+
+  <string name="section_media">Fotos y videos</string>
+  <string name="choose_media">Elegir fotos y videos</string>
+  <string name="media_none">Aún no elegiste nada. También puedes usar Compartir → GabOS Share desde tu galería.</string>
+  <plurals name="media_summary">
+    <item quantity="one">%1$d archivo · %2$s</item>
+    <item quantity="other">%1$d archivos · %2$s</item>
+  </plurals>
+  <string name="more_items">y %1$d más</string>
+  <string name="clear">Quitar todo</string>
+  <plurals name="skipped_items">
+    <item quantity="one">Se omitió %1$d archivo: solo se pueden enviar fotos y videos.</item>
+    <item quantity="other">Se omitieron %1$d archivos: solo se pueden enviar fotos y videos.</item>
+  </plurals>
+  <string name="picker_missing">No hay un selector de archivos en este teléfono.</string>
+
+  <string name="section_mode">En el proyector</string>
+  <string name="mode_show">Mostrar</string>
+  <string name="mode_show_note">Los reproduce ahora y no guarda nada</string>
+  <string name="mode_save">Guardar</string>
+  <string name="mode_save_note">Deja una copia en la galería del proyector</string>
+
+  <string name="send">Enviar</string>
+  <string name="cancel">Cancelar</string>
+  <string name="status_idle">Elige un proyector y algunas fotos o videos.</string>
+  <string name="status_preparing">Preparando %1$s…</string>
+  <string name="status_waiting">Esperando que alguien acepte en el proyector…</string>
+  <string name="status_sending">Enviando %1$d de %2$d · %3$s</string>
+  <string name="status_done_show">Listo. Ya está en el proyector.</string>
+  <string name="status_done_save">Listo. Guardado en el proyector.</string>
+  <string name="status_cancelled">Envío cancelado.</string>
+  <string name="error_declined">La solicitud fue rechazada en el proyector.</string>
+  <string name="error_timeout">Nadie respondió en el proyector. Inténtalo de nuevo.</string>
+  <string name="error_busy">El proyector está ocupado con otro envío. Inténtalo en un momento.</string>
+  <string name="error_space">El proyector no tiene suficiente espacio libre.</string>
+  <string name="error_generic">El proyector rechazó la solicitud.</string>
+  <string name="error_projector">El proyector informó un problema: %1$s</string>
+  <string name="error_network">No se pudo conectar con el proyector. Revisa que ambos dispositivos estén en la misma red Wi-Fi.</string>
+  <string name="error_bad_address">Esa dirección no parece correcta. Usa la que muestra GabOS Share en el proyector.</string>
+
+  <string name="same_network">Ambos dispositivos deben estar en la misma red Wi-Fi.</string>
+  <string name="footer">Hecho para GabOS · g2806.net</string>
+</resources>

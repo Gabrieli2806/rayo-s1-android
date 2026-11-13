@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Prueba de hardware</string>
+  <string name="subtitle">Pruebas rápidas de sonido, video y Bluetooth. Que un decodificador aparezca en la lista no demuestra que reproduzca.</string>
+  <string name="test_tone">Tono de prueba</string>
+  <string name="test_video">Video de prueba</string>
+  <string name="bluetooth">Bluetooth</string>
+  <string name="close">Cerrar</string>
+  <string name="section_video">VIDEO DE PRUEBA</string>
+  <string name="section_log">RESULTADOS</string>
+  <!-- Resultados en pantalla; el registro RayoValidation conserva líneas fijas en inglés. -->
+  <string name="log_intro">Que un decodificador aparezca en la lista no demuestra que reproduzca.</string>
+  <string name="log_bluetooth_missing">Los ajustes de Bluetooth no están disponibles; se abren los ajustes de Android.</string>
+  <string name="log_decoder">Decodificador: %1$s (%2$s)</string>
+  <string name="log_decoder_count">Decodificadores encontrados: %1$d</string>
+  <string name="log_decoder_error">No se pudieron listar los decodificadores (%1$s)</string>
+  <string name="log_tone_started">Reproduciendo el tono de prueba…</string>
+  <string name="log_tone_finished">Tono de prueba terminado</string>
+  <string name="log_tone_error">Falló el tono de prueba (%1$s)</string>
+  <string name="log_video_requested">Cargando el video de prueba…</string>
+  <string name="log_video_prepared">Video de prueba listo: %1$d×%2$d, %3$.1f s</string>
+  <string name="log_video_complete">Video de prueba terminado</string>
+  <string name="log_video_error">Falló el video de prueba (%1$d, %2$d)</string>
+  <string name="log_video_exception">No se pudo iniciar el video de prueba (%1$s)</string>
+</resources>

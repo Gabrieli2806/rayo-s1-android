@@ -9,7 +9,12 @@ $gabosWork=Join-Path $gabosRoot ('local/diagnostics-build/'+(Get-Date -Format 'y
 $gabosClasses=Join-Path $gabosWork 'classes'
 $gabosDex=Join-Path $gabosWork 'dex'
 New-Item -ItemType Directory -Force $gabosClasses,$gabosDex | Out-Null
-& javac -source 8 -target 8 -encoding UTF-8 -classpath $gabosJar -d $gabosClasses @(Get-ChildItem $gabosSource -Filter '*.java' | ForEach-Object FullName) (Join-Path $gabosRoot 'work/gabos-ui/GabosUi.java')
+# R.java lets the code use the English/Spanish string resources.
+$gabosGenerated=Join-Path $gabosWork 'gen'
+New-Item -ItemType Directory -Force $gabosGenerated | Out-Null
+& (Join-Path $gabosBuild 'aapt.exe') package -f -m -J $gabosGenerated -M (Join-Path $gabosSource 'AndroidManifest.xml') -S (Join-Path $gabosSource 'res') -I $gabosJar
+if($LASTEXITCODE -ne 0){throw 'Diagnostics resource index generation failed'}
+& javac -source 8 -target 8 -encoding UTF-8 -classpath $gabosJar -d $gabosClasses @(Get-ChildItem $gabosSource -Filter '*.java' | ForEach-Object FullName) @(Get-ChildItem $gabosGenerated -Recurse -Filter '*.java' | ForEach-Object FullName) (Join-Path $gabosRoot 'work/gabos-ui/GabosUi.java')
 if($LASTEXITCODE -ne 0){throw 'Diagnostics Java compilation failed'}
 $gabosFiles=@(Get-ChildItem $gabosClasses -Recurse -Filter '*.class' | ForEach-Object FullName)
 & (Join-Path $gabosBuild 'd8.bat') --min-api 26 --lib $gabosJar --output $gabosDex @gabosFiles

@@ -35,18 +35,11 @@ def main():
     parser.add_argument('--radios-product-out', type=Path,
                         help='Integrate the separately audited source radio product')
     parser.add_argument('--gabos-apps', action='store_true',
-                        help='Include checksum-verified Media and Diagnostics with native DocumentsUI')
+                        help='Include checksum-verified Media, Diagnostics and Share with native DocumentsUI')
     parser.add_argument('--software-media', action='store_true',
                         help='Declare source OMX software codecs for baseline media validation')
     parser.add_argument('--legacy-media', action='store_true',
                         help='Opt into the experimental source facade over factory OMX C APIs')
-    parser.add_argument('--google-tv', action='store_true',
-                        help='Include the adapted ADT-3 Google TV Home GUI and runtime mode switcher')
-    parser.add_argument('--google-services', action='store_true',
-                        help='Include Google Services Framework and Play services, which Google TV Home '
-                             'requires to be present even in its account-free basic mode')
-    parser.add_argument('--play-store', action='store_true',
-                        help='Also include the TV Play Store and PartnerSetup for a signed-in configuration')
     parser.add_argument('--data-mib', type=int, default=256,
                         help='Size of a newly created private data image (256-3072 MiB)')
     parser.add_argument('--data-image', type=Path,
@@ -61,10 +54,6 @@ def main():
     args = parser.parse_args()
     if args.legacy_media and not args.software_media:
         parser.error('--legacy-media requires --software-media for explicit OMX declarations')
-    if args.google_services and not args.google_tv:
-        parser.error('--google-services requires --google-tv')
-    if args.play_store and not args.google_services:
-        parser.error('--play-store requires --google-services')
     if not 256 <= args.data_mib <= 3072 or not 600 <= args.watchdog_seconds <= 14400:
         parser.error('Data size or watchdog window is outside the bootstrap limits')
     if args.data_image and not args.reuse_data_manifest:
@@ -113,7 +102,7 @@ def main():
     if args.gabos_apps:
         if not (system/'priv-app/DocumentsUI/DocumentsUI.apk').is_file():
             raise SystemExit('Build the native DocumentsUI target first')
-        for name in ('Media', 'Diagnostics'):
+        for name in ('Media', 'Diagnostics', 'Share'):
             apk = ROOT/'outputs'/('GabOS-'+name+'.apk')
             metadata = json.loads(Path(str(apk)+'.build.json').read_text(encoding='utf-8-sig'))
             if (metadata.get('package') != 'local.gabos.'+name.lower()
@@ -125,119 +114,39 @@ def main():
             shutil.copyfile(apk, target)
             gabos_apps.append(metadata)
 
-    mode_script = system/'bin/gabos-google-mode'
-    shutil.copyfile(ROOT/'work/android12/framework/gabos-google-mode.sh', mode_script)
-    mode_script.chmod(0o755)
-    google_tv_records = []
-    if args.google_tv:
-        ref_dir = ROOT/'local/google-tv-reference'
-        audit = json.loads((ref_dir/'component-audit.json').read_text(encoding='utf-8'))
-        if audit.get('source_archive_sha256') != '91f7efe7cccfc507a80366c0edb32991df931620ecfc7d2aa765e7b233dc01f1':
-            raise SystemExit('Run prepare-google-tv-reference.py and inspect-google-tv-reference.py first')
-        audit_by_file = {item['file']: item for item in audit.get('inspected_packages', [])}
-        # Reclaim the unused CJK font collections and sanitizer runtime. The
-        # instrumented ART files stay until their removal has its own device test.
-        for unused_rel in ('fonts/NotoSerifCJK-Regular.ttc', 'fonts/NotoSansCJK-Regular.ttc',
-                           'lib/libclang_rt.asan-arm-android.so'):
-            unused_path = system/unused_rel
-            if unused_path.is_file():
-                unused_path.unlink()
-        cts_dir = system/'priv-app/CtsShimPrivPrebuilt'
-        if cts_dir.is_dir():
-            shutil.rmtree(cts_dir)
+        # Hardware Check (validation app) as an ordinary system app.
+        check = ROOT/'outputs/Rayo-Hardware-Check.apk'
+        if check.is_file():
+            target = system/'app/GabOSHardwareCheck/HardwareCheck.apk'
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(check, target)
+            gabos_apps.append({'package': 'local.rayo.validation', 'sha256': digest(check), 'google_services': False})
+        # Aurora Store is preinstalled (owner request). The pinned F-Droid APK
+        # keeps its original signature, so it can update itself normally.
+        pins = {item['package']: item for item in json.loads((ROOT/'manifests/gabos-optional-apps.json').read_text())}
+        aurora_pin = pins['com.aurora.store']
+        aurora = ROOT/'local/device-kit/apps'/aurora_pin['file']
+        if not aurora.is_file() or digest(aurora) != aurora_pin['sha256']:
+            raise SystemExit('Missing or unverified pinned Aurora Store APK')
+        target = system/'app/AuroraStore/AuroraStore.apk'
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(aurora, target)
+        gabos_apps.append({'package': 'com.aurora.store', 'sha256': aurora_pin['sha256'], 'google_services': False})
 
-        def stage_apk_with_libs(src_apk, dst_apk, expected_sha256=None):
-            if not src_apk.is_file():
-                raise SystemExit('Missing Google TV reference APK: '+str(src_apk))
-            actual = digest(src_apk)
-            if expected_sha256 and actual != expected_sha256:
-                raise SystemExit('Google TV reference APK checksum mismatch: '+src_apk.name)
-            dst_apk.parent.mkdir(parents=True, exist_ok=True)
-            # Original bytes and signatures are preserved; nothing is re-signed.
-            shutil.copyfile(src_apk, dst_apk)
-            dst_apk.chmod(0o644)
-            with zipfile.ZipFile(src_apk) as zf:
-                for member in zf.infolist():
-                    name = member.filename
-                    # System applications are scanned with pre-extracted
-                    # libraries beside the APK.
-                    if name.startswith('lib/armeabi-v7a/') and name.endswith('.so'):
-                        lib_dst = dst_apk.parent/'lib/arm'/Path(name).name
-                        lib_dst.parent.mkdir(parents=True, exist_ok=True)
-                        lib_dst.write_bytes(zf.read(member))
-                        lib_dst.chmod(0o644)
-            google_tv_records.append({'file': src_apk.name, 'target': str(dst_apk.relative_to(system)),
-                                      'sha256': actual, 'signature': 'original'})
+    # GabOS wordmark boot animation (tools/make-gabos-bootanimation.py).
+    animation = ROOT/'outputs/gabos-bootanimation.zip'
+    if not animation.is_file():
+        raise SystemExit('Render the boot animation with tools/make-gabos-bootanimation.py')
+    with zipfile.ZipFile(animation) as archive:
+        if any(info.compress_type != zipfile.ZIP_STORED for info in archive.infolist()) or 'desc.txt' not in archive.namelist():
+            raise SystemExit('Boot animation must be an uncompressed zip with desc.txt')
+    (system/'media').mkdir(exist_ok=True)
+    shutil.copyfile(animation, system/'media/bootanimation.zip')
 
-        def stage_file(src_rel, dst_rel):
-            src_file = ref_dir/src_rel
-            if not src_file.is_file():
-                raise SystemExit('Missing Google TV reference file: '+src_rel)
-            dst_file = system/dst_rel
-            dst_file.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(src_file, dst_file)
-            dst_file.chmod(0o644)
-            google_tv_records.append({'file': src_rel, 'target': dst_rel, 'sha256': digest(src_file)})
-
-        stage_apk_with_libs(
-            ref_dir/'apks/TVLauncherXStablePrebuilt.apk',
-            system/'product/priv-app/TVLauncherXStablePrebuilt/TVLauncherXStablePrebuilt.apk',
-            audit_by_file['TVLauncherXStablePrebuilt.apk']['sha256'])
-        for stub_name, stub_dst in (
-                ('BackdropStub.apk', 'product/priv-app/BackdropStub/BackdropStub.apk'),
-                ('TVRecommendationsStub.apk', 'product/priv-app/TVRecommendationsStub/TVRecommendationsStub.apk'),
-                ('TVLauncherStub.apk', 'product/app/TVLauncherStub/TVLauncherStub.apk')):
-            stage_apk_with_libs(ref_dir/'extra/apks'/stub_name, system/stub_dst)
-        # The reference resource overlays are deliberately not packaged: the
-        # framework overlay names packages absent here (for example the services
-        # extension, which the package manager requires to exist), the settings
-        # overlay points native TV Settings at absent slice providers, and the
-        # provider overlay enables sleep timeouts before suspend is validated.
-        for src_rel, dst_rel in (
-                ('extra/framework/com.android.libraries.tv.tvsystem.jar',
-                 'system_ext/framework/com.android.libraries.tv.tvsystem.jar'),
-                ('extra/config/com.android.libraries.tv.tvsystem.xml',
-                 'system_ext/etc/permissions/com.android.libraries.tv.tvsystem.xml'),
-                ('config/privapp-permissions-atv-amati-product.xml',
-                 'product/etc/permissions/privapp-permissions-atv-amati-product.xml'),
-                ('config/privapp-permissions-atv-product.xml',
-                 'product/etc/permissions/privapp-permissions-atv-product.xml'),
-                ('extra/config/default-atv-amati-permissions.xml',
-                 'product/etc/default-permissions/default-atv-amati-permissions.xml'),
-                ('extra/config/default-atv-permissions.xml',
-                 'product/etc/default-permissions/default-atv-permissions.xml'),
-                ('config/amati_experience.xml', 'product/etc/sysconfig/amati_experience.xml'),
-                ('extra/config/google-hiddenapi-package-whitelist.xml',
-                 'product/etc/sysconfig/google-hiddenapi-package-whitelist.xml')):
-            stage_file(src_rel, dst_rel)
-        if args.google_services:
-            stage_apk_with_libs(
-                ref_dir/'apks/GoogleServicesFramework.apk',
-                system/'system_ext/priv-app/GoogleServicesFramework/GoogleServicesFramework.apk',
-                audit_by_file['GoogleServicesFramework.apk']['sha256'])
-            stage_apk_with_libs(
-                ref_dir/'apks/PrebuiltGmsCorePano.apk',
-                system/'product/priv-app/PrebuiltGmsCorePano/PrebuiltGmsCorePano.apk',
-                audit_by_file['PrebuiltGmsCorePano.apk']['sha256'])
-            if args.play_store:
-                # Only for a signed-in configuration. Device run gtv-02 showed
-                # basic-mode Home working with the store disabled.
-                stage_apk_with_libs(ref_dir/'extra/apks/Tubesky.apk',
-                                    system/'product/priv-app/Tubesky/Tubesky.apk')
-                stage_apk_with_libs(
-                    ref_dir/'extra/apks/PartnerSetupPrebuilt.apk',
-                    system/'product/priv-app/PartnerSetupPrebuilt/PartnerSetupPrebuilt.apk')
-            for src_rel, dst_rel in (
-                    ('extra/config/privapp-permissions-google-se.xml',
-                     'system_ext/etc/permissions/privapp-permissions-google-se.xml'),
-                    ('config/privapp-permissions-google-p.xml',
-                     'product/etc/permissions/privapp-permissions-google-p.xml'),
-                    ('extra/config/privapp-permissions-google.xml',
-                     'etc/permissions/privapp-permissions-google.xml'),
-                    ('extra/config/split-permissions-google.xml',
-                     'product/etc/permissions/split-permissions-google.xml'),
-                    ('extra/config/google.xml', 'product/etc/sysconfig/google.xml')):
-                stage_file(src_rel, dst_rel)
+    boot_script = system/'bin/gabos-boot'
+    shutil.copyfile(ROOT/'work/android12/framework/gabos-boot.sh', boot_script)
+    boot_script.chmod(0o755)
+    # GabOS 1.0 ships no Google packages; the Google TV staging path is gone.
 
     # Declare the board's actual radio so SystemServer publishes WifiManager.
     # This is also required by the stock TV Settings connectivity screen.
@@ -249,11 +158,21 @@ def main():
     for name in ('rk29-keypad.kl', '20050030_pwm.kl'):
         from android12_input_maps import normalized
         (system/'usr/keylayout'/name).write_text(normalized(ROOT/'work/android81/input-keymaps-oreo'/name))
+    # Input device configuration: InputReader looks these up by device name
+    # with characters other than [A-Za-z0-9_-] replaced by '_' (20050030.pwm).
+    # They class the panel, side keys and remote as external so that motion
+    # and key presses wake the projector after the inactivity light-off.
+    idc_names = ('ekt2101.idc', 'rk29-keypad.idc', '20050030_pwm.idc')
+    (system/'usr/idc').mkdir(parents=True, exist_ok=True)
+    for name in idc_names:
+        shutil.copyfile(ROOT/'work/android12/framework/idc'/name, system/'usr/idc'/name)
+        (system/'usr/idc'/name).chmod(0o644)
     validator = host/'validatekeymaps'
     if not validator.is_file():
         raise SystemExit('Build the source validatekeymaps host tool first')
     subprocess.run([str(validator)]+[str(system/'usr/keylayout'/name) for name in
-                    ('ekt2101.kl', 'rk29-keypad.kl', '20050030_pwm.kl')], check=True)
+                    ('ekt2101.kl', 'rk29-keypad.kl', '20050030_pwm.kl')]
+                   +[str(system/'usr/idc'/name) for name in idc_names], check=True)
     mini.mkdir()
 
     def copy(relative, original=None):
@@ -344,6 +263,13 @@ def main():
             if (b'ro.rayo.media.legacy_omx' not in (system/'lib/libstagefright_omx.so').read_bytes()
                     or not (system/'lib/librayo12_omx_plugin.so').is_file()):
                 raise SystemExit('Build the source OMX facade and opt-in loader first')
+            if b'OMX.rk.video_decoder.hevc' not in (system/'lib/librayo12_omx_plugin.so').read_bytes():
+                raise SystemExit('Rebuild the OMX facade with the HEVC decoder exposed')
+            vpuapi = (system/'vendor/lib/legacy/librk_vpuapi.so').read_bytes()
+            if (not (system/'vendor/lib/legacy/rkhevc.so').is_file()
+                    or b'/vendor/lib/legacy/rkhevc.so' not in vpuapi
+                    or b'/system/lib/librk_hevcdec.so' in vpuapi):
+                raise SystemExit('Stage the factory HEVC library and the patched vpuapi first')
             with tarfile.open(ROOT/'local/device-kit/runtime/rayo81-live-overlay.tar.gz') as archive:
                 members = [m for m in archive if m.isfile() and m.name.endswith('/etc/media_codecs.xml')]
                 if len(members) != 1:
@@ -359,8 +285,10 @@ def main():
                                           str(ROOT/'local/device-kit/original/system.img')],
                                          capture_output=True, check=True).stdout
             factory = {node.get('name'): node for node in ET.fromstring(factory_xml).findall('./Decoders/MediaCodec')}
+            # HEVC uses the staged factory HEVC library (android12_graphics_root).
             for name in ('OMX.rk.video_decoder.vp8', 'OMX.rk.video_decoder.m4v',
-                         'OMX.rk.video_decoder.m2v', 'OMX.rk.video_decoder.h263'):
+                         'OMX.rk.video_decoder.m2v', 'OMX.rk.video_decoder.h263',
+                         'OMX.rk.video_decoder.hevc'):
                 if name not in factory:
                     raise SystemExit('Missing factory codec declaration: '+name)
                 decoders.append(factory[name])
@@ -372,10 +300,14 @@ def main():
                 container.append(node)
             ET.ElementTree(included).write(system/'vendor/etc/media_codecs_rayo.xml', encoding='unicode')
             init_media = system/'etc/init/init.rayo12.media.rc'
+            # The factory HEVC decoder (via libvpu.so) uses the separate RK3128
+            # HEVC engine node, which ueventd otherwise leaves root-only.
             init_media.write_text(
                 'on post-fs-data\n'
                 '    chown mediacodec media /dev/vpu_service\n'
-                '    chmod 0660 /dev/vpu_service\n')
+                '    chmod 0660 /dev/vpu_service\n'
+                '    chown mediacodec media /dev/hevc_service\n'
+                '    chmod 0660 /dev/hevc_service\n')
         (system/'vendor/etc/media_codecs.xml').write_text(
             '<?xml version="1.0" encoding="utf-8"?>\n<MediaCodecs>\n'
             + ('  <Include href="media_codecs_rayo.xml"/>\n' if args.legacy_media else '')
@@ -572,8 +504,8 @@ def main():
 ro.adb.secure=0
 ro.debuggable=1
 ro.gabos.name=GabOS
-ro.gabos.version=0.1-dev
-ro.build.display.id=GabOS 0.1-dev
+ro.gabos.version=1.0
+ro.build.display.id=GabOS 1.0
 ro.product.model=GabOS for Rayo S1
 ro.apex.updatable=false
 ro.rayo.graphics.no_hwc_background=true
@@ -611,13 +543,6 @@ dalvik.vm.usejitprofiles=false
 '''
     if args.legacy_media:
         defaults += 'ro.rayo.media.legacy_omx=true\n'
-    if args.google_tv:
-        defaults += ('ro.gabos.launcher.default='+('google_tv_account' if args.play_store else 'google_tv')+'\n'
-                     'ro.gabos.gms.default='+('1' if args.google_services else '0')+'\n')
-        if args.google_services:
-            # Standard client identifiers read by Play services and the store.
-            defaults += ('ro.com.google.clientidbase=android-google\n'
-                         'ro.com.google.gmsversion=12_202110\n')
     if args.radios_product_out:
         defaults += ('ro.rayo.bluetooth.legacy_vendor_sphal=true\n'
                      'ro.rayo.bluetooth.legacy_hci=true\n'
@@ -646,7 +571,8 @@ dalvik.vm.usejitprofiles=false
     effective = dict(line.split('=', 1) for line in full_properties.splitlines()
                      if line and not line.startswith('#') and '=' in line)
     for key, value in {'ro.build.version.release': '12', 'ro.build.version.sdk': '31',
-                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '0.1-dev',
+                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '1.0',
+                       'ro.build.display.id': 'GabOS 1.0', 'ro.product.model': 'GabOS for Rayo S1',
                        'ro.rayo.trial': '12-framework', 'ro.rayo.adb.legacy_ffs': 'true',
                        'ro.rayo.cgroup.legacy': 'true', 'ro.rayo.graphics.ion_client_target': 'true',
                        'ro.rayo.graphics.legacy_sphal': 'true'}.items():
@@ -832,8 +758,8 @@ dalvik.vm.usejitprofiles=false
         'data': dict({'path': data_image.name, 'bytes': data_bytes, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
                      **({'replaces': data_replaces} if data_replaces else {})),
         'recovery': verified, 'watchdog_seconds': args.watchdog_seconds, 'device_written': False,
-        'google_tv': google_tv_records, 'google_services': args.google_services,
-        'play_store': args.play_store,
+        'gabos_version': '1.0', 'google_packages': False,
+        'hardware_hevc': args.legacy_media, 'input_wake_idc': list(idc_names),
         'host_preopt': preopt_records,
         'graphics': graphics, 'bootstrap_sha256': digest(init),
         'linker_template_sha256': digest(templates[0]), 'framework_requires_trigger': not args.installed_boot,

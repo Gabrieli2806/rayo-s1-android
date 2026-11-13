@@ -38,6 +38,8 @@ public class MainActivity extends Activity {
     private final JSONObject result = new JSONObject();
     private GabosUi ui;
     private TextView codecReport;
+    private String codecSummary;
+    private boolean renderPending;
     private boolean codecRunning;
     private TextView cpu, memory, storage, uptime, network, address, wifi, bluetooth, battery, light, panel, system;
     private BluetoothAdapter adapter;
@@ -58,32 +60,45 @@ public class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         ui = new GabosUi(this);
-        LinearLayout body = ui.page("Diagnostics", "Live status of this projector. Updates every two seconds.");
-        ui.section(body, "SYSTEM");
+        ui.onThemeChange(this::themeChanged);
+        render();
+        startTests();
+    }
+
+    /** Builds the page in the current GabOS theme; called again when the theme changes. */
+    private void render() {
+        LinearLayout body = ui.page(getString(R.string.title), getString(R.string.subtitle));
+        ui.section(body, getString(R.string.section_system));
         LinearLayout row = ui.row(body, 14);
-        cpu = ui.stat(row, "PROCESSOR", "-"); memory = ui.stat(row, "MEMORY FREE", "-"); storage = ui.stat(row, "STORAGE FREE", "-");
+        cpu = ui.stat(row, getString(R.string.cap_processor), "-"); memory = ui.stat(row, getString(R.string.cap_memory), "-"); storage = ui.stat(row, getString(R.string.cap_storage), "-");
         row = ui.row(body, 18);
-        uptime = ui.stat(row, "ON FOR", "-"); system = ui.stat(row, "SOFTWARE", "-"); battery = ui.stat(row, "BATTERY", "-");
-        ui.section(body, "CONNECTIONS");
+        uptime = ui.stat(row, getString(R.string.cap_uptime), "-"); system = ui.stat(row, getString(R.string.cap_software), "-"); battery = ui.stat(row, getString(R.string.cap_battery), "-");
+        ui.section(body, getString(R.string.section_connections));
         row = ui.row(body, 14);
-        network = ui.stat(row, "INTERNET", "-"); wifi = ui.stat(row, "WI-FI SIGNAL", "-"); address = ui.stat(row, "IP ADDRESS", "-");
+        network = ui.stat(row, getString(R.string.cap_internet), "-"); wifi = ui.stat(row, getString(R.string.cap_wifi), "-"); address = ui.stat(row, getString(R.string.cap_ip), "-");
         row = ui.row(body, 18);
-        bluetooth = ui.stat(row, "BLUETOOTH", "-"); light = ui.stat(row, "LIGHT SOURCE", "-"); panel = ui.stat(row, "OPTICAL ENGINE", "-");
-        ui.section(body, "TESTS");
+        bluetooth = ui.stat(row, getString(R.string.cap_bluetooth), "-"); light = ui.stat(row, getString(R.string.cap_light), "-"); panel = ui.stat(row, getString(R.string.cap_engine), "-");
+        ui.section(body, getString(R.string.section_tests));
         LinearLayout actions = ui.row(body, 14);
-        View tone = ui.tile(actions, "Speaker test", GabosUi.BLUE_TOP, GabosUi.BLUE_BOTTOM, v -> {
+        View tone = ui.primaryTile(actions, getString(R.string.test_speaker), v -> {
             try { final ToneGenerator generator = new ToneGenerator(AudioManager.STREAM_MUSIC, 60); generator.startTone(ToneGenerator.TONE_PROP_BEEP, 800); handler.postDelayed(generator::release, 1000); }
             catch (RuntimeException e) { record("audio_test_error", e.getClass().getSimpleName()); }
         });
-        ui.tile(actions, "Network settings", v -> { startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS)); ui.fade(); });
-        ui.tile(actions, "Bluetooth settings", v -> { startActivity(new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)); ui.fade(); });
-        ui.tile(actions, "Video decoders", v -> codecTest());
+        ui.tile(actions, getString(R.string.test_network), v -> { startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS)); ui.fade(); });
+        ui.tile(actions, getString(R.string.test_bluetooth), v -> { startActivity(new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)); ui.fade(); });
+        ui.tile(actions, getString(R.string.test_decoders), v -> codecTest());
         LinearLayout report = ui.card(body, 22);
-        report.addView(ui.text("VIDEO DECODERS", 14, GabosUi.DIM));
-        codecReport = ui.text("Run the video decoder test to check every format.", 17, GabosUi.INK);
+        report.addView(ui.text(getString(R.string.cap_decoders), 14, GabosUi.DIM));
+        codecReport = ui.text(codecSummary != null ? codecSummary : getString(codecRunning ? R.string.codec_running : R.string.codec_idle), 17, GabosUi.INK);
         codecReport.setPadding(0, ui.dp(12), 0, 0); codecReport.setLineSpacing(ui.dp(5), 1); report.addView(codecReport);
         tone.post(tone::requestFocus);
+        if (lastTotal > 0) systemInfo();
+    }
 
+    /** A running decoder test owns a surface in this window; rebuild only after it ends. */
+    private void themeChanged() { if (codecRunning) renderPending = true; else render(); }
+
+    private void startTests() {
         if ("codecs".equals(getIntent().getStringExtra("test"))) handler.postDelayed(this::codecTest, 3000);
         if ("frames".equals(getIntent().getStringExtra("test"))) {
             // Exclude service discovery and the expensive first window draw from steady-state callbacks.
@@ -112,7 +127,7 @@ public class MainActivity extends Activity {
         } catch (Exception e) { record("error", e.getClass().getSimpleName() + ": " + e.getMessage()); }
     }
 
-    @Override protected void onResume() { super.onResume(); handler.removeCallbacks(refresh); handler.post(refresh); }
+    @Override protected void onResume() { super.onResume(); if (ui.refreshTheme()) themeChanged(); handler.removeCallbacks(refresh); handler.post(refresh); }
     @Override protected void onPause() { handler.removeCallbacks(refresh); super.onPause(); }
 
     private final Choreographer.FrameCallback frameProbe = new Choreographer.FrameCallback() {
@@ -122,7 +137,7 @@ public class MainActivity extends Activity {
     /** Full-screen surface for real decoder output while the codec test runs. */
     private void codecTest() {
         if (codecRunning) return;
-        codecRunning = true; codecReport.setText("Testing... this takes a few minutes. The screen shows the test pattern.");
+        codecRunning = true; codecReport.setText(R.string.codec_running);
         final android.view.SurfaceView surface = new android.view.SurfaceView(this);
         final android.widget.FrameLayout root = (android.widget.FrameLayout) getWindow().getDecorView().findViewById(android.R.id.content);
         root.addView(surface, new android.widget.FrameLayout.LayoutParams(-1, -1));
@@ -131,8 +146,8 @@ public class MainActivity extends Activity {
                 new Thread(() -> {
                     org.json.JSONArray results = CodecTest.run(getCacheDir(), holder.getSurface());
                     record("codec_results", results);
-                    final String summary = summarize(results);
-                    handler.post(() -> { root.removeView(surface); codecReport.setText(summary); codecRunning = false; });
+                    final String summary = summarize(MainActivity.this, results);
+                    handler.post(() -> { root.removeView(surface); codecSummary = summary; codecReport.setText(summary); codecRunning = false; if (renderPending) { renderPending = false; render(); } });
                 }, "codec-test").start();
             }
             @Override public void surfaceChanged(android.view.SurfaceHolder holder, int f, int w, int h) { }
@@ -140,25 +155,49 @@ public class MainActivity extends Activity {
         });
     }
 
-    private static String summarize(org.json.JSONArray results) {
+    /** Readable summary of the codec test in the interface language; the JSON record stays English. */
+    private static String summarize(Context c, org.json.JSONArray results) {
         StringBuilder text = new StringBuilder();
         for (int i = 0; i < results.length(); i++) {
             org.json.JSONObject entry = results.optJSONObject(i);
             if (entry == null) continue;
-            text.append(entry.optString("mime").replace("video/", "")).append(' ').append(entry.optString("size")).append(":  ");
+            String format = entry.optString("mime").replace("video/", "").toUpperCase(Locale.ROOT);
             org.json.JSONArray decoders = entry.optJSONArray("decoders");
-            if (decoders == null) { text.append(entry.optString("error", "not tested")).append('\n'); continue; }
-            for (int d = 0; d < decoders.length(); d++) {
+            StringBuilder outcome = new StringBuilder();
+            if (decoders == null) outcome.append(codecError(c, entry.optString("error", "")));
+            else if (decoders.length() == 0) outcome.append(c.getString(R.string.codec_none));
+            else for (int d = 0; d < decoders.length(); d++) {
                 org.json.JSONObject r = decoders.optJSONObject(d);
+                if (r == null) continue;
                 String name = r.optString("decoder");
                 boolean hw = !(name.startsWith("c2.android.") || name.startsWith("OMX.google."));
-                text.append(hw ? "hardware " : "software ")
-                    .append(r.has("error") ? "FAILED" : r.optInt("frames_out") + "/" + r.optInt("frames_in") + " frames at " + r.optDouble("fps") + " fps")
-                    .append(d + 1 < decoders.length() ? ",  " : "");
+                String detail = r.has("error") ? c.getString(R.string.codec_failed)
+                        : c.getString(R.string.codec_frames, r.optInt("frames_out"), r.optInt("frames_in"), r.optDouble("fps"));
+                if (outcome.length() > 0) outcome.append(",  ");
+                outcome.append(c.getString(hw ? R.string.codec_hardware : R.string.codec_software, detail));
             }
-            text.append('\n');
+            text.append(c.getString(R.string.codec_line, format, entry.optString("size"), outcome)).append('\n');
         }
         return text.toString().trim();
+    }
+
+    /** Maps the English error text kept in the JSON record to interface text. */
+    private static String codecError(Context c, String error) {
+        if (error.isEmpty()) return c.getString(R.string.codec_not_tested);
+        if (error.startsWith("no software encoder")) return c.getString(R.string.codec_no_encoder);
+        int colon = error.indexOf(':');
+        return c.getString(R.string.codec_error, colon > 0 ? error.substring(0, colon) : error);
+    }
+
+    /** The kernel reports the battery status in English; show it in the interface language. */
+    private String batteryStatus(String status) {
+        switch (status.toLowerCase(Locale.ROOT)) {
+            case "charging": return getString(R.string.battery_charging);
+            case "discharging": return getString(R.string.battery_discharging);
+            case "full": return getString(R.string.battery_full);
+            case "not charging": return getString(R.string.battery_not_charging);
+            default: return getString(R.string.battery_unknown);
+        }
     }
 
     private static String read(String path) {
@@ -182,25 +221,25 @@ public class MainActivity extends Activity {
             if (lastTotal > 0 && total > lastTotal) {
                 int load = (int) (100 * (1 - (idle - lastIdle) / (double) (total - lastTotal)));
                 String mhz = read("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
-                cpu.setText(load + "%" + (mhz.isEmpty() ? "" : "  at " + Integer.parseInt(mhz) / 1000 + " MHz"));
+                cpu.setText(mhz.isEmpty() ? getString(R.string.cpu_value, load) : getString(R.string.cpu_value_clock, load, Integer.parseInt(mhz) / 1000));
             }
             lastIdle = idle; lastTotal = total;
         }
-        memory.setText(info.availMem / 1048576 + " of " + info.totalMem / 1048576 + " MiB");
+        memory.setText(getString(R.string.memory_value, (int) (info.availMem / 1048576), (int) (info.totalMem / 1048576)));
         memory.setTextColor(info.lowMemory ? GabosUi.WARN : GabosUi.INK);
-        storage.setText(disk.getAvailableBytes() / 1048576 + " MiB");
+        storage.setText(getString(R.string.storage_value, (int) (disk.getAvailableBytes() / 1048576)));
         long seconds = SystemClock.elapsedRealtime() / 1000;
-        uptime.setText(seconds >= 3600 ? seconds / 3600 + " h " + seconds % 3600 / 60 + " min" : seconds / 60 + " min " + seconds % 60 + " s");
-        system.setText("Android " + Build.VERSION.RELEASE);
+        uptime.setText(seconds >= 3600 ? getString(R.string.uptime_hours, (int) (seconds / 3600), (int) (seconds % 3600 / 60)) : getString(R.string.uptime_minutes, (int) (seconds / 60), (int) (seconds % 60)));
+        system.setText(getString(R.string.software_value, Build.VERSION.RELEASE));
 
         String status = read("/sys/class/power_supply/battery/status"), capacity = read("/sys/class/power_supply/battery/capacity");
-        battery.setText(capacity.isEmpty() ? "Not present" : capacity + "%  " + status.toLowerCase(Locale.ROOT));
+        battery.setText(capacity.isEmpty() ? getString(R.string.not_present) : getString(R.string.battery_value, capacity, batteryStatus(status)));
 
         ConnectivityManager connectivity = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         Network active = connectivity.getActiveNetwork();
         NetworkCapabilities caps = active == null ? null : connectivity.getNetworkCapabilities(active);
         boolean validated = caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-        network.setText(active == null ? "Offline" : validated ? "Connected" : "No internet");
+        network.setText(active == null ? R.string.net_offline : validated ? R.string.net_connected : R.string.net_no_internet);
         network.setTextColor(validated ? GabosUi.INK : GabosUi.WARN);
         String ip = "-";
         LinkProperties link = active == null ? null : connectivity.getLinkProperties(active);
@@ -208,21 +247,21 @@ public class MainActivity extends Activity {
         address.setText(ip);
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        if (wifiManager == null || !wifiManager.isWifiEnabled()) wifi.setText("Off");
+        if (wifiManager == null || !wifiManager.isWifiEnabled()) wifi.setText(R.string.state_off);
         else {
             WifiInfo connection = wifiManager.getConnectionInfo();
             int rssi = connection == null ? -127 : connection.getRssi();
-            if (connection == null || connection.getNetworkId() == -1 || rssi <= -127) wifi.setText("Not connected");
-            else wifi.setText(WifiManager.calculateSignalLevel(rssi, 5) * 25 + "%  (" + rssi + " dBm)");
+            if (connection == null || connection.getNetworkId() == -1 || rssi <= -127) wifi.setText(R.string.not_connected);
+            else wifi.setText(getString(R.string.wifi_value, WifiManager.calculateSignalLevel(rssi, 5) * 25, rssi));
         }
-        if (adapter == null) bluetooth.setText("Not present");
-        else { int s = adapter.getState(); bluetooth.setText(s == BluetoothAdapter.STATE_ON ? "On" : s == BluetoothAdapter.STATE_OFF ? "Off" : "Changing"); }
+        if (adapter == null) bluetooth.setText(R.string.not_present);
+        else { int s = adapter.getState(); bluetooth.setText(s == BluetoothAdapter.STATE_ON ? R.string.state_on : s == BluetoothAdapter.STATE_OFF ? R.string.state_off : R.string.state_changing); }
 
         String type = read(DLP + "panel_type");
-        panel.setText(type.isEmpty() ? "Not detected" : type);
+        panel.setText(type.isEmpty() ? getString(R.string.not_detected) : type);
         String currents = read(DLP + "panel_brightness").replaceAll(",$", "");
         String off = read(DLP + "panel_pmu_off");
-        light.setText(currents.isEmpty() ? "-" : ("1".equals(off) ? "Off" : "LED " + currents.replace(",", " / ")));
+        light.setText(currents.isEmpty() ? "-" : "1".equals(off) ? getString(R.string.state_off) : getString(R.string.light_value, currents.replace(",", " / ")));
     }
 
     private final Runnable poll = new Runnable() {

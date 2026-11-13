@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Hardware Check</string>
+  <string name="subtitle">Quick checks of sound, video and Bluetooth. A listed decoder is not proof that playback works.</string>
+  <string name="test_tone">Test tone</string>
+  <string name="test_video">Test video</string>
+  <string name="bluetooth">Bluetooth</string>
+  <string name="close">Close</string>
+  <string name="section_video">TEST VIDEO</string>
+  <string name="section_log">RESULTS</string>
+  <!-- Results shown on screen; the RayoValidation log keeps fixed English lines. -->
+  <string name="log_intro">A listed decoder is not proof that playback works.</string>
+  <string name="log_bluetooth_missing">Bluetooth settings are not available; opening Android settings.</string>
+  <string name="log_decoder">Decoder: %1$s (%2$s)</string>
+  <string name="log_decoder_count">Matching decoders: %1$d</string>
+  <string name="log_decoder_error">Could not list decoders (%1$s)</string>
+  <string name="log_tone_started">Playing the test tone…</string>
+  <string name="log_tone_finished">Test tone finished</string>
+  <string name="log_tone_error">The test tone failed (%1$s)</string>
+  <string name="log_video_requested">Loading the test video…</string>
+  <string name="log_video_prepared">Test video ready: %1$d×%2$d, %3$.1f s</string>
+  <string name="log_video_complete">Test video finished</string>
+  <string name="log_video_error">The test video failed (%1$d, %2$d)</string>
+  <string name="log_video_exception">The test video could not start (%1$s)</string>
+</resources>

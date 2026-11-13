@@ -1,21 +1,31 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.rayo.launcher" android:versionCode="7" android:versionName="0.7">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.rayo.launcher" android:versionCode="10" android:versionName="1.0">
   <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="25" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
   <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
   <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-  <application android:label="GabOS Home" android:icon="@drawable/brand" android:theme="@style/GabOS" android:allowBackup="false">
+  <!-- First-boot setup: system language (development permission granted by the GabOS boot script) and Wi-Fi. -->
+  <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <application android:label="@string/app_name" android:icon="@drawable/brand" android:theme="@style/GabOS" android:allowBackup="false">
     <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="landscape" android:launchMode="singleTask">
       <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
       <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.HOME"/><category android:name="android.intent.category.DEFAULT"/></intent-filter>
     </activity>
-    <activity android:name=".SettingsActivity" android:label="GabOS Settings" android:exported="true" android:screenOrientation="landscape">
+    <activity android:name=".SettingsActivity" android:label="@string/settings_name" android:icon="@drawable/settings_icon" android:banner="@drawable/settings_banner" android:exported="true" android:screenOrientation="landscape">
       <intent-filter><action android:name="local.gabos.action.SETTINGS"/><category android:name="android.intent.category.DEFAULT"/></intent-filter>
     </activity>
+    <activity android:name=".SetupActivity" android:label="@string/setup_name" android:exported="false" android:screenOrientation="landscape"
+        android:configChanges="locale|layoutDirection|keyboard|keyboardHidden|navigation|fontScale" android:windowSoftInputMode="adjustPan|stateHidden"/>
+    <!-- Shared GabOS theme (accent and dark/light mode); read-only for other apps. -->
+    <provider android:name=".ThemeProvider" android:authorities="local.gabos.theme" android:exported="true" />
     <service android:name=".SystemService" android:exported="false"/>
     <receiver android:name=".SystemService$Boot" android:exported="true">
       <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"/></intent-filter>
     </receiver>
-    <service android:name=".KeyboardService" android:label="GabOS Keyboard" android:exported="true" android:permission="android.permission.BIND_INPUT_METHOD">
+    <service android:name=".KeyboardService" android:label="@string/keyboard_name" android:exported="true" android:permission="android.permission.BIND_INPUT_METHOD">
       <intent-filter><action android:name="android.view.InputMethod"/></intent-filter>
       <meta-data android:name="android.view.im" android:resource="@xml/method"/>
     </service>
