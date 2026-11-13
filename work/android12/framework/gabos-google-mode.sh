@@ -83,6 +83,11 @@ case "$ACTION" in
     boot)
         # The projector is driven by a pointer and a D-pad; select the GabOS
         # keyboard, which accepts both, whenever the launcher provides it.
+        # Projected 720p is read from a distance: default to a 1.2x interface
+        # scale unless the owner already chose another density.
+        if [ -z "$(settings get secure display_density_forced 2>/dev/null | grep -v null)" ]; then
+            wm density 192 >/dev/null 2>&1 || true
+        fi
         # GabOS Settings changes the inactivity timeout for the owner.
         appops set local.rayo.launcher WRITE_SETTINGS allow >/dev/null 2>&1 || true
         if ime list -a -s 2>/dev/null | grep -q '^local.rayo.launcher/.KeyboardService$'; then

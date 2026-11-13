@@ -1,6 +1,15 @@
 package local.gabos.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Path;
+import android.graphics.RectF;
+import android.os.BatteryManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -49,16 +58,149 @@ public final class GabosUi {
         TextView t=new TextView(activity);t.setText(value);t.setTextSize(size);t.setTextColor(color);t.setIncludeFontPadding(false);return t;
     }
 
-    /** A scrolling page with the Home margins and a title; returns the content column. */
+    /** A scrolling page with the Home margins, a title and the battery; returns the content column. */
     public LinearLayout page(String title,String subtitle){
         immersive();
         ScrollView scroll=new ScrollView(activity);scroll.setVerticalScrollBarEnabled(false);scroll.setClipToPadding(false);scroll.setFillViewport(true);
-        scroll.setBackground(background());
         LinearLayout column=new LinearLayout(activity);column.setOrientation(LinearLayout.VERTICAL);column.setClipChildren(false);column.setClipToPadding(false);
         column.setPadding(dp(56),dp(36),dp(56),dp(48));scroll.addView(column,new ScrollView.LayoutParams(-1,-2));
-        TextView heading=text(title,40,INK);column.addView(heading,new LinearLayout.LayoutParams(-1,dp(56)));
+        LinearLayout header=new LinearLayout(activity);header.setGravity(Gravity.CENTER_VERTICAL);
+        TextView heading=text(title,40,INK);header.addView(heading,new LinearLayout.LayoutParams(0,-2,1));
+        header.addView(new BatteryRing(),new LinearLayout.LayoutParams(dp(58),dp(58)));
+        column.addView(header,new LinearLayout.LayoutParams(-1,dp(60)));
         if(subtitle!=null){TextView note=text(subtitle,18,DIM);note.setPadding(0,dp(4),0,0);column.addView(note);}
-        activity.setContentView(scroll);return column;
+        FrameLayout root=assist(scroll);root.setBackground(background());
+        activity.setContentView(root);return column;
+    }
+
+    /** Equal tile width for a number of columns across the current screen. */
+    public int tileWidthDp(int columns,int marginDp,int gapDp){
+        float width=activity.getResources().getDisplayMetrics().widthPixels/activity.getResources().getDisplayMetrics().density;
+        return (int)((width-2*marginDp-(columns-1)*gapDp)/columns);
+    }
+
+    /**
+     * Scrolling help for the projector's touch panel and buttons: large up/down
+     * buttons appear at the right edge when there is more to see; resting the
+     * pointer on one scrolls continuously, clicking scrolls one page, and wheel
+     * steps move further than the platform default.
+     */
+    public FrameLayout assist(final ScrollView scroll){
+        FrameLayout root=new FrameLayout(activity);root.addView(scroll,new FrameLayout.LayoutParams(-1,-1));
+        final View up=arrow(true,scroll),down=arrow(false,scroll);
+        FrameLayout.LayoutParams pu=new FrameLayout.LayoutParams(dp(64),dp(64),Gravity.RIGHT|Gravity.TOP);pu.setMargins(0,dp(84),dp(10),0);
+        FrameLayout.LayoutParams pd=new FrameLayout.LayoutParams(dp(64),dp(64),Gravity.RIGHT|Gravity.BOTTOM);pd.setMargins(0,0,dp(10),dp(16));
+        root.addView(up,pu);root.addView(down,pd);
+        final Runnable update=()->{
+            View child=scroll.getChildCount()>0?scroll.getChildAt(0):null;
+            int range=child==null?0:Math.max(0,child.getHeight()-scroll.getHeight());
+            up.setVisibility(scroll.getScrollY()>4?View.VISIBLE:View.GONE);
+            down.setVisibility(scroll.getScrollY()<range-4?View.VISIBLE:View.GONE);
+        };
+        scroll.setOnScrollChangeListener((v,x,y,ox,oy)->update.run());
+        scroll.getViewTreeObserver().addOnGlobalLayoutListener(update::run);
+        scroll.setOnGenericMotionListener((v,e)->{
+            if(e.getAction()!=MotionEvent.ACTION_SCROLL)return false;
+            float steps=e.getAxisValue(MotionEvent.AXIS_VSCROLL);
+            if(steps==0)return false;
+            scroll.smoothScrollBy(0,(int)(-steps*dp(140)));return true;
+        });
+        return root;
+    }
+
+    private View arrow(final boolean up,final ScrollView scroll){
+        final Handler handler=new Handler(Looper.getMainLooper());
+        final View button=new View(activity){
+            final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
+            @Override protected void onDraw(Canvas c){
+                float w=getWidth(),h=getHeight();
+                paint.setStyle(Paint.Style.FILL);paint.setColor(isHovered()||isFocused()?0xeee8eaed:0xb0262d38);c.drawCircle(w/2,h/2,w/2,paint);
+                paint.setColor(isHovered()||isFocused()?0xff0d0f13:INK);
+                Path chevron=new Path();float s=w*.18f,cy=h/2+(up?s/2:-s/2);
+                chevron.moveTo(w/2-s*1.3f,cy);chevron.lineTo(w/2,up?cy-s*1.3f:cy+s*1.3f);chevron.lineTo(w/2+s*1.3f,cy);
+                paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(dp(4));paint.setStrokeCap(Paint.Cap.ROUND);paint.setStrokeJoin(Paint.Join.ROUND);c.drawPath(chevron,paint);
+            }
+        };
+        button.setContentDescription(up?"Scroll up":"Scroll down");button.setVisibility(View.GONE);button.setClickable(true);
+        final Runnable glide=new Runnable(){public void run(){
+            if(!button.isHovered())return;scroll.smoothScrollBy(0,up?-dp(26):dp(26));handler.postDelayed(this,40);}};
+        button.setOnClickListener(v->scroll.smoothScrollBy(0,(int)((up?-1:1)*scroll.getHeight()*.7f)));
+        button.setOnHoverListener((v,e)->{
+            if(e.getAction()==MotionEvent.ACTION_HOVER_ENTER){v.setHovered(true);v.invalidate();handler.postDelayed(glide,350);}
+            else if(e.getAction()==MotionEvent.ACTION_HOVER_EXIT){v.setHovered(false);v.invalidate();handler.removeCallbacks(glide);}
+            return true;
+        });
+        return button;
+    }
+
+    /** Battery level ring with the percentage inside; green, amber or red, with a bolt while charging. */
+    public final class BatteryRing extends View{
+        int level=-1;boolean charging;
+        final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
+        final BroadcastReceiver receiver=new BroadcastReceiver(){
+            @Override public void onReceive(Context context,Intent intent){
+                int l=intent.getIntExtra(BatteryManager.EXTRA_LEVEL,-1),scale=intent.getIntExtra(BatteryManager.EXTRA_SCALE,-1);
+                level=l>=0&&scale>0?Math.round(l*100f/scale):-1;
+                int status=intent.getIntExtra(BatteryManager.EXTRA_STATUS,-1);
+                charging=status==BatteryManager.BATTERY_STATUS_CHARGING||status==BatteryManager.BATTERY_STATUS_FULL&&intent.getIntExtra(BatteryManager.EXTRA_PLUGGED,0)!=0;
+                setContentDescription(level<0?"Battery":"Battery "+level+" percent"+(charging?", charging":""));invalidate();
+            }
+        };
+        public BatteryRing(){super(activity);}
+        @Override protected void onAttachedToWindow(){super.onAttachedToWindow();activity.registerReceiver(receiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));}
+        @Override protected void onDetachedFromWindow(){try{activity.unregisterReceiver(receiver);}catch(IllegalArgumentException ignored){}super.onDetachedFromWindow();}
+        @Override protected void onDraw(Canvas c){
+            if(level<0)return;
+            float w=getWidth(),h=getHeight(),stroke=dp(5),r=Math.min(w,h)/2-stroke;
+            RectF box=new RectF(w/2-r,h/2-r,w/2+r,h/2+r);
+            int color=level<=15?0xffff6b6b:level<=40?WARN:0xff6fdc8c;
+            paint.setStyle(Paint.Style.STROKE);paint.setStrokeWidth(stroke);paint.setStrokeCap(Paint.Cap.ROUND);
+            paint.setColor(0x40ffffff);c.drawArc(box,0,360,false,paint);
+            paint.setColor(color);c.drawArc(box,-90,360f*level/100f,false,paint);
+            paint.setStyle(Paint.Style.FILL);paint.setColor(INK);paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTypeface(Typeface.DEFAULT_BOLD);paint.setTextSize(r*(level==100?.62f:.74f));
+            float y=h/2-(paint.descent()+paint.ascent())/2-(charging?r*.16f:0);
+            c.drawText(String.valueOf(level),w/2,y,paint);
+            if(charging){
+                Path bolt=new Path();float bx=w/2,by=h/2+r*.48f,s=r*.2f;
+                bolt.moveTo(bx+s*.2f,by-s);bolt.lineTo(bx-s*.6f,by+s*.1f);bolt.lineTo(bx,by+s*.1f);bolt.lineTo(bx-s*.2f,by+s);
+                bolt.lineTo(bx+s*.6f,by-s*.1f);bolt.lineTo(bx,by-s*.1f);bolt.close();paint.setColor(color);c.drawPath(bolt,paint);
+            }
+        }
+    }
+
+    /**
+     * Placement pictures: a projector on a table or on the ceiling, in front of
+     * or behind the screen. Returns the views; the caller maps index to value.
+     */
+    public View[] placements(LinearLayout row,String[] labels,boolean[] ceiling,boolean[] rear,int selected,final IntChange change){
+        final LinearLayout[] items=new LinearLayout[labels.length];final int[] current={selected};
+        final Runnable paint=()->{for(int i=0;i<items.length;i++){GradientDrawable g=new GradientDrawable();g.setCornerRadius(dp(10));
+            g.setColor(i==current[0]?0xff23406e:0xff222935);if(i==current[0])g.setStroke(dp(2),ACCENT);items[i].setBackground(g);}};
+        for(int i=0;i<labels.length;i++){
+            final int index=i;final boolean onCeiling=ceiling[i],behind=rear[i];
+            LinearLayout item=new LinearLayout(activity);item.setOrientation(LinearLayout.VERTICAL);item.setGravity(Gravity.CENTER_HORIZONTAL);item.setPadding(dp(8),dp(10),dp(8),dp(10));
+            View picture=new View(activity){
+                final Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);
+                @Override protected void onDraw(Canvas c){
+                    float w=getWidth(),h=getHeight();
+                    p.setStrokeCap(Paint.Cap.ROUND);p.setStrokeWidth(dp(3));p.setColor(0x80ffffff);
+                    float surface=onCeiling?h*.12f:h*.88f;c.drawLine(w*.05f,surface,w*.95f,surface,p);
+                    // Screen on the right, viewer on the left; behind = projector beyond the screen.
+                    float sx=w*.66f;p.setColor(0xffd2e3fc);p.setStrokeWidth(dp(4));c.drawLine(sx,h*.25f,sx,h*.75f,p);
+                    float px=behind?w*.86f:w*.3f,pw=w*.14f,ph=h*.14f,py=onCeiling?surface+ph*.2f:surface-ph*1.2f;
+                    p.setStyle(Paint.Style.FILL);p.setColor(INK);c.drawRoundRect(px-pw/2,py,px+pw/2,py+ph,dp(3),dp(3),p);
+                    p.setColor(0x558ab4f8);Path beam=new Path();float bx=behind?px-pw/2:px+pw/2;
+                    beam.moveTo(bx,py+ph/2);beam.lineTo(sx,h*.27f);beam.lineTo(sx,h*.73f);beam.close();c.drawPath(beam,p);
+                    p.setColor(0xffaab0b8);float ex=w*.1f,ey=h*.5f;c.drawCircle(ex,ey-dp(8),dp(5),p);c.drawRect(ex-dp(4),ey-dp(2),ex+dp(4),ey+dp(14),p);
+                }
+            };
+            item.addView(picture,new LinearLayout.LayoutParams(dp(150),dp(84)));
+            TextView label=text(labels[i],16,INK);label.setGravity(Gravity.CENTER);label.setPadding(0,dp(8),0,0);item.addView(label);
+            items[i]=item;focusable(item,10);item.setOnClickListener(v->{pulse(v);current[0]=index;paint.run();change.onChange(index);});
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-2,-2);lp.setMargins(0,0,dp(16),0);row.addView(item,lp);
+        }
+        paint.run();return items;
     }
 
     public LinearLayout row(LinearLayout column,int topDp){

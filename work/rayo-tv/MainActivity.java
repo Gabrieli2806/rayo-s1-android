@@ -24,7 +24,8 @@ import java.util.*;
 public class MainActivity extends Activity {
     private static final int INK=0xfff1f3f4, DIM=0xff9aa0a6, CARD=0xff1b222d, FOCUS=0xffffffff;
     private static final int[] TINTS={0xff3b4a8f,0xff2f6f73,0xff7a4a2e,0xff5b3f86,0xff2e5f8a,0xff7b3550,0xff46683a,0xff6a5a2c};
-    private static final int COLUMNS=5, TILE_W=188, TILE_H=106;
+    private static final int COLUMNS=5, MARGIN=48, GAP=20;
+    private int TILE_W=188, TILE_H=106;
     private final Handler handler=new Handler(Looper.getMainLooper());
     private final HashMap<String,Bitmap> art=new HashMap<>();
     private TextView clock, greeting, date, status, profileName, profileInitial;
@@ -77,7 +78,6 @@ public class MainActivity extends Activity {
         if(status!=null){
             NetworkInfo network=((ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
             String line=network!=null&&network.isConnected()?"Online":"Offline";
-            if(battery>=0)line+="   ·   Battery "+battery+"%"+(plugged?" (plugged in)":"");
             status.setText(line);
         }
         if(profileName!=null){
@@ -87,17 +87,19 @@ public class MainActivity extends Activity {
     }
 
     private void render(){
+        local.gabos.ui.GabosUi kit=new local.gabos.ui.GabosUi(this);
+        TILE_W=kit.tileWidthDp(COLUMNS,MARGIN,GAP);TILE_H=TILE_W*9/16;art.clear();
         preferredFocus=null;
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         ScrollView scroll=new ScrollView(this);scroll.setVerticalScrollBarEnabled(false);scroll.setClipToPadding(false);scroll.setFillViewport(true);
-        scroll.setBackground(new GradientDrawable(GradientDrawable.Orientation.TL_BR,new int[]{0xff0d0f13,0xff0e131c,0xff101d36}));
         LinearLayout page=new LinearLayout(this);page.setOrientation(LinearLayout.VERTICAL);page.setClipChildren(false);page.setClipToPadding(false);
-        page.setPadding(dp(58),dp(40),dp(58),dp(40));
+        page.setPadding(dp(MARGIN),dp(32),dp(MARGIN),dp(40));
         scroll.addView(page,new ScrollView.LayoutParams(-1,-2));
 
         LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setClipChildren(false);
         TextView title=text("Home",40,INK);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
         header.addView(profileChip());
+        LinearLayout.LayoutParams bp=new LinearLayout.LayoutParams(dp(58),dp(58));bp.setMargins(dp(22),0,0,0);header.addView(kit.new BatteryRing(),bp);
         clock=text("",26,INK);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,-2);cp.setMargins(dp(26),0,0,0);header.addView(clock,cp);
         page.addView(header,new LinearLayout.LayoutParams(-1,dp(60)));
 
@@ -124,7 +126,8 @@ public class MainActivity extends Activity {
         status=text("",17,DIM);status.setPadding(0,dp(10),0,0);card.addView(status);
         LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,-2);sp.setMargins(0,dp(34),0,0);page.addView(card,sp);
 
-        setContentView(scroll);lastPackageCount=packageCount();updateStatus();
+        FrameLayout root=kit.assist(scroll);root.setBackground(local.gabos.ui.GabosUi.background());
+        setContentView(root);lastPackageCount=packageCount();updateStatus();
         final View focus=preferredFocus;focus.post(()->focus.requestFocus());
     }
 
@@ -162,7 +165,7 @@ public class MainActivity extends Activity {
         LinearLayout r=new LinearLayout(this);r.setClipChildren(false);r.setClipToPadding(false);
         LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,top,0,0);page.addView(r,p);return r;
     }
-    private LinearLayout.LayoutParams tileParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(TILE_W),dp(TILE_H));p.setMargins(0,0,dp(22),0);return p;}
+    private LinearLayout.LayoutParams tileParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(TILE_W),dp(TILE_H));p.setMargins(0,0,dp(GAP),0);return p;}
 
     /** White outline and slight growth, drawn as a foreground so the art is not rebuilt. */
     private void focusable(final View tile,final String pkg){

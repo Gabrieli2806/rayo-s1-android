@@ -44,6 +44,18 @@ final class Projector {
     static boolean autoOrientation(Context c){return prefs(c).getBoolean("autorotate",true);}
     static void setAutoOrientation(Context c,boolean on){prefs(c).edit().putBoolean("autorotate",on).apply();write(DLP+"panel_autorotate_enable",on?"1":"0");}
 
+    /**
+     * panel_rotate value for each placement picture: table, ceiling, table
+     * behind the screen, ceiling behind the screen. 3 is the factory default
+     * (table). The other three follow the driver's rotate order and must be
+     * confirmed on the lens.
+     */
+    static final int[] PLACEMENT_VALUES={3,1,4,2};
+
+    /** Hardware keystone of the T113 warp processor; -1 means not set. */
+    static int manualKeystone(Context c){return prefs(c).getInt("manual_keystone",0);}
+    static void setManualKeystone(Context c,int v){v=Math.max(-40,Math.min(40,v));prefs(c).edit().putInt("manual_keystone",v).apply();write(WARP+"panel_manual_keystone",Integer.toString(v));}
+
     static boolean autoKeystone(Context c){return prefs(c).getBoolean("keystone",true);}
     static void setAutoKeystone(Context c,boolean on){prefs(c).edit().putBoolean("keystone",on).apply();write(WARP+"panel_Keystone_enbale",on?"1":"0");}
 
@@ -69,5 +81,6 @@ final class Projector {
         if(p.contains("autorotate"))write(DLP+"panel_autorotate_enable",autoOrientation(c)?"1":"0");
         if(p.contains("rotate")&&!autoOrientation(c))write(DLP+"panel_rotate",Integer.toString(orientation(c)));
         if(p.contains("keystone"))write(WARP+"panel_Keystone_enbale",autoKeystone(c)?"1":"0");
+        if(p.contains("manual_keystone")&&!autoKeystone(c))write(WARP+"panel_manual_keystone",Integer.toString(manualKeystone(c)));
     }
 }

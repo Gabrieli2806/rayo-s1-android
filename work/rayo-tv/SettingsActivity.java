@@ -43,11 +43,19 @@ public class SettingsActivity extends Activity {
             r=ui.settingRow(page,"Automatic orientation","Flips the image using the tilt sensor.");
             ui.toggle(r,Projector.autoOrientation(this),v->{Projector.setAutoOrientation(this,v==1);render();});
             if(!Projector.autoOrientation(this)){
-                r=ui.settingRow(page,"Orientation","Choose how the projector is placed. Position 3 is the factory default.");
-                ui.choices(r,new String[]{"1","2","3","4"},Projector.orientation(this)-1,v->Projector.setOrientation(this,v+1));
+                LinearLayout placement=ui.row(page,14);
+                int current=0;
+                for(int i=0;i<Projector.PLACEMENT_VALUES.length;i++)if(Projector.PLACEMENT_VALUES[i]==Projector.orientation(this))current=i;
+                ui.placements(placement,new String[]{"Table","Ceiling","Table, behind","Ceiling, behind"},
+                        new boolean[]{false,true,false,true},new boolean[]{false,false,true,true},current,
+                        i->Projector.setOrientation(this,Projector.PLACEMENT_VALUES[i]));
             }
-            r=ui.settingRow(page,"Automatic keystone","Straightens the image when the projector is tilted.");
-            ui.toggle(r,Projector.autoKeystone(this),v->Projector.setAutoKeystone(this,v==1));
+            r=ui.settingRow(page,"Automatic keystone","Straightens the image using the tilt sensor when the projector is angled.");
+            ui.toggle(r,Projector.autoKeystone(this),v->{Projector.setAutoKeystone(this,v==1);render();});
+            if(!Projector.autoKeystone(this)){
+                r=ui.settingRow(page,"Manual keystone","Narrows the top or the bottom of the image. 0 is straight.");
+                ui.slider(r,-40,40,2,Projector.manualKeystone(this),v->Projector.setManualKeystone(this,v));
+            }
         }
 
         ui.section(page,"POWER AND LIGHT");
