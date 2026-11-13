@@ -564,7 +564,10 @@ def main():
     # encryption, formatting, or removable-volume configuration is exposed.
     (system/'vendor/etc/fstab.rk30board').write_text(
         '/dev/block/loop7 /system ext4 ro wait\n'
-        '/dev/block/loop6 /data ext4 noatime,nosuid,nodev wait\n')
+        '/dev/block/loop6 /data ext4 noatime,nosuid,nodev wait\n'
+        # Lets init write the recovery command for "reboot,recovery" (the rescue
+        # slot). Not mounted; the rescue clears the command again.
+        '/dev/block/platform/1021c000.rksdmmc/by-name/misc /misc emmc defaults defaults\n')
     defaults = '''ro.secure=0
 ro.adb.secure=0
 ro.debuggable=1

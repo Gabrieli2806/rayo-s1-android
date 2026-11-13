@@ -95,6 +95,14 @@ def main():
             return
         if md5(BASE+'recovery') != V14:
             raise SystemExit('Recovery slot does not hold the v14 rescue')
+        # Android 12 init writes the recovery command to misc before rebooting
+        # and cancels the reboot when its fstab has no misc entry (lite-03 and
+        # earlier). Provide one for this boot only; the rescue clears it.
+        fstab = checked('shell', 'cat', '/vendor/etc/fstab.rk30board')
+        if ' /misc ' not in fstab:
+            temporary = '/data/local/tmp/fstab.rk30board'
+            checked('shell', 'printf "%s\n%s\n" "$(cat /vendor/etc/fstab.rk30board)" "'+BASE+'misc /misc emmc defaults defaults" > '+temporary)
+            checked('shell', 'chmod 644 '+temporary+'; chcon u:object_r:vendor_configs_file:s0 '+temporary+'; mount -o bind '+temporary+' /vendor/etc/fstab.rk30board')
         command('shell', 'sync')
         command('shell', 'setprop', 'sys.powerctl', 'reboot,recovery')
         started = time.monotonic()
@@ -109,6 +117,14 @@ def main():
 
     if checked('shell', 'id', '-u') != '0' or checked('shell', 'uname', '-r') != '3.10.104':
         raise SystemExit('Requires root ADB on this unit')
+    # Clear the one-shot recovery command so later normal reboots start GabOS.
+    bcb = command('exec-out', '/sbin/busybox', 'head', '-c', '32', BASE+'misc').stdout
+    if bcb.rstrip(bytes(1)) == b'boot-recovery':
+        checked('shell', '/sbin/busybox', 'dd', 'if=/dev/zero', 'of='+BASE+'misc', 'bs=2048', 'count=1', 'conv=notrunc')
+        checked('shell', '/sbin/busybox', 'sync')
+        bcb = command('exec-out', '/sbin/busybox', 'head', '-c', '32', BASE+'misc').stdout
+    if len(bcb) != 32 or any(bcb):
+        raise SystemExit('Unexpected bootloader message in misc; inspect before updating')
     current_boot, current_recovery = md5(BASE+'boot'), md5(BASE+'recovery')
     if current_recovery != V14 or current_boot not in known_boots:
         raise SystemExit('Not the installed layout (boot %s, recovery %s)' % (current_boot, current_recovery))

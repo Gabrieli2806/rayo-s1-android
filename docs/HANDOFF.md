@@ -14,6 +14,43 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
+## Video decoding and system update path (November 13, 2026)
+
+Installed now: `gabos-lite-04` (boot MD5 `e691bf28732e6dbc54e34190f9ec6237`,
+recovery = v14 rescue), applied with `tools/update-android12.py`, which restarts
+into the rescue, replaces the system image file, writes and reads back the boot
+image and waits for a completed GabOS boot. Data is untouched.
+
+Owner priority: stable video in SmartTube and similar apps. Findings and fixes:
+
+- SmartTube stayed on its loading spinner because the factory decoder dlopen()s
+  `librk_vpuapi.so`, which was not staged (`dll open fail librk_vpuapi.so`).
+  It is now staged from the factory image into the legacy namespace.
+- The codec service then crashed on every codec release: `Rkvpu_Dec_Terminate`
+  clears a 128-byte buffer at decoder-private+616 that is already NULL on
+  Android 12. The facade wraps `SendCommand` and re-provides the buffer before
+  state changes (`omx_plugin_bridge.cpp`); `ComponentDeInit` frees it.
+- The facade now exposes the factory AVC, VP8, MPEG-4, MPEG-2 and H.263
+  decoders with the factory 7.1.2 limits, ranked before software.
+- Measured on the clean lite-04 boot: SmartTube 720p AVC with
+  `OMX.rk.video_decoder.avc`, 0 dropped frames in 25 s, 0 codec-service crashes
+  over play/stop and four video switches. Software decoding of the same stream
+  dropped 22-44% of frames.
+- Diagnostics "Video decoders" (or `--es test codecs`) encodes a pattern and
+  decodes it with every decoder to a real surface. Last run: hardware AVC 720p
+  and 1080p, VP8 and H.263 all frames, 0 crashes. MPEG-4/MPEG-2 have no test
+  encoder; HEVC and VP9 remain software (HEVC needs the factory HEVC library at
+  a path outside the legacy namespace).
+- The CPU is held at 816-912 MHz by the kernel even with the performance
+  governor; 1.2 GHz is only reached briefly at boot. Not changed.
+- `reboot,recovery` from GabOS needs a misc fstab entry so init can write the
+  recovery command; lite-04 has it, and the update tool clears the command in
+  the rescue.
+
+Still open: touch panel scrolling/click behaviour (event capture pending with
+the owner), audio pop confirmation, HEVC hardware, and the manual keystone
+range on the lens.
+
 ## GabOS Android 12 is the normal boot (November 12, 2026)
 
 `gabos-lite-03` (Google-free, Home 0.6, GabOS Keyboard, restyled Media 0.2 and
