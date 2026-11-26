@@ -212,13 +212,13 @@ public class MainActivity extends Activity {
 
         LinearLayout system=row(page,dp(20));
         View settings=systemTile(getString(R.string.tile_settings),GabosUi.BLUE_TOP,GabosUi.BLUE_BOTTOM,true,v->open(new Intent(this,SettingsActivity.class)));
-        system.addView(settings,tileParams());
-        if(installed("com.android.documentsui"))system.addView(systemTile(getString(R.string.tile_files),GabosUi.TILE_TOP,GabosUi.TILE_BOTTOM,false,v->launch("com.android.documentsui")),tileParams());
+        system.addView(captioned(settings,getString(R.string.tile_settings)),captionParams());
+        if(installed("com.android.documentsui"))system.addView(captioned(systemTile(getString(R.string.tile_files),GabosUi.TILE_TOP,GabosUi.TILE_BOTTOM,false,v->launch("com.android.documentsui")),""),captionParams());
 
         List<App> apps=apps();LinearLayout line=null;int index=0;
         for(App app:apps){
-            if(index%COLUMNS==0)line=row(page,dp(index==0?26:18));
-            View tile=appTile(app);line.addView(tile,tileParams());
+            if(index%COLUMNS==0)line=row(page,dp(index==0?0:4));
+            View tile=appTile(app);line.addView(captioned(tile,app.name),captionParams());
             if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;
             index++;
         }
@@ -277,6 +277,19 @@ public class MainActivity extends Activity {
         LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.setMargins(0,top,0,0);page.addView(r,p);return r;
     }
     private LinearLayout.LayoutParams tileParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(TILE_W),dp(TILE_H));p.setMargins(0,0,dp(GAP),0);return p;}
+    private static final int CAPTION_H=34;
+    private LinearLayout.LayoutParams captionParams(){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(TILE_W),dp(TILE_H+CAPTION_H));p.setMargins(0,0,dp(GAP),0);return p;}
+    /** Name under the focused tile, as on Google TV; banners alone often carry no readable name. */
+    private final java.util.WeakHashMap<View,TextView> captions=new java.util.WeakHashMap<>();
+    private View captioned(View tile,String name){
+        LinearLayout column=new LinearLayout(this);column.setOrientation(LinearLayout.VERTICAL);
+        column.setClipChildren(false);column.setClipToPadding(false);
+        column.addView(tile,new LinearLayout.LayoutParams(dp(TILE_W),dp(TILE_H)));
+        TextView caption=text(name,16,GabosUi.INK);caption.setSingleLine(true);caption.setEllipsize(TextUtils.TruncateAt.END);
+        caption.setGravity(Gravity.CENTER_HORIZONTAL);caption.setPadding(0,dp(12),0,0);caption.setAlpha(tile.isFocused()?1f:0f);
+        column.addView(caption,new LinearLayout.LayoutParams(-1,dp(CAPTION_H)));
+        captions.put(tile,caption);return column;
+    }
 
     /** Theme focus outline and slight growth, drawn as a foreground so the art is not rebuilt. */
     private void focusable(final View tile,final String pkg){
@@ -285,6 +298,7 @@ public class MainActivity extends Activity {
         tile.setOnFocusChangeListener((v,focus)->{
             v.setForeground(focus?ring:null);v.setElevation(focus?dp(8):0);
             v.animate().scaleX(focus?1.08f:1f).scaleY(focus?1.08f:1f).setDuration(110).start();
+            TextView caption=captions.get(v);if(caption!=null)caption.animate().alpha(focus?1f:0f).setDuration(140).start();
             if(focus&&pkg!=null)focusedPackage=pkg;
         });
     }
