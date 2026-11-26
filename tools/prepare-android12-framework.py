@@ -535,6 +535,10 @@ ro.gabos.version=1.1
 ro.build.display.id=GabOS 1.1
 ro.build.type=userdebug
 ro.system.build.type=userdebug
+# The panel is 1280x720. Players (ExoPlayer on TVs) read these to size their
+# track choice to the native resolution instead of choosing 1080p streams.
+sys.display-size=1280x720
+vendor.display-size=1280x720
 ro.product.model=GabOS for Rayo S1
 ro.apex.updatable=false
 ro.rayo.graphics.no_hwc_background=true

@@ -24,7 +24,6 @@ public class SettingsActivity extends Activity {
     private static final int[] ACCENT_NAMES={R.string.accent_blue,R.string.accent_cyan,R.string.accent_green,R.string.accent_lime,R.string.accent_yellow,
             R.string.accent_orange,R.string.accent_red,R.string.accent_pink,R.string.accent_purple,R.string.accent_silver};
     private GabosUi ui;
-    private View dark;
     private final Handler handler=new Handler(Looper.getMainLooper());
     private int pendingHue;
     private final Runnable applyHue=()->applyTheme(Color.HSVToColor(new float[]{pendingHue,.45f,.97f}),ThemeProvider.light(this),"accentHue");
@@ -97,8 +96,6 @@ public class SettingsActivity extends Activity {
         if(hw){
             r=ui.settingRow(page,getString(R.string.light_with_screen_title),getString(R.string.light_with_screen_summary));
             ui.toggle(r,Projector.lightWithScreen(this),v->Projector.setLightWithScreen(this,v==1));
-            r=ui.settingRow(page,getString(R.string.audio_only_title),getString(R.string.audio_only_summary));
-            ui.tile(r,getString(R.string.audio_only_action),v->lightOff());
         }
 
         ui.section(page,getString(R.string.section_sound));
@@ -111,7 +108,8 @@ public class SettingsActivity extends Activity {
         // Home needs no chooser. Each tile opens the matching TV Settings screen.
         ui.section(page,getString(R.string.section_connections));
         LinearLayout tiles=ui.row(page,14);
-        ui.primaryTile(tiles,getString(R.string.more_wifi),v->open(firstResolvable(new Intent(Settings.ACTION_WIFI_SETTINGS))));
+        // Wi-Fi and language use the GabOS pages of the setup wizard; the rest are native.
+        ui.primaryTile(tiles,getString(R.string.more_wifi),v->open(new Intent(this,SetupActivity.class).putExtra(SetupActivity.EXTRA_PAGE,"wifi")));
         // Native TV Settings has no ACTION_BLUETOOTH_SETTINGS page; its accessory
         // search and pairing screen answers CONNECT_INPUT. Paired devices are
         // listed under native Settings > Remotes and accessories.
@@ -123,7 +121,7 @@ public class SettingsActivity extends Activity {
         ui.section(page,getString(R.string.section_system));
         // Five Home-size tiles are wider than the 1280x720 page at density 192; three per row.
         tiles=ui.row(page,14);
-        ui.tile(tiles,getString(R.string.more_language),v->open(firstResolvable(new Intent(Settings.ACTION_LOCALE_SETTINGS))));
+        ui.tile(tiles,getString(R.string.more_language),v->open(new Intent(this,SetupActivity.class).putExtra(SetupActivity.EXTRA_PAGE,"language")));
         ui.tile(tiles,getString(R.string.more_date),v->open(firstResolvable(new Intent(Settings.ACTION_DATE_SETTINGS))));
         ui.tile(tiles,getString(R.string.more_keyboard),v->open(firstResolvable(new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))));
         tiles=ui.row(page,18);
@@ -173,21 +171,6 @@ public class SettingsActivity extends Activity {
         catch(Exception e){android.widget.Toast.makeText(this,R.string.not_available,android.widget.Toast.LENGTH_SHORT).show();}
     }
 
-    private void lightOff(){
-        Projector.light(false);
-        FrameLayout cover=new FrameLayout(this);cover.setBackgroundColor(0xff000000);cover.setFocusable(true);cover.setClickable(true);
-        cover.setOnClickListener(v->lightOn());
-        addContentView(cover,new FrameLayout.LayoutParams(-1,-1));cover.requestFocus();dark=cover;
-    }
-    private void lightOn(){
-        if(dark==null)return;
-        Projector.light(true);((android.view.ViewGroup)dark.getParent()).removeView(dark);dark=null;render(null);
-    }
-    @Override public boolean dispatchKeyEvent(KeyEvent event){
-        if(dark!=null){if(event.getAction()==KeyEvent.ACTION_UP)lightOn();return true;}
-        return super.dispatchKeyEvent(event);
-    }
-    @Override protected void onPause(){if(dark!=null)lightOn();super.onPause();}
     @Override protected void onDestroy(){handler.removeCallbacksAndMessages(null);super.onDestroy();}
     @Override public void onBackPressed(){super.onBackPressed();ui.fade();}
 }

@@ -65,6 +65,8 @@ import local.gabos.ui.GabosUi;
  */
 public class SetupActivity extends Activity {
     public static final String EXTRA_AGAIN="local.gabos.extra.SETUP_AGAIN";
+    /** Opens one page ("wifi" or "language") on its own from GabOS Settings; leaving it returns there. */
+    public static final String EXTRA_PAGE="local.gabos.extra.SETUP_PAGE";
     private static final String TAG="GabOSSetup", PREFS="setup";
     private static final int WELCOME=0, LANGUAGE=1, WIFI=2, LOOK=3, DONE=4, STEPS=5;
     private static final int IDLE=0, CONNECTING=1, CONNECTED=2, FAILED=3;
@@ -77,6 +79,7 @@ public class SetupActivity extends Activity {
     private final Handler handler=new Handler(Looper.getMainLooper());
     private GabosUi ui;
     private int step=WELCOME;
+    private int single=-1;
     private boolean again, wifiReceiverOn, permissionAsked, resumed;
     private TextView primary;
 
@@ -131,7 +134,10 @@ public class SetupActivity extends Activity {
         ui=new GabosUi(this);
         wifi=(WifiManager)getApplicationContext().getSystemService(WIFI_SERVICE);
         again=getIntent().getBooleanExtra(EXTRA_AGAIN,false);
-        if(state!=null)step=Math.max(WELCOME,Math.min(DONE,state.getInt("step",WELCOME)));
+        String page=getIntent().getStringExtra(EXTRA_PAGE);
+        single="wifi".equals(page)?WIFI:"language".equals(page)?LANGUAGE:-1;
+        if(single>=0){again=true;step=single;}
+        else if(state!=null)step=Math.max(WELCOME,Math.min(DONE,state.getInt("step",WELCOME)));
         // The password field sits near the top; pan instead of resizing under the keyboard.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN|WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         render(null);
@@ -165,6 +171,7 @@ public class SetupActivity extends Activity {
 
     @Override public void onBackPressed(){
         if(step==WIFI&&passwordFor!=null){passwordFor=null;render(null);return;}
+        if(single>=0){go(-1);return;}
         if(step>WELCOME){go(step-1);return;}
         // First boot: setup is left with "Skip setup" or Home; a rerun can simply close.
         if(again){finish();ui.fade();}
@@ -174,6 +181,7 @@ public class SetupActivity extends Activity {
 
     private void go(int next){
         if(step==WIFI&&next!=WIFI){passwordFor=null;handler.removeCallbacks(rescan);stopWifiReceiver();}
+        if(single>=0&&next!=single){finish();ui.fade();return;}
         step=next;render(null);
     }
 
@@ -203,7 +211,7 @@ public class SetupActivity extends Activity {
         frame.addView(ui.assist(scroll),new LinearLayout.LayoutParams(-1,0,1));
 
         LinearLayout footer=new LinearLayout(this);footer.setGravity(Gravity.CENTER_VERTICAL);footer.setClipChildren(false);footer.setClipToPadding(false);
-        if(step>WELCOME){button(footer,getString(R.string.setup_back),false,v->onBackPressed());}
+        if(step>WELCOME&&single<0){button(footer,getString(R.string.setup_back),false,v->onBackPressed());}
         footer.addView(new View(this),new LinearLayout.LayoutParams(0,1,1));
         frame.addView(footer,new LinearLayout.LayoutParams(-1,dp(68)));
         root.addView(frame,new FrameLayout.LayoutParams(-1,-1));
@@ -227,10 +235,10 @@ public class SetupActivity extends Activity {
     /** "GabOS setup", progress dots and the battery ring. */
     private View header(){
         LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);
-        TextView brand=ui.text(getString(R.string.setup_brand),15,GabosUi.DIM);brand.setLetterSpacing(.14f);brand.setTypeface(Typeface.DEFAULT_BOLD);
+        TextView brand=ui.text(getString(single>=0?R.string.settings_brand:R.string.setup_brand),15,GabosUi.DIM);brand.setLetterSpacing(.14f);brand.setTypeface(Typeface.DEFAULT_BOLD);
         header.addView(brand);
         LinearLayout dots=new LinearLayout(this);dots.setGravity(Gravity.CENTER_VERTICAL);
-        for(int i=0;i<STEPS;i++){
+        for(int i=0;i<STEPS&&single<0;i++){
             View dot=new View(this);GradientDrawable g=new GradientDrawable();g.setCornerRadius(dp(5));
             g.setColor(i==step?GabosUi.ACCENT:i<step?GabosUi.alpha(GabosUi.ACCENT,0x88):GabosUi.TRACK);dot.setBackground(g);
             LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(dp(i==step?28:10),dp(10));p.setMargins(dp(8),0,0,0);dots.addView(dot,p);
@@ -297,7 +305,7 @@ public class SetupActivity extends Activity {
         LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,-2);rp.setMargins(dp(8),dp(30),0,0);body.addView(row,rp);
         View english=languageTile(row,"English","EN",!spanish,()->chooseLanguage(false));
         View espanol=languageTile(row,"Español","ES",spanish,()->chooseLanguage(true));
-        button(footer,getString(R.string.setup_next),true,v->go(WIFI));
+        button(footer,getString(single>=0?R.string.setup_page_done:R.string.setup_next),true,v->go(WIFI));
         return spanish?espanol:english;
     }
 
@@ -317,7 +325,8 @@ public class SetupActivity extends Activity {
     private void chooseLanguage(boolean spanish){
         Locale target=localeFor(spanish);
         if(target.getLanguage().equals(currentLocale().getLanguage())){go(WIFI);return;}
-        step=WIFI;
+        // From Settings the language page stays open in the new language.
+        if(single<0)step=WIFI;
         if(applyLocale(target)){
             // onConfigurationChanged re-renders in the new language; render anyway if it never arrives.
             handler.removeCallbacks(localeFallback);handler.postDelayed(localeFallback,1500);
@@ -359,7 +368,7 @@ public class SetupActivity extends Activity {
 
         button(footer,getString(R.string.setup_wifi_rescan),false,v->{startScan();updateWifiStatus();});
         button(footer,getString(R.string.setup_wifi_more),false,v->open(new Intent(Settings.ACTION_WIFI_SETTINGS)));
-        button(footer,getString(R.string.setup_skip),true,v->go(LOOK));
+        button(footer,getString(single>=0?R.string.setup_page_done:R.string.setup_skip),true,v->go(LOOK));
         View first=refreshNetworks();
         updateWifiStatus();
         return wifiConnected()||first==null?primary:first;
@@ -638,7 +647,7 @@ public class SetupActivity extends Activity {
         else{text=getString(R.string.setup_wifi_scanning);busy=hasLocationPermission()&&locationOn();}
         wifiStatus.setText(text);wifiStatus.setTextColor(color);
         if(spinner!=null)spinner.setVisibility(busy?View.VISIBLE:View.GONE);
-        if(primary!=null){primary.setText(current!=null?R.string.setup_next:R.string.setup_skip);primary.setContentDescription(primary.getText());}
+        if(primary!=null){primary.setText(single>=0?R.string.setup_page_done:current!=null?R.string.setup_next:R.string.setup_skip);primary.setContentDescription(primary.getText());}
     }
 
     // ------------------------------------------------------------ 4. look

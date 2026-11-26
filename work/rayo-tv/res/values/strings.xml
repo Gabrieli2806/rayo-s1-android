@@ -115,6 +115,8 @@
   <string name="setup_brand">GABOS SETUP</string>
   <string name="setup_back">Back</string>
   <string name="setup_next">Next</string>
+  <string name="setup_page_done">Done</string>
+  <string name="settings_brand">GABOS SETTINGS</string>
   <string name="setup_skip">Skip</string>
   <string name="setup_skip_all">Skip setup</string>
   <string name="setup_get_started">Get started</string>

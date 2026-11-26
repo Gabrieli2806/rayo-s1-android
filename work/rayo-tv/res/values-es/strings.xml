@@ -111,6 +111,8 @@
   <string name="setup_brand">CONFIGURACIÓN DE GABOS</string>
   <string name="setup_back">Atrás</string>
   <string name="setup_next">Siguiente</string>
+  <string name="setup_page_done">Listo</string>
+  <string name="settings_brand">AJUSTES DE GABOS</string>
   <string name="setup_skip">Omitir</string>
   <string name="setup_skip_all">Omitir configuración</string>
   <string name="setup_get_started">Empezar</string>
