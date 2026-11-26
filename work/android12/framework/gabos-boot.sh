@@ -33,6 +33,15 @@ if has_package "$LAUNCHER"; then
     if [ "$(settings get secure location_mode 2>/dev/null)" = "0" ]; then
         settings put secure location_mode 3 >/dev/null 2>&1 || true
     fi
+    # GabOS Settings' storage page reads the shared media folder sizes.
+    pm grant "$LAUNCHER" android.permission.READ_EXTERNAL_STORAGE >/dev/null 2>&1 || true
+    # Its Bluetooth page calls profile connect/disconnect and removeBond, which
+    # are hidden platform methods (allowed for the privileged launcher). Exempt
+    # only the Bluetooth classes from the hidden-API check, and only when no
+    # other exemption has been set.
+    case "$(settings get global hidden_api_blacklist_exemptions 2>/dev/null)" in
+        ""|null) settings put global hidden_api_blacklist_exemptions "Landroid/bluetooth/" >/dev/null 2>&1 || true ;;
+    esac
     # GabOS Home is the only Home activity.
     cmd package set-home-activity "$LAUNCHER/.MainActivity" >/dev/null 2>&1 || true
     # The projector is driven by a pointer and a D-pad; select the GabOS

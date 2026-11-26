@@ -470,13 +470,23 @@ public final class GabosUi {
         return views;
     }
 
+    /**
+     * Track slider. Changes are paced for a projector remote and its touchpad:
+     * one step per press, held keys repeat every 180 ms, and the wheel or a
+     * two-finger scroll over the hovered slider moves one step per notch at
+     * most every 140 ms. Hovering highlights the thumb.
+     */
     private final class SliderView extends View{
         final int min,max,step;int value;final IntChange change;final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);
+        long lastKey,lastScroll;float scrollAccumulated;boolean hovered;
         SliderView(int min,int max,int step,int value,IntChange change){super(activity);this.min=min;this.max=max;this.step=step;this.value=value;this.change=change;}
         void set(int v){v=Math.max(min,Math.min(max,v));if(v!=value){value=v;invalidate();change.onChange(v);}}
         @Override public boolean onKeyDown(int code,KeyEvent e){
-            if(code==KeyEvent.KEYCODE_DPAD_LEFT){set(value-step);return true;}
-            if(code==KeyEvent.KEYCODE_DPAD_RIGHT){set(value+step);return true;}
+            if(code==KeyEvent.KEYCODE_DPAD_LEFT||code==KeyEvent.KEYCODE_DPAD_RIGHT){
+                long now=e.getEventTime();
+                if(e.getRepeatCount()==0||now-lastKey>=180){lastKey=now;set(value+(code==KeyEvent.KEYCODE_DPAD_RIGHT?step:-step));}
+                return true;
+            }
             return super.onKeyDown(code,e);
         }
         @Override public boolean onTouchEvent(MotionEvent e){
@@ -484,8 +494,21 @@ public final class GabosUi {
             float f=Math.max(0,Math.min(1,(e.getX()-pad)/w));
             set(min+Math.round(f*(max-min)/step)*step);requestFocus();return true;
         }
+        @Override public boolean onHoverEvent(MotionEvent e){
+            boolean now=e.getAction()!=MotionEvent.ACTION_HOVER_EXIT;
+            if(now!=hovered){hovered=now;scrollAccumulated=0;invalidate();}
+            return super.onHoverEvent(e);
+        }
         @Override public boolean onGenericMotionEvent(MotionEvent e){
-            if(e.getAction()==MotionEvent.ACTION_SCROLL){set(value+(e.getAxisValue(MotionEvent.AXIS_VSCROLL)>0?step:-step));return true;}
+            if(e.getAction()==MotionEvent.ACTION_SCROLL){
+                // Touchpads send many small scroll events; count whole notches and pace them.
+                scrollAccumulated+=e.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                long now=e.getEventTime();
+                if(Math.abs(scrollAccumulated)>=1f&&now-lastScroll>=140){
+                    lastScroll=now;set(value+(scrollAccumulated>0?step:-step));scrollAccumulated=0;
+                }
+                return true;
+            }
             return super.onGenericMotionEvent(e);
         }
         @Override protected void onDraw(Canvas c){
@@ -493,7 +516,7 @@ public final class GabosUi {
             paint.setStrokeCap(Paint.Cap.ROUND);paint.setStrokeWidth(dp(6));
             paint.setColor(TRACK);c.drawLine(pad,cy,pad+w,cy,paint);
             paint.setColor(ACCENT);c.drawLine(pad,cy,pad+w*f,cy,paint);
-            paint.setStyle(Paint.Style.FILL);paint.setColor(isFocused()?FOCUS:ACCENT);c.drawCircle(pad+w*f,cy,dp(isFocused()?12:10),paint);
+            paint.setStyle(Paint.Style.FILL);paint.setColor(isFocused()||hovered?FOCUS:ACCENT);c.drawCircle(pad+w*f,cy,dp(isFocused()?12:hovered?11:10),paint);
             paint.setColor(INK);paint.setTextSize(dp(20));paint.setTextAlign(Paint.Align.RIGHT);
             c.drawText(String.valueOf(value),getWidth()-dp(14),cy+dp(7),paint);
         }

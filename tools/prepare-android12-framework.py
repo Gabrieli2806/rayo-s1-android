@@ -87,9 +87,27 @@ def main():
         if (record.get('package') != 'local.rayo.launcher' or record.get('google_services') is not False
                 or digest(apk) != record['sha256']):
             raise SystemExit('Rebuild and verify the lightweight launcher first')
-        destination = system/'app/RayoDark/RayoDark.apk'
+        # A privileged system app: its GabOS Bluetooth page connects and forgets
+        # devices (BLUETOOTH_PRIVILEGED). Android 12 refuses to boot when a
+        # privileged app requests a privileged permission that is not listed,
+        # so the list below must cover every one the launcher requests.
+        destination = system/'priv-app/RayoDark/RayoDark.apk'
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(apk, destination)
+        (system/'etc/permissions').mkdir(parents=True, exist_ok=True)
+        (system/'etc/permissions/privapp-permissions-gabos-home.xml').write_text(
+            '<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+'
+            '    <privapp-permissions package="local.rayo.launcher">
+'
+            '        <permission name="android.permission.BLUETOOTH_PRIVILEGED"/>
+'
+            '        <permission name="android.permission.CHANGE_CONFIGURATION"/>
+'
+            '    </privapp-permissions>
+</permissions>
+')
         # The launcher package carries the pointer- and D-pad-capable GabOS
         # keyboard. The D-pad-only Leanback keyboard could not be operated with
         # the projector's pointer (owner report, run 20261111-211628).

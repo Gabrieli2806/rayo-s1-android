@@ -153,8 +153,20 @@ GabOS never repartitions or formats the eMMC.
 Not proven: recovery from bootloader damage, MaskROM entry, or a physical
 emergency procedure. See [docs/RECOVERY.md](docs/RECOVERY.md).
 
+## Install or mod it with an AI assistant
+
+[docs/ASSISTANT.md](docs/ASSISTANT.md) is a playbook for an AI coding
+assistant with shell and ADB access (for example Claude Code). It tells the
+assistant how to identify your projector, back it up, install or update
+GabOS, and change it, with the safety rules this device needs. Open the
+repository in the assistant and ask:
+
+> Read `docs/ASSISTANT.md` and help me with my Canon Rayo S1.
+
 ## Documentation
 
+- [docs/ASSISTANT.md](docs/ASSISTANT.md): guided install, update and modding
+  with an AI assistant.
 - [docs/INSTALL.md](docs/INSTALL.md): build and install from zero, with the
   current limitations.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): boot chain, bootstrap, legacy

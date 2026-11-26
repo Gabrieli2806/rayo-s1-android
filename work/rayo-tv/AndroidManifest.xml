@@ -9,6 +9,11 @@
   <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <!-- GabOS Bluetooth page: discovery, pairing, and (privileged, see the packager) profile connect/forget. -->
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <application android:label="@string/app_name" android:icon="@drawable/brand" android:theme="@style/GabOS" android:allowBackup="false">
     <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="landscape" android:launchMode="singleTask">
       <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
@@ -21,6 +26,7 @@
         android:configChanges="locale|layoutDirection|keyboard|keyboardHidden|navigation|fontScale" android:windowSoftInputMode="adjustPan|stateHidden"/>
     <!-- Shared GabOS theme (accent and dark/light mode); read-only for other apps. -->
     <provider android:name=".ThemeProvider" android:authorities="local.gabos.theme" android:exported="true" />
+    <activity android:name=".SystemPages" android:exported="false" android:screenOrientation="landscape"/>
     <service android:name=".SystemService" android:exported="false"/>
     <receiver android:name=".SystemService$Boot" android:exported="true">
       <intent-filter><action android:name="android.intent.action.BOOT_COMPLETED"/></intent-filter>
