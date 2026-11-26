@@ -96,18 +96,11 @@ def main():
         shutil.copyfile(apk, destination)
         (system/'etc/permissions').mkdir(parents=True, exist_ok=True)
         (system/'etc/permissions/privapp-permissions-gabos-home.xml').write_text(
-            '<?xml version="1.0" encoding="utf-8"?>
-<permissions>
-'
-            '    <privapp-permissions package="local.rayo.launcher">
-'
-            '        <permission name="android.permission.BLUETOOTH_PRIVILEGED"/>
-'
-            '        <permission name="android.permission.CHANGE_CONFIGURATION"/>
-'
-            '    </privapp-permissions>
-</permissions>
-')
+            '<?xml version="1.0" encoding="utf-8"?>\n<permissions>\n'
+            '    <privapp-permissions package="local.rayo.launcher">\n'
+            '        <permission name="android.permission.BLUETOOTH_PRIVILEGED"/>\n'
+            '        <permission name="android.permission.CHANGE_CONFIGURATION"/>\n'
+            '    </privapp-permissions>\n</permissions>\n')
         # The launcher package carries the pointer- and D-pad-capable GabOS
         # keyboard. The D-pad-only Leanback keyboard could not be operated with
         # the projector's pointer (owner report, run 20261111-211628).
