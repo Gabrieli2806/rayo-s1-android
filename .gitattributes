@@ -8,3 +8,4 @@
 *.xml text eol=lf
 *.json text eol=lf
 work/android12/** text eol=lf
+work/gabos-rescue/** text eol=lf
