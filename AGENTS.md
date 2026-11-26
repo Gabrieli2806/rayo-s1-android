@@ -89,3 +89,14 @@ the `eng` type makes any app `Log.wtf` fatal and killed TV Settings' Bluetooth
 screen. Owner apps GRemote TV and GBrowse are preinstalled from
 `manifests/gabos-partner-apps.json`; their code belongs to the separate apps
 workspace, so coordinate changes with that session. See `docs/HANDOFF.md`.
+
+GabOS Rescue (November 26, 2026): the recovery slot now holds GabOS Rescue
+(`tools/make-gabos-rescue.py`, sources in `work/gabos-rescue/`): a ramdisk on
+the factory kernel with root ADB, busybox, static toybox/e2fsck/resize2fs and
+`gabos-reboot`; no system image. It clears the recovery command at start, so a
+power cycle returns to GabOS. The v14 rescue files were deleted from the
+device (host copies remain in `local/device-kit/`). Test a new rescue build
+only with `gabos-reboot recovery` (one-shot, no misc command) while GabOS
+boots normally. `promote-android12.py --action rollback` assumes v14 and no
+longer applies; to return to stock, write the factory boot and recovery from
+`local/device-kit/original/` from the rescue.

@@ -118,3 +118,15 @@ cc_binary {
     shared_libs: ["libutils", "libdl"],
     cflags: ["-Wall", "-Wextra", "-Werror"],
 }
+
+// GabOS rescue (recovery slot): direct restart helper, static so it runs both in
+// GabOS (for a safe one-shot test boot of the rescue) and inside the rescue.
+cc_binary {
+    name: "gabos-reboot",
+    srcs: ["rescue_reboot.c"],
+    static_executable: true,
+    static_libs: ["libc"],
+    system_shared_libs: [],
+    stl: "none",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

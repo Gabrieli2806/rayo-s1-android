@@ -14,6 +14,35 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
+## GabOS Rescue replaces the v14 rescue (November 26, 2026)
+
+The recovery slot holds **GabOS Rescue 3** (MD5 `6d60fb629faeb94190eaa77aa402d063`,
+record `local/gabos-rescue-installs/gabos-rescue-3.json`, copy at
+`/realdata/gabos-rescue/gabos-rescue.img`). Build it with
+`tools/make-gabos-rescue.py --render-picture` (Windows, Pillow) and then
+`tools/make-gabos-rescue.py` (WSL) after building `gabos-reboot toybox-static
+e2fsck_static resize2fs_ramdisk` with `tools/build-android12-tv.sh`.
+
+- Contents: factory kernel and command line (via `pack-recovery.py`), Android 8.1
+  static init/ueventd/adbd and busybox from the v14 ramdisk, Android 12 static
+  toybox, e2fsck, resize2fs and `gabos-reboot`; `work/gabos-rescue/init.rc` and
+  `gabos-rescue-start.sh`. Ramdisk about 3.2 MB; nothing on userdata.
+- Start-up mounts userdata at `/realdata`, clears `boot-recovery` from misc,
+  shows a bilingual help picture and turns the DLP light on. Identify it with
+  `cat /gabos-rescue.version` (toybox has no `getprop` here).
+- Display: after the loader the controller may scan 32-bit pixels while fb0
+  reports RGB565; `fbset` to 32 and back to 16 makes the driver reprogram it.
+  Confirmed by the owner on the lens.
+- Verified on the device: one-shot boot (`gabos-reboot recovery`), root ADB,
+  userdata mount, e2fsck/resize2fs/md5sum, a full `update-android12.py` run
+  through it (outcome `android12-primary`), and GabOS `reboot,recovery` ->
+  rescue (command cleared) -> `gabos-reboot` -> GabOS.
+- Removed from the device afterwards: `rayo81-system.raw.img`, `rayo81-trial/`
+  and `gabos-rescue/v14.img`; userdata free went from 1.8 to 2.3 GB. Host copies
+  remain. `promote-android12.py --action rollback` still expects v14 and must
+  not be used; return to stock means writing the factory boot and recovery
+  images from `local/device-kit/original/` from the rescue.
+
 ## Later on November 26, 2026: candidate gabos-1.2
 
 Installed: `outputs/android12-framework/gabos-1.2` (boot MD5

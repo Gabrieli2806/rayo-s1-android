@@ -1,0 +1,49 @@
+# GabOS Rescue: the recovery-slot repair system.
+#
+# A minimal ramdisk on the factory kernel: Android 8.1's static init, ueventd
+# and adbd from the v14 rescue ramdisk, busybox, Android 12 static toybox,
+# e2fsck and resize2fs. No system image, no framework. It mounts userdata at
+# /realdata, shows a help picture, and offers root ADB over USB so the host
+# tools can repair or update GabOS. Never mounts or writes the factory system.
+
+import /init.environ.rc
+import /init.usb.rc
+
+on early-init
+    write /proc/1/oom_score_adj -1000
+    write /proc/sys/kernel/sysrq 0
+    mkdir /realdata 0700 root root
+    start ueventd
+
+on init
+    sysclktz 0
+    symlink /system/etc /etc
+    mkdir /data 0771 system system
+    mkdir /cache 0770 system cache
+    mkdir /tmp 0775 root root
+    mount tmpfs tmpfs /tmp mode=0775
+    mkdir /dev/usb-ffs 0770 shell shell
+    mkdir /dev/usb-ffs/adb 0770 shell shell
+    mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 18D1
+    write /sys/class/android_usb/android0/idProduct D001
+    write /sys/class/android_usb/android0/f_ffs/aliases adb
+    write /sys/class/android_usb/android0/functions adb
+    write /sys/class/android_usb/android0/iManufacturer Canon
+    write /sys/class/android_usb/android0/iProduct GabOS-Rescue
+    write /sys/class/android_usb/android0/iSerial ${ro.serialno}
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+
+on late-init
+    exec u:r:init:s0 root root -- /sbin/busybox sh /sbin/gabos-rescue-start.sh
+    setprop sys.usb.configfs 0
+    setprop sys.usb.config adb
+    setprop ro.gabos.rescue 1
+    setprop sys.boot_completed 1
+
+service ueventd /sbin/ueventd
+    class core
+    critical
+    seclabel u:r:ueventd:s0

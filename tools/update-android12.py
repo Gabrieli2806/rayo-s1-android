@@ -38,6 +38,17 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 BASE = '/dev/block/platform/1021c000.rksdmmc/by-name/'
 V14 = '7a3ac489b05f0f2e9cde16280551511a'
+
+
+def rescue_images():
+    """MD5 of every recovery-slot rescue this tool accepts: v14 and GabOS Rescue builds."""
+    known = {V14}
+    record = ROOT/'outputs/gabos-rescue/MANIFEST.json'
+    if record.is_file():
+        known.add(json.loads(record.read_text())['md5'])
+    for record in (ROOT/'local/gabos-rescue-installs').glob('*.json'):
+        known.add(json.loads(record.read_text())['md5'])
+    return known
 SYSTEM = '/realdata/local/tmp/rayo12-framework-system.raw.img'
 DATA = '/realdata/rayo12-framework-data/userdata.ext4'
 RESCUE = '/realdata/gabos-rescue'
@@ -89,6 +100,13 @@ def main():
     def prop(name):
         return command('shell', 'getprop', name, timeout=8).stdout.decode(errors='replace').strip()
 
+    def rescue_running():
+        """The v14 rescue (Android 8.1) or GabOS Rescue (ramdisk only, no getprop)."""
+        marker = command('shell', 'cat', '/gabos-rescue.version', timeout=8)
+        if marker.returncode == 0 and marker.stdout.decode(errors='replace').startswith('gabos-rescue '):
+            return True
+        return prop('ro.build.version.release') == '8.1.0' and prop('sys.boot_completed') == '1'
+
     def md5(path, timeout=300):
         return checked('shell', 'md5sum', path, timeout=timeout).split()[0]
 
@@ -127,8 +145,8 @@ def main():
         if not args.execute:
             print('Plan only; add --execute to restart into the rescue and update.')
             return
-        if md5(BASE+'recovery') != V14:
-            raise SystemExit('Recovery slot does not hold the v14 rescue')
+        if md5(BASE+'recovery') not in rescue_images():
+            raise SystemExit('Recovery slot does not hold a known rescue')
         # Android 12 init writes the recovery command to misc before rebooting
         # and cancels the reboot when its fstab has no misc entry (lite-03 and
         # earlier). Provide one for this boot only; the rescue clears it.
@@ -142,12 +160,12 @@ def main():
         started = time.monotonic()
         while time.monotonic()-started < 300:
             time.sleep(4)
-            if prop('ro.build.version.release') == '8.1.0' and prop('sys.boot_completed') == '1':
+            if rescue_running():
                 break
         else:
             raise SystemExit('The rescue system did not start; check the device')
-    elif release != '8.1.0' or prop('sys.boot_completed') != '1':
-        raise SystemExit('Requires running GabOS or the completed v14 rescue')
+    elif not rescue_running():
+        raise SystemExit('Requires running GabOS or a running rescue')
 
     if checked('shell', 'id', '-u') != '0' or checked('shell', 'uname', '-r') != '3.10.104':
         raise SystemExit('Requires root ADB on this unit')
@@ -160,7 +178,7 @@ def main():
     if len(bcb) != 32 or any(bcb):
         raise SystemExit('Unexpected bootloader message in misc; inspect before updating')
     current_boot, current_recovery = md5(BASE+'boot'), md5(BASE+'recovery')
-    if current_recovery != V14 or current_boot not in known_boots:
+    if current_recovery not in rescue_images() or current_boot not in known_boots:
         raise SystemExit('Not the installed layout (boot %s, recovery %s)' % (current_boot, current_recovery))
     mapped = command('shell', '/sbin/busybox cat /sys/block/loop*/loop/backing_file 2>/dev/null; true').stdout
     if b'rayo12-framework' in mapped:
@@ -239,7 +257,11 @@ def main():
     if md5(BASE+'boot') != boot_md5:
         raise RuntimeError('Boot readback differs; the rescue remains available')
     print('System and boot updated and verified; restarting into GabOS.', flush=True)
-    command('shell', 'setprop', 'sys.powerctl', 'reboot')
+    # GabOS Rescue has no Android init to ask; its gabos-reboot restarts directly.
+    if command('shell', '/sbin/busybox', 'test', '-x', '/sbin/gabos-reboot', timeout=8).returncode == 0:
+        command('shell', '/sbin/gabos-reboot', timeout=8)
+    else:
+        command('shell', 'setprop', 'sys.powerctl', 'reboot')
     started = time.monotonic()
     outcome = 'timeout'
     while time.monotonic()-started < manifest['watchdog_seconds']+300:
@@ -249,7 +271,7 @@ def main():
             if command('shell', '/sbin/busybox', 'test', '-e', '/dev/.rayo12-boot-ok', timeout=8).returncode == 0:
                 outcome = 'android12-primary'
                 break
-        elif release == '8.1.0' and prop('sys.boot_completed') == '1' and time.monotonic()-started > 60:
+        elif time.monotonic()-started > 60 and rescue_running():
             outcome = 'fell-back-to-v14-rescue'
             break
     result['outcome'] = outcome
