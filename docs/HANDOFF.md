@@ -14,6 +14,21 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
+## Later on November 26, 2026: candidate gabos-1.2
+
+Installed: `outputs/android12-framework/gabos-1.2` (boot MD5
+`8316cc2bf497ac638d76e81aa25e7dec`, system MD5 `21f641d494c37b5b3843d088f67145bd`,
+same 1408 MiB data). Changes over the 1.1 build below: the launcher is a
+privileged app (`/system/priv-app/RayoDark`, whitelist
+`privapp-permissions-gabos-home.xml`; `BLUETOOTH_PRIVILEGED` verified granted),
+GabOS-styled Bluetooth, apps, storage and about pages (`SystemPages.java`;
+native screens only under Advanced), Wi-Fi and language as single GabOS pages,
+no audio-only row, paced sliders, focused-tile captions on Home, and
+`sys.display-size`/`vendor.display-size=1280x720`. The rescue's own extra apps
+(Aurora, SmartTube, Moonlight) and duplicate staging images in its
+`/data/local/tmp` were deleted (about 300 MiB). Pairing with a real Bluetooth
+device and the boot-pop listening test are still pending.
+
 ## GabOS 1.1 and retirement of old system data (November 26, 2026)
 
 Installed now: `outputs/android12-framework/gabos-1.1-data1408` (boot MD5
