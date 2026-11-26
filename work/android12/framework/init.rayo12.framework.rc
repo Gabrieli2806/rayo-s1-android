@@ -79,3 +79,17 @@ service gabos_boot /system/bin/sh /system/bin/gabos-boot
     stdio_to_kmsg
     oneshot
     disabled
+
+# GabOS wireless update: GabOS Settings downloads and verifies the release, then
+# sets sys.gabos.update.stage=1; this moves it to userdata and restarts into
+# GabOS Rescue, which installs it.
+on property:sys.gabos.update.stage=1
+    start gabos_update_stage
+
+service gabos_update_stage /system/bin/sh /system/bin/gabos-update-stage
+    user root
+    group root shell system
+    seclabel u:r:su:s0
+    stdio_to_kmsg
+    oneshot
+    disabled

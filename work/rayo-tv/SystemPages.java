@@ -112,6 +112,7 @@ public class SystemPages extends Activity {
             case "bluetooth":renderBluetooth(focus);break;
             case "apps":renderApps(focus);break;
             case "storage":renderStorage();break;
+            case "updates":renderUpdates();break;
             default:renderAbout();
         }
     }
@@ -350,6 +351,97 @@ public class SystemPages extends Activity {
             paint.setColor(GabosUi.TRACK);c.drawRoundRect(0,0,getWidth(),h,r,r,paint);
             paint.setColor(fraction>.9f?GabosUi.WARN:GabosUi.ACCENT);c.drawRoundRect(0,0,Math.max(h,getWidth()*fraction),h,r,r,paint);
         }
+    }
+
+    // ------------------------------------------------------------ Updates
+
+    private Updater.Release release;
+    private String updateState="idle", updateError;
+    private long downloaded, downloadTotal;
+    private volatile boolean cancelDownload;
+    private final Runnable pollStage=new Runnable(){public void run(){
+        String state=Updater.property("sys.gabos.update.state");
+        if(state.startsWith("error:")){updateState="error";updateError=state.substring(6);render(null);return;}
+        if(state.startsWith("restarting")){updateState="restarting";render(null);return;}
+        handler.postDelayed(this,1000);
+    }};
+
+    private void renderUpdates(){
+        LinearLayout page=ui.page(getString(R.string.updates_title),getString(R.string.updates_subtitle));
+        String installed=Updater.installedVersion();
+        LinearLayout card=ui.card(page,20);
+        card.addView(ui.text(getString(R.string.updates_installed),14,GabosUi.DIM));
+        TextView v=ui.text("GabOS "+(installed.isEmpty()?"?":installed),30,GabosUi.INK);v.setPadding(0,ui.dp(10),0,0);card.addView(v);
+        String result=Updater.property("sys.gabos.update.result");
+        if(result.startsWith("installed:")&&"idle".equals(updateState)){TextView r=ui.text(getString(R.string.updates_done,result.substring(10)),16,GabosUi.ACCENT);r.setPadding(0,ui.dp(8),0,0);card.addView(r);}
+        else if(result.startsWith("failed:")&&"idle".equals(updateState)){TextView r=ui.text(getString(R.string.updates_failed_last,result.substring(7)),16,GabosUi.WARN);r.setPadding(0,ui.dp(8),0,0);card.addView(r);}
+        View focus=null;LinearLayout row;
+        switch(updateState){
+            case "checking":
+                ui.settingRow(page,getString(R.string.updates_checking),null);break;
+            case "current":
+                row=ui.settingRow(page,getString(R.string.updates_current),getString(R.string.updates_current_summary));
+                focus=button(row,getString(R.string.updates_check),false,"check",x->checkUpdates());break;
+            case "available":
+                row=ui.settingRow(page,getString(R.string.updates_available,release.version),
+                        getString(R.string.updates_available_summary,android.text.format.Formatter.formatShortFileSize(this,release.downloadBytes)));
+                focus=button(row,getString(R.string.updates_install),true,"install",x->startDownload());break;
+            case "downloading":
+                row=ui.settingRow(page,getString(R.string.updates_downloading,release.version),
+                        android.text.format.Formatter.formatShortFileSize(this,downloaded)+" / "+android.text.format.Formatter.formatShortFileSize(this,downloadTotal));
+                focus=button(row,getString(R.string.updates_cancel),false,"cancel",x->{cancelDownload=true;});
+                page.addView(new Bar(downloadTotal>0?downloaded/(float)downloadTotal:0),new LinearLayout.LayoutParams(-1,ui.dp(12)));break;
+            case "staging":
+                ui.settingRow(page,getString(R.string.updates_staging),getString(R.string.updates_staging_summary));break;
+            case "restarting":
+                ui.settingRow(page,getString(R.string.updates_restarting),getString(R.string.updates_restarting_summary));break;
+            case "error":
+                row=ui.settingRow(page,getString(R.string.updates_error),updateError);
+                focus=button(row,getString(R.string.updates_check),false,"check",x->checkUpdates());break;
+            default:
+                row=ui.settingRow(page,getString(R.string.updates_check_title),getString(R.string.updates_check_summary));
+                focus=button(row,getString(R.string.updates_check),true,"check",x->checkUpdates());
+        }
+        TextView note=ui.text(getString(R.string.updates_note),16,GabosUi.DIM);note.setPadding(ui.dp(8),ui.dp(18),0,0);page.addView(note);
+        focus(page,null,focus);
+    }
+
+    private void checkUpdates(){
+        updateState="checking";render(null);
+        new Thread(()->{
+            try{
+                Updater.Release r=Updater.check();
+                handler.post(()->{release=r;updateState=Updater.newer(r.version,Updater.installedVersion())?"available":"current";render(null);});
+            }catch(Exception e){
+                handler.post(()->{updateState="error";updateError=describe(e);render(null);});
+            }
+        },"gabos-update-check").start();
+    }
+
+    private void startDownload(){
+        updateState="downloading";downloaded=0;downloadTotal=release.downloadBytes;cancelDownload=false;
+        getWindow().addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        render(null);
+        new Thread(()->{
+            try{
+                Updater.download(this,release,new Updater.Progress(){
+                    @Override public void update(long done,long total){handler.post(()->{downloaded=done;downloadTotal=total;if("downloading".equals(updateState))render("cancel");});}
+                    @Override public boolean cancelled(){return cancelDownload;}
+                });
+                handler.post(()->{updateState="staging";render(null);handler.postDelayed(pollStage,1000);});
+            }catch(Exception e){
+                handler.post(()->{updateState=cancelDownload?"idle":"error";updateError=describe(e);
+                    getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);render(null);});
+            }
+        },"gabos-update-download").start();
+    }
+
+    private String describe(Exception e){
+        String m=String.valueOf(e.getMessage());
+        if(e instanceof SecurityException)return getString(R.string.updates_error_verify);
+        if(m.startsWith("space:"))return getString(R.string.updates_error_space,m.substring(6));
+        if(e instanceof java.net.UnknownHostException||e instanceof java.net.SocketTimeoutException)return getString(R.string.updates_error_network);
+        return getString(R.string.updates_error_other,m);
     }
 
     // ------------------------------------------------------------ About

@@ -34,5 +34,9 @@ $BB dd if=/res/gabos-rescue.rgb565 of=/dev/graphics/fb0 bs=2560 count=720     ||
 PANEL=/sys/devices/20072000.i2c/i2c-0/0-001b
 $BB test -e $PANEL/panel_pmu_off && $BB echo 0 > $PANEL/panel_pmu_off
 
-$BB touch /dev/.gabos-rescue-ready
+/sbin/toybox touch /dev/.gabos-rescue-ready
 $BB echo 'GABOS_RESCUE: ready'
+
+# A wireless update staged by GabOS, or a rollback after it failed to boot.
+# The script restarts the projector itself when it has work to do.
+$BB sh /sbin/gabos-apply-update.sh

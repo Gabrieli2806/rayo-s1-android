@@ -14,6 +14,33 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
+## GabOS 1.4: wireless updates from GitHub (November 26, 2026)
+
+Installed: GabOS 1.4 (boot MD5 `8b83b58163365e940c135fc0502a4df5`), applied **over
+the air** from the public release `gabos-1.4`, with GabOS Rescue 4 (MD5
+`7d5876906b3aef69ef3bc2be2088af27`) in recovery. The repository was made public
+the same day; the device-kit and factory-backup releases were deleted first and
+their archives kept in `local/release-backups/` (zip integrity checked).
+
+- Release files: `tools/make-gabos-ota.py` (61 proprietary files, 6.8 MiB,
+  zeroed in the public system image; factory kernel and second stage zeroed in
+  the boot image; manifest signed with ECDSA P-256). `tools/check-gabos-ota.py`
+  rebuilt both 1.4 images from the public files and the 1.3 candidate before
+  publishing.
+- Device path: Settings > Updates (`Updater.java`, `SystemPages.java`) checks
+  `releases/latest/download/gabos-ota.json`, verifies the signature, downloads
+  (471 MB in about 2 minutes on the owner's Wi-Fi) and writes `plan.txt`;
+  `gabos-update-stage` (root init service on `sys.gabos.update.stage=1`) moves
+  the files to `/realdata/gabos-update` and restarts into the rescue;
+  `gabos-apply-update.sh` rebuilds, verifies and installs (about 3 minutes in
+  the rescue), keeping the previous version until `gabos-boot` sees a completed
+  boot (`BOOTING` marker; rollback in the rescue if it is still there).
+- The first run started from 1.3, which has no staging service, so stage 2 was
+  started by hand from ADB once; from 1.4 on the whole path runs from Settings.
+- Also in 1.4: speaker pop treatment (`gabos-codec-quiet`), silent stream kept
+  with the screen off, Home header settings icon, no welcome card, Files and
+  Share banners.
+
 ## GabOS Rescue replaces the v14 rescue (November 26, 2026)
 
 The recovery slot holds **GabOS Rescue 3** (MD5 `6d60fb629faeb94190eaa77aa402d063`,

@@ -29,7 +29,7 @@ import tarfile
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = 3
+VERSION = 4
 # Not needed without the 8.1 system image and its framework.
 DROP = ['init.zygote32.rc', 'init.rk30board.rc', 'init.usb.configfs.rc', 'charger', 'drmboot.ko',
         'sbin/charger', 'sbin/watchdogd', 'sbin/rayo_hwbinder.ko', 'sbin/rayo-mount-trial.sh',
@@ -47,8 +47,8 @@ def digest(path, kind='sha256'):
     return h.hexdigest()
 
 
-def picture(target):
-    """1280x720 RGB565 help screen in the GabOS look, English and Spanish."""
+def picture(target, updating=False):
+    """1280x720 RGB565 help screen (or the update screen) in the GabOS look, English and Spanish."""
     from PIL import Image, ImageDraw, ImageFont
     font_path = ROOT/'local/fonts/Roboto-Regular.ttf'
 
@@ -63,7 +63,13 @@ def picture(target):
     draw = ImageDraw.Draw(image)
     draw.text((96, 90), 'GabOS', font=font(96, 100), fill=(236, 240, 245))
     draw.text((100, 214), 'Rescue  ·  Rescate', font=font(40, 300), fill=(120, 200, 230))
+    if updating:
+        draw.rectangle((96, 214, 1200, 270), fill=(13, 16, 22))
+        draw.text((100, 214), 'Updating  ·  Actualizando', font=font(40, 300), fill=(120, 200, 230))
     lines = [
+        ('Installing a GabOS update. Do not turn the projector off; it restarts by itself.', 26, (236, 240, 245)),
+        ('Instalando una actualización de GabOS. No apagues el proyector; se reinicia solo.', 26, (236, 240, 245)),
+    ] if updating else [
         ('Connect the projector to a computer with a USB cable to repair or update GabOS.', 26, (236, 240, 245)),
         ('Conecta el proyector a una computadora con un cable USB para reparar o actualizar GabOS.', 26, (236, 240, 245)),
         ('', 18, None),
@@ -97,6 +103,7 @@ def main():
     if args.render_picture:
         args.picture.parent.mkdir(parents=True, exist_ok=True)
         picture(args.picture)
+        picture(args.picture.with_name('gabos-updating-picture.rgb565'), updating=True)
         print(args.picture, args.picture.stat().st_size)
         return
     if not args.picture.is_file() or args.picture.stat().st_size != 1280*720*2:
@@ -135,10 +142,12 @@ def main():
         shutil.copyfile(path, root/name)
         os.chmod(root/name, 0o755)
     shutil.copyfile(ROOT/'work/gabos-rescue/init.rc', root/'init.rc')
-    shutil.copyfile(ROOT/'work/gabos-rescue/gabos-rescue-start.sh', root/'sbin/gabos-rescue-start.sh')
-    os.chmod(root/'sbin/gabos-rescue-start.sh', 0o750)
+    for script in ('gabos-rescue-start.sh', 'gabos-apply-update.sh'):
+        shutil.copyfile(ROOT/'work/gabos-rescue'/script, root/'sbin'/script)
+        os.chmod(root/'sbin'/script, 0o750)
     (root/'res').mkdir(exist_ok=True)
     shutil.copyfile(args.picture, root/'res/gabos-rescue.rgb565')
+    shutil.copyfile(args.picture.with_name('gabos-updating-picture.rgb565'), root/'res/gabos-updating.rgb565')
     bin_dir = root/'system/bin'
     bin_dir.mkdir(parents=True, exist_ok=True)
     for applet in TOYBOX_APPLETS:

@@ -153,6 +153,13 @@ GabOS never repartitions or formats the eMMC.
 Not proven: recovery from bootloader damage, MaskROM entry, or a physical
 emergency procedure. See [docs/RECOVERY.md](docs/RECOVERY.md).
 
+## Wireless updates
+
+GabOS 1.4 and later update themselves from this repository's releases
+(**Settings > Updates**). Releases contain no factory files: the projector
+restores them from its own installed copies and verifies everything against a
+signed manifest. See [docs/INSTALL.md](docs/INSTALL.md#11-wireless-updates-gabos-14-and-later).
+
 ## Install or mod it with an AI assistant
 
 [docs/ASSISTANT.md](docs/ASSISTANT.md) is a playbook for an AI coding

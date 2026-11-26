@@ -184,6 +184,9 @@ def main():
     boot_script = system/'bin/gabos-boot'
     shutil.copyfile(ROOT/'work/android12/framework/gabos-boot.sh', boot_script)
     boot_script.chmod(0o755)
+    stage_script = system/'bin/gabos-update-stage'
+    shutil.copyfile(ROOT/'work/android12/framework/gabos-update-stage.sh', stage_script)
+    stage_script.chmod(0o755)
     # Speaker pop helper (device/canon/rayos1_12_lab/codec_quiet_start.c), a
     # static binary that is not part of the product packages.
     quiet = out/'soong/.intermediates/device/canon/rayos1_12_lab/gabos-codec-quiet/android_arm_armv7-a-neon_cortex-a7/gabos-codec-quiet'
@@ -549,8 +552,8 @@ def main():
 ro.adb.secure=0
 ro.debuggable=1
 ro.gabos.name=GabOS
-ro.gabos.version=1.1
-ro.build.display.id=GabOS 1.1
+ro.gabos.version=1.4
+ro.build.display.id=GabOS 1.4
 ro.build.type=userdebug
 ro.system.build.type=userdebug
 # The panel is 1280x720. Players (ExoPlayer on TVs) read these to size their
@@ -622,8 +625,8 @@ dalvik.vm.usejitprofiles=false
     effective = dict(line.split('=', 1) for line in full_properties.splitlines()
                      if line and not line.startswith('#') and '=' in line)
     for key, value in {'ro.build.version.release': '12', 'ro.build.version.sdk': '31',
-                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '1.1',
-                       'ro.build.display.id': 'GabOS 1.1', 'ro.product.model': 'GabOS for Rayo S1',
+                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '1.4',
+                       'ro.build.display.id': 'GabOS 1.4', 'ro.product.model': 'GabOS for Rayo S1',
                        'ro.rayo.trial': '12-framework', 'ro.rayo.adb.legacy_ffs': 'true',
                        'ro.rayo.cgroup.legacy': 'true', 'ro.rayo.graphics.ion_client_target': 'true',
                        'ro.rayo.graphics.legacy_sphal': 'true',
@@ -815,7 +818,7 @@ dalvik.vm.usejitprofiles=false
         'data': dict({'path': data_image.name, 'bytes': data_bytes, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
                      **({'replaces': data_replaces} if data_replaces else {})),
         'recovery': verified, 'watchdog_seconds': args.watchdog_seconds, 'device_written': False,
-        'gabos_version': '1.1', 'google_packages': False,
+        'gabos_version': '1.4', 'google_packages': False,
         'hardware_hevc': args.legacy_media, 'input_wake_idc': list(idc_names),
         'host_preopt': preopt_records,
         'graphics': graphics, 'bootstrap_sha256': digest(init),

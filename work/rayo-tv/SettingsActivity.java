@@ -123,6 +123,7 @@ public class SettingsActivity extends Activity {
         ui.tile(tiles,getString(R.string.more_storage),v->open(page("storage")));
         tiles=ui.row(page,18);
         ui.tile(tiles,getString(R.string.more_device_info),v->open(page("about")));
+        ui.tile(tiles,getString(R.string.more_updates),v->open(page("updates")));
         ui.tile(tiles,getString(R.string.more_diagnostics),v->open(getPackageManager().getLaunchIntentForPackage("local.gabos.diagnostics")));
 
         // Rarely used Android options keep their native screens, grouped here.

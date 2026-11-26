@@ -89,7 +89,8 @@ audit of unit-specific assumptions in the sources.
    profile captured from the first one. `gabos-bluetooth-address.py` reads the
    address from the connected projector each time, but it overwrites the
    host record.
-7. **The v14 install needs the owner's GitHub release.**
+7. **The v14 install needs the owner's GitHub release** (removed when the
+   repository became public; the v14 path is historical, see GabOS Rescue).
    `main-boot.py --action install-experimental` checks a published
    `previous-main-7.1.2` release in the original repository.
 8. **The Wi-Fi MAC address may be shared.** The AP6330 nvram copied into the
@@ -225,15 +226,11 @@ The build expects a **device kit** at `local/device-kit/` with the layout in
 - `kernel/`, `branding/` and `tools/rockchip/` hold the HwBinder module, older
   branding and the Rockchip Windows tools.
 
-- **Original owner:** download and verify the private kit.
-
-  ```powershell
-  gh auth login
-  powershell -File tools/download-device-kit.ps1
-  ```
-
-  The script refuses to overwrite an existing `local/device-kit`. It verifies
-  the SHA-256 in `manifests/device-kit.json` before it extracts anything.
+- **Original owner:** the kit is no longer published. Since the repository
+  became public (November 26, 2026) the device-kit and factory-backup releases
+  were removed, because they contain proprietary files; the owner keeps the
+  verified archives privately (`local/release-backups/`).
+  `tools/download-device-kit.ps1` therefore no longer finds them.
 - **Other owners: blocked on other units.** You can fill `original/` from
   your own dump. The `runtime/`, `boot/` and `system/` artifacts cannot be
   regenerated with the current tools (limitation 3). Do not use another
@@ -592,3 +589,31 @@ the device has hung. Use `adb shell setprop sys.powerctl reboot`.
 - **"Unexpected boot/recovery baseline" / "Not the installed layout"**: the
   partitions are not in the state the tool expects. Run `tools/rayo.ps1
   -Action Status` and the tool's plan mode. Do not write partitions by hand.
+
+## 11. Wireless updates (GabOS 1.4 and later)
+
+A projector that runs GabOS with GabOS Rescue updates itself from this
+repository's latest GitHub release: **Settings > Updates > Check**, then
+**Download and install**.
+
+- `tools/make-gabos-ota.py` (WSL) turns an installed-boot candidate into the
+  public release files: `gabos-ota.json`, its signature `gabos-ota.json.sig`
+  (ECDSA P-256 key in `local/secrets/gabos-ota-signing.pem`, public part in
+  `manifests/gabos-ota-signing.pub.pem`), `gabos-system.img.gz` with the data of
+  every proprietary file zeroed, and `gabos-boot.img` with the factory kernel
+  and second stage zeroed. No factory file is published.
+- `tools/check-gabos-ota.py` rebuilds the update on the host from those files
+  and the currently installed candidate, exactly as the projector will, and
+  must report both images rebuilt before the release is published.
+- Publish with `gh release create gabos-<version> <the four files> --latest`.
+- On the projector, GabOS Settings verifies the signature, downloads and hashes
+  both files, and writes a plan; `gabos-update-stage` (root) moves them to
+  `/realdata/gabos-update` and restarts into GabOS Rescue;
+  `gabos-apply-update.sh` copies the factory files back from the installed
+  system and the kernel from the current boot partition, checks every file and
+  both final images, installs them and keeps the previous version until GabOS
+  completes a boot. If the new version does not finish booting, the boot
+  watchdog returns to the rescue, which restores the previous one.
+- An update installs only when the projector's factory files match the ones the
+  release expects; otherwise it stops without changing anything, and the update
+  has to be applied from a computer (`tools/update-android12.py`).

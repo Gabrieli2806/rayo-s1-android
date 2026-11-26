@@ -100,3 +100,11 @@ only with `gabos-reboot recovery` (one-shot, no misc command) while GabOS
 boots normally. `promote-android12.py --action rollback` assumes v14 and no
 longer applies; to return to stock, write the factory boot and recovery from
 `local/device-kit/original/` from the rescue.
+
+Repository and updates (November 26, 2026): this repository is public. Never
+commit or publish proprietary files (factory images, vendor libraries, kernel
+images, firmware); keep them in `local/`. GabOS releases are built with
+`tools/make-gabos-ota.py`, which zeroes every proprietary file in the published
+images, and must pass `tools/check-gabos-ota.py` before `gh release create
+--latest`. The signing key is `local/secrets/gabos-ota-signing.pem`; never
+publish it. GabOS 1.4 was installed on the device through this wireless path.

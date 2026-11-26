@@ -92,4 +92,15 @@ case "$NAME" in
     ""|null|*Development*|*rayos1*) settings put global device_name "GabOS Rayo S1" >/dev/null 2>&1 || true ;;
 esac
 
+# Wireless update result. A completed boot confirms an installed update: the
+# previous system and boot kept by GabOS Rescue are no longer needed.
+UPDATE=/realdata/gabos-update
+if [ -f $UPDATE/BOOTING ]; then
+    rm -f $UPDATE/BOOTING $UPDATE/system.previous.img $UPDATE/boot.previous.img
+    setprop sys.gabos.update.result "installed:$(getprop ro.gabos.version)"
+elif [ -f $UPDATE/FAILED ]; then
+    setprop sys.gabos.update.result "failed:$(head -c 200 $UPDATE/FAILED)"
+    rm -f $UPDATE/FAILED
+fi
+
 setprop sys.gabos.boot.ready 1

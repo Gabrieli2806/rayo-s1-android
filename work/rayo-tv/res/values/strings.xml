@@ -99,7 +99,7 @@
   <string name="more_android_summary">Every other Android option, in the native layout</string>
   <string name="more_android_action">Open</string>
   <string name="about_caption">ABOUT</string>
-  <string name="about_version">GabOS 1.1 · g2806.net</string>
+  <string name="about_version">GabOS 1.4 · g2806.net</string>
   <string name="about_device">Canon Rayo S1   ·   optical engine %1$s</string>
   <string name="about_battery">Battery %1$d%%</string>
 
@@ -122,7 +122,7 @@
   <string name="setup_get_started">Get started</string>
   <string name="setup_current">Current</string>
   <string name="setup_welcome_title">Welcome to GabOS</string>
-  <string name="setup_welcome_version">Version 1.1</string>
+  <string name="setup_welcome_version">Version 1.4</string>
   <string name="setup_welcome_body">A light, fast system for your Canon Rayo S1 projector. In a few steps you will choose the language, connect to Wi-Fi and pick a look.</string>
   <string name="setup_welcome_hint">Use the touch panel as a mouse, or the arrow keys and OK. Back returns to the previous step.</string>
   <string name="setup_welcome_site">GabOS by g2806.net</string>
@@ -223,4 +223,31 @@
   <string name="about_uptime_value">%1$d h %2$d min</string>
   <string name="section_advanced">ADVANCED (ANDROID)</string>
   <string name="more_android_all">All Android settings</string>
+  <string name="updates_title">Updates</string>
+  <string name="updates_subtitle">GabOS releases from GitHub, verified before they are installed</string>
+  <string name="updates_installed">INSTALLED</string>
+  <string name="updates_done">Updated to GabOS %1$s</string>
+  <string name="updates_failed_last">The last update was not installed: %1$s</string>
+  <string name="updates_checking">Checking for updates…</string>
+  <string name="updates_current">GabOS is up to date</string>
+  <string name="updates_current_summary">No newer version is available</string>
+  <string name="updates_check">Check</string>
+  <string name="updates_check_title">Check for updates</string>
+  <string name="updates_check_summary">Looks for a newer GabOS on GitHub</string>
+  <string name="updates_available">GabOS %1$s is available</string>
+  <string name="updates_available_summary">Download %1$s, then the projector restarts to install it</string>
+  <string name="updates_install">Download and install</string>
+  <string name="updates_downloading">Downloading GabOS %1$s</string>
+  <string name="updates_cancel">Cancel</string>
+  <string name="updates_staging">Preparing the installation…</string>
+  <string name="updates_staging_summary">Checking the files</string>
+  <string name="updates_restarting">Restarting to install</string>
+  <string name="updates_restarting_summary">Do not turn the projector off. It installs the update and starts GabOS again by itself.</string>
+  <string name="updates_error">The update could not continue</string>
+  <string name="updates_error_verify">The download could not be verified; nothing was changed.</string>
+  <string name="updates_error_space">Not enough free space (needs about %1$s MB).</string>
+  <string name="updates_error_network">No connection to GitHub. Check the Wi-Fi.</string>
+  <string name="updates_error_other">Error: %1$s</string>
+  <string name="updates_note">Your apps and settings are kept. If the new version does not start, GabOS Rescue restores the previous one automatically.</string>
+  <string name="more_updates">Updates</string>
 </resources>
