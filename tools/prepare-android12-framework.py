@@ -184,6 +184,13 @@ def main():
     boot_script = system/'bin/gabos-boot'
     shutil.copyfile(ROOT/'work/android12/framework/gabos-boot.sh', boot_script)
     boot_script.chmod(0o755)
+    # Speaker pop helper (device/canon/rayos1_12_lab/codec_quiet_start.c), a
+    # static binary that is not part of the product packages.
+    quiet = out/'soong/.intermediates/device/canon/rayos1_12_lab/gabos-codec-quiet/android_arm_armv7-a-neon_cortex-a7/gabos-codec-quiet'
+    if not quiet.is_file():
+        raise SystemExit('Build gabos-codec-quiet with tools/build-android12-tv.sh first')
+    shutil.copyfile(quiet, system/'bin/gabos-codec-quiet')
+    (system/'bin/gabos-codec-quiet').chmod(0o755)
     # GabOS 1.0 ships no Google packages; the Google TV staging path is gone.
 
     # Declare the board's actual radio so SystemServer publishes WifiManager.

@@ -27,6 +27,11 @@ APPS = {
                   names={'': 'Hardware Check', 'es': 'Prueba de hardware'}),
     'settings': dict(res='work/rayo-tv/res', prefix='settings_', top=(0x2a, 0x5c, 0xc0), bottom=(0x0f, 0x2a, 0x6a),
                      names={'': 'Settings', 'es': 'Ajustes'}),
+    'share': dict(res='work/gabos-share/res', prefix='', top=(0xb5, 0x5a, 0x2c), bottom=(0x4d, 0x1f, 0x0c),
+                  names={'': 'Share', 'es': 'Compartir'}, banner_only=True),
+    # Banner only: Home draws it for the native Files app (DocumentsUI has none).
+    'files': dict(res='work/rayo-tv/res', prefix='files_', top=(0xb0, 0x7a, 0x22), bottom=(0x4a, 0x2c, 0x08),
+                  names={'': 'Files', 'es': 'Archivos'}, banner_only=True),
 }
 
 
@@ -101,6 +106,22 @@ def draw_glyph(d, kind, ox, oy, scale, color=(255, 255, 255, 255)):
             line([(10, v), (13, v)], 2.2)
             line([(35, v), (38, v)], 2.2)
         line([(19, 24.5), (22.5, 28), (29.5, 20.5)], 3)
+    elif kind == 'share':
+        # Screen with an arrow coming in from below.
+        w = int(2.8 * scale)
+        x0, y0 = p(10, 12)
+        x1, y1 = p(38, 31)
+        d.rounded_rectangle([x0, y0, x1, y1], radius=2.5 * scale, outline=color, width=w)
+        line([(24, 38), (24, 20)], 2.8)
+        line([(18.5, 25.5), (24, 20), (29.5, 25.5)], 2.8)
+    elif kind == 'files':
+        # Folder: tab on the top left, rounded body.
+        w = int(2.8 * scale)
+        d.line([p(11, 17), p(11, 14.5), p(13, 12.5), p(20, 12.5), p(23, 15.5), p(35, 15.5), p(37, 17.5)],
+               fill=color, width=w, joint='curve')
+        x0, y0 = p(10.5, 18.5)
+        x1, y1 = p(37.5, 35.5)
+        d.rounded_rectangle([x0, y0, x1, y1], radius=2.5 * scale, outline=color, width=w)
     elif kind == 'settings':
         for x1, y1, x2, y2 in gear_teeth():
             line([(x1, y1), (x2, y2)], 4.4)
@@ -194,7 +215,8 @@ def main():
     args = parser.parse_args()
     fonts = {'bold': args.font_dir / 'segoeuib.ttf', 'semibold': args.font_dir / 'seguisb.ttf'}
     for app, conf in APPS.items():
-        write_icon(app, conf)
+        if not conf.get('banner_only'):
+            write_icon(app, conf)
         for lang in conf['names']:
             write_banner(app, conf, lang, fonts)
     print('Icons and banners written')

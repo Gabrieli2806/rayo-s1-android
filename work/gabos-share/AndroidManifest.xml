@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.gabos.share" android:versionCode="1" android:versionName="1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.gabos.share" android:versionCode="2" android:versionName="1.1">
   <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="25"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -16,7 +16,7 @@
   <uses-permission android:name="android.permission.START_ACTIVITIES_FROM_BACKGROUND"/>
   <uses-feature android:name="android.software.leanback" android:required="false"/>
   <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
-  <application android:label="@string/app_name" android:allowBackup="false" android:icon="@drawable/ic_share"
+  <application android:label="@string/app_name" android:allowBackup="false" android:icon="@drawable/ic_share" android:banner="@drawable/banner"
 android:theme="@style/GabOS" android:usesCleartextTraffic="true">
     <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="landscape"
         android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout">

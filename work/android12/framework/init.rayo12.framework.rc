@@ -56,6 +56,20 @@ service rayo12_log_capture /system/bin/logcat -b all -v threadtime -f /data/rayo
 on property:sys.boot_completed=1
     start gabos_boot
 
+# Speaker pop: hold the codec output at 0 while the amplifier switches on at
+# every codec power-up (first sound after boot, after the screen comes back).
+# Started before audioserver so the first power-up of the boot is covered.
+on post-fs-data
+    mount debugfs debugfs /sys/kernel/debug
+    start gabos_codec_quiet
+
+service gabos_codec_quiet /system/bin/gabos-codec-quiet --daemon
+    class core
+    user root
+    group root
+    seclabel u:r:su:s0
+    disabled
+
 # GabOS 1.0 boot-completion setup: density, Home, keyboard and Share receiver.
 service gabos_boot /system/bin/sh /system/bin/gabos-boot
     class late_start

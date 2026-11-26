@@ -130,3 +130,14 @@ cc_binary {
     stl: "none",
     cflags: ["-Wall", "-Wextra", "-Werror"],
 }
+
+// Speaker pop helper for the RK312x codec (see codec_quiet_start.c).
+cc_binary {
+    name: "gabos-codec-quiet",
+    srcs: ["codec_quiet_start.c"],
+    static_executable: true,
+    static_libs: ["libc"],
+    system_shared_libs: [],
+    stl: "none",
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

@@ -206,31 +206,23 @@ public class MainActivity extends Activity {
 
         LinearLayout header=new LinearLayout(this);header.setGravity(Gravity.CENTER_VERTICAL);header.setClipChildren(false);
         TextView title=text(getString(R.string.home_title),40,GabosUi.INK);header.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        // Settings is a plain round icon beside the battery, as on Google TV.
+        FrameLayout gear=new FrameLayout(this);gear.setContentDescription(getString(R.string.tile_settings));
+        gear.addView(new GearView(),new FrameLayout.LayoutParams(dp(30),dp(30),Gravity.CENTER));
+        focusable(gear,null);gear.setOnClickListener(v->{pressed(v);open(new Intent(this,SettingsActivity.class));});
+        LinearLayout.LayoutParams gp=new LinearLayout.LayoutParams(dp(52),dp(52));gp.setMargins(0,0,dp(14),0);header.addView(gear,gp);
         header.addView(ui.new BatteryRing(),new LinearLayout.LayoutParams(dp(58),dp(58)));
         clock=text("",26,GabosUi.INK);LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(-2,-2);cp.setMargins(dp(26),0,0,0);header.addView(clock,cp);
         page.addView(header,new LinearLayout.LayoutParams(-1,dp(60)));
 
-        LinearLayout system=row(page,dp(20));
-        View settings=systemTile(getString(R.string.tile_settings),GabosUi.BLUE_TOP,GabosUi.BLUE_BOTTOM,true,v->open(new Intent(this,SettingsActivity.class)));
-        system.addView(captioned(settings,getString(R.string.tile_settings)),captionParams());
-        if(installed("com.android.documentsui"))system.addView(captioned(systemTile(getString(R.string.tile_files),GabosUi.TILE_TOP,GabosUi.TILE_BOTTOM,false,v->launch("com.android.documentsui")),""),captionParams());
-
         List<App> apps=apps();LinearLayout line=null;int index=0;
         for(App app:apps){
-            if(index%COLUMNS==0)line=row(page,dp(index==0?0:4));
+            if(index%COLUMNS==0)line=row(page,dp(index==0?24:4));
             View tile=appTile(app);line.addView(captioned(tile,app.name),captionParams());
             if(preferredFocus==null||app.pkg.equals(focusedPackage))preferredFocus=tile;
             index++;
         }
-        if(preferredFocus==null)preferredFocus=settings;
-
-        LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setGravity(Gravity.CENTER_VERTICAL);
-        card.setPadding(dp(22),dp(20),dp(22),dp(20));card.setBackground(ui.cardBackground(6));
-        TextView brand=text("GabOS",15,GabosUi.DIM);brand.setLetterSpacing(.12f);card.addView(brand);
-        greeting=text("",34,GabosUi.INK);greeting.setPadding(0,dp(14),0,dp(8));card.addView(greeting);
-        date=text("",19,GabosUi.DIM);card.addView(date);
-        status=text("",17,GabosUi.DIM);status.setPadding(0,dp(10),0,0);card.addView(status);
-        LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(-1,-2);sp.setMargins(0,dp(34),0,0);page.addView(card,sp);
+        if(preferredFocus==null)preferredFocus=gear;
 
         root=ui.assist(scroll);root.setBackground(GabosUi.background());
         getWindow().setBackgroundDrawable(GabosUi.background());
@@ -324,7 +316,9 @@ public class MainActivity extends Activity {
         int w=dp(TILE_W),h=dp(TILE_H);Bitmap bitmap=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas canvas=new Canvas(bitmap);
         Path clip=new Path();clip.addRoundRect(new RectF(0,0,w,h),dp(6),dp(6),Path.Direction.CW);canvas.clipPath(clip);
         Drawable banner=null;
-        try{banner=getPackageManager().getApplicationBanner(app.pkg);}catch(Exception ignored){}
+        // Native Files has no TV banner; Home carries one in the GabOS style.
+        if("com.android.documentsui".equals(app.pkg))banner=getResources().getDrawable(R.drawable.files_banner,null);
+        else try{banner=getPackageManager().getApplicationBanner(app.pkg);}catch(Exception ignored){}
         if(banner!=null){banner.setBounds(0,0,w,h);banner.draw(canvas);}
         else{
             int[] tones=GabosUi.tones(GabosUi.TINTS[(app.pkg.hashCode()&0x7fffffff)%GabosUi.TINTS.length]);
@@ -345,8 +339,8 @@ public class MainActivity extends Activity {
     private static class App{final String pkg,name;App(String p,String n){pkg=p;name=n;}}
     private List<App> apps(){
         LinkedHashMap<String,App> result=new LinkedHashMap<>();
-        HashSet<String> hidden=new HashSet<>(Arrays.asList(getPackageName(),"com.android.tv.settings","com.android.settings","com.android.documentsui"));
-        String[] pinned={"org.smarttube.stable","com.aurora.store","local.gabos.media"};
+        HashSet<String> hidden=new HashSet<>(Arrays.asList(getPackageName(),"com.android.tv.settings","com.android.settings"));
+        String[] pinned={"org.smarttube.stable","com.aurora.store","local.gabos.media","com.android.documentsui"};
         for(String pkg:pinned)if(installed(pkg)&&launchIntent(pkg)!=null)result.put(pkg,new App(pkg,label(pkg)));
         List<ResolveInfo> found=new ArrayList<>();
         for(String category:new String[]{Intent.CATEGORY_LEANBACK_LAUNCHER,Intent.CATEGORY_LAUNCHER}){Intent i=new Intent(Intent.ACTION_MAIN);i.addCategory(category);found.addAll(getPackageManager().queryIntentActivities(i,0));}

@@ -53,7 +53,10 @@ public class SystemService extends Service {
     }
 
     private synchronized void updateSilence(boolean screenOn){
-        boolean want=screenOn;
+        // Keep the codec powered while the screen is off too: turning it back on
+        // when the screen wakes is a power-up, which the amplifier turns into a
+        // pop. Only the light follows the screen.
+        boolean want=true;
         if(want==silenceWanted&&(!want||silenceThread!=null&&silenceThread.isAlive()))return;
         silenceWanted=want;
         if(!want){if(silenceThread!=null)silenceThread.interrupt();silenceThread=null;return;}
@@ -63,7 +66,7 @@ public class SystemService extends Service {
     private void playSilence(){
         // Recreate the stream if the audio server restarts (its track becomes invalid).
         while(silenceWanted&&!Thread.currentThread().isInterrupted()){
-            streamSilence();
+            try{streamSilence();}catch(Throwable t){Log.w(TAG,"Anti-pop stream failed",t);}
             try{Thread.sleep(2000);}catch(InterruptedException e){return;}
         }
     }
