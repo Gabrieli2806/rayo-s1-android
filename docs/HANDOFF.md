@@ -14,6 +14,64 @@ been erased. The owner authorized future promotion/removal of older active
 installations conditional on demonstrated stability. Do not ask for duplicate
 permission, but do not turn unresolved bugs into a stable-release claim.
 
+## GabOS 1.1 and retirement of old system data (November 26, 2026)
+
+Installed now: `outputs/android12-framework/gabos-1.1-data1408` (boot MD5
+`9159b81884446506b932f89bc2dda1b1`, system MD5 `718e00faf605ad56a016ea3c0d56b0bb`,
+recovery = v14 rescue `7a3ac489...`), private data grown to 1408 MiB (same UUID).
+`gabos-1.1` is the same build for the old 704 MiB data and is superseded.
+
+Fixes, each verified on the device:
+
+- **Bluetooth "crashed and closed"**: the build type was `eng`, which makes every
+  `Log.wtf` in an app fatal (`ActivityManagerService`, `Build.IS_ENG`). TV
+  Settings' accessory screen logs wtf for the absent HDMI-CEC service and was
+  killed on open. The packager now sets `ro.build.type`/`ro.system.build.type`
+  to `userdebug` (root ADB is kept by `ro.debuggable`/`ro.secure`). The pairing
+  screen now stays open and finds nearby devices. GabOS Settings' Bluetooth tile
+  uses `CONNECT_INPUT`; native TV Settings has no `ACTION_BLUETOOTH_SETTINGS`.
+- **Green/purple strip at the top of 1080p (and 360p) video**: the Rockchip
+  decoder pads NV12 luma to 16 lines (slice height 1088) but reports frame height
+  1080; Android 12 sized the window buffers from 1080, so consumers read chroma 8
+  lines early. The OMX facade (`omx_plugin_bridge.cpp`) now reports the padded
+  height as the frame height and the visible area as the output crop, and hands
+  the decoder its own height back on `SetParameter`. Log:
+  `RayoOMXBridge: output 1920x1080 stride 1920 slice 1088 -> frame height 1088`;
+  the self-test decodes 1080p 45/45. SmartTube 1080p showed the strip before the
+  fix (screen capture) and not after; the owner also reported it fixed. SmartTube
+  picks 1080p60 tracks this CPU cannot keep up with (many dropped frames);
+  720p in SmartTube's settings plays better.
+- **One Settings**: Home's Settings tile opens GabOS Settings directly (no
+  chooser). GabOS Settings has CONNECTIONS (Wi-Fi, Bluetooth, accessibility) and
+  SYSTEM (language, date, keyboard, apps, storage, default apps, about, diagnostics,
+  developer options) tiles that open the native TV Settings pages, plus "Android
+  settings" for everything else.
+- **Preinstalled owner apps**: GRemote TV (`com.gabrieli2806.gremote.tv`, phone
+  remote pointer, accessibility service enabled and doze-whitelisted on first
+  boot by `gabos-boot`) and GBrowse (`com.gabrieli2806.gbrowse`). Sources and
+  release signing are in the separate apps workspace (`C:\src\personal\apps`,
+  key `G2806 Release`, signer SHA-256 `3019639071f5...`); copies go in
+  `local/device-kit/apps/partner/`, listed in `manifests/gabos-partner-apps.json`.
+  Verified over UDP 47865: `hello` -> `ok 1280 720`, `show`/`m` move the dot,
+  `c` clicks the item under it, `h` returns Home, `app <pkg>` opens GBrowse.
+- **GabOS Share sender 1.1** (phone app): also probes the phone's own subnets
+  for `/info`, so the projector is found on the phone's hotspot, where Android
+  runs no mDNS. Built, not yet tested on a hotspot.
+
+Old system data removed (owner decision): `update-android12.py
+--retire-old-systems` deleted the factory 7.1.2 user data (`/realdata/app`,
+`dalvik-cache`, `data`), trial staging leftovers in `/realdata/local/tmp` and
+duplicate factory-recovery copies of old trials inside the rescue's data (777
+MiB). Kept: both system images in use, the rescue's `rayo-live` overlay and data,
+`gabos-rescue/`, the 7.1.2 system partition and all factory images on the host
+(checksums verified first). 7.1.2 can still be restored but starts as after a
+factory reset. `--grow-data` grew the device data file in place (e2fsck,
+truncate, resize2fs); the file is sparse, so `df` shows more free space than the
+reserve check counts.
+
+Pending: physical Bluetooth pairing/audio, GRemote phone app end to end, Share
+over a hotspot, prolonged stability.
+
 ## Video decoding and system update path (November 13, 2026)
 
 Installed now: `gabos-lite-04` (boot MD5 `e691bf28732e6dbc54e34190f9ec6237`,

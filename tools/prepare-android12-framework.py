@@ -132,6 +132,33 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(aurora, target)
         gabos_apps.append({'package': 'com.aurora.store', 'sha256': aurora_pin['sha256'], 'google_services': False})
+        # Owner apps from the separate apps workspace (GRemote pointer, GBrowse),
+        # listed in manifests/gabos-partner-apps.json and copied, verified, to
+        # local/device-kit/apps/partner/. They keep their own release signature,
+        # so later builds install over them as normal updates. Missing files are
+        # skipped with a notice; a file with the wrong package is refused.
+        partner_list = ROOT/'manifests/gabos-partner-apps.json'
+        for item in json.loads(partner_list.read_text()) if partner_list.is_file() else []:
+            apk = ROOT/'local/device-kit/apps/partner'/item['file']
+            if not apk.is_file():
+                print('Partner app not staged (missing %s)' % apk.name)
+                continue
+            with zipfile.ZipFile(apk) as archive:
+                if archive.testzip() is not None:
+                    raise SystemExit('Corrupt partner APK '+apk.name)
+                names = archive.namelist()
+                if any(name.startswith('lib/') for name in names) and not any(name.startswith('lib/armeabi-v7a/') for name in names):
+                    raise SystemExit(apk.name+' has native code but no armeabi-v7a libraries')
+                target = system/'app'/item['dir']/(item['dir']+'.apk')
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(apk, target)
+                # System apps do not extract native code at install; provide it beside the APK.
+                for name in names:
+                    if name.startswith('lib/armeabi-v7a/') and name.endswith('.so'):
+                        library = target.parent/'lib/arm'/Path(name).name
+                        library.parent.mkdir(parents=True, exist_ok=True)
+                        library.write_bytes(archive.read(name))
+            gabos_apps.append({'package': item['package'], 'sha256': digest(apk), 'google_services': False})
 
     # GabOS wordmark boot animation (tools/make-gabos-bootanimation.py).
     animation = ROOT/'outputs/gabos-bootanimation.zip'
@@ -504,8 +531,10 @@ def main():
 ro.adb.secure=0
 ro.debuggable=1
 ro.gabos.name=GabOS
-ro.gabos.version=1.0
-ro.build.display.id=GabOS 1.0
+ro.gabos.version=1.1
+ro.build.display.id=GabOS 1.1
+ro.build.type=userdebug
+ro.system.build.type=userdebug
 ro.product.model=GabOS for Rayo S1
 ro.apex.updatable=false
 ro.rayo.graphics.no_hwc_background=true
@@ -571,11 +600,17 @@ dalvik.vm.usejitprofiles=false
     effective = dict(line.split('=', 1) for line in full_properties.splitlines()
                      if line and not line.startswith('#') and '=' in line)
     for key, value in {'ro.build.version.release': '12', 'ro.build.version.sdk': '31',
-                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '1.0',
-                       'ro.build.display.id': 'GabOS 1.0', 'ro.product.model': 'GabOS for Rayo S1',
+                       'ro.gabos.name': 'GabOS', 'ro.gabos.version': '1.1',
+                       'ro.build.display.id': 'GabOS 1.1', 'ro.product.model': 'GabOS for Rayo S1',
                        'ro.rayo.trial': '12-framework', 'ro.rayo.adb.legacy_ffs': 'true',
                        'ro.rayo.cgroup.legacy': 'true', 'ro.rayo.graphics.ion_client_target': 'true',
-                       'ro.rayo.graphics.legacy_sphal': 'true'}.items():
+                       'ro.rayo.graphics.legacy_sphal': 'true',
+                       # An eng build type makes every Log.wtf in an app fatal
+                       # (ActivityManagerService: Build.IS_ENG). TV Settings logs
+                       # wtf for the absent HDMI-CEC service and was killed when
+                       # opening Bluetooth accessories. ro.debuggable/ro.secure
+                       # above keep root ADB.
+                       'ro.build.type': 'userdebug', 'ro.system.build.type': 'userdebug'}.items():
         if effective.get(key) != value:
             raise SystemExit('Canonical boot property validation failed: '+key)
     # Reproduce the disabled system-image target's normal provider generation.
@@ -758,7 +793,7 @@ dalvik.vm.usejitprofiles=false
         'data': dict({'path': data_image.name, 'bytes': data_bytes, 'uuid': str(data_uuid), 'sha256': digest(data_image)},
                      **({'replaces': data_replaces} if data_replaces else {})),
         'recovery': verified, 'watchdog_seconds': args.watchdog_seconds, 'device_written': False,
-        'gabos_version': '1.0', 'google_packages': False,
+        'gabos_version': '1.1', 'google_packages': False,
         'hardware_hevc': args.legacy_media, 'input_wake_idc': list(idc_names),
         'host_preopt': preopt_records,
         'graphics': graphics, 'bootstrap_sha256': digest(init),

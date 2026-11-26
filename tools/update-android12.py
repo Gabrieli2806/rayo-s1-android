@@ -10,9 +10,20 @@ system image file on userdata cannot be replaced while GabOS runs from it, so:
 3. Write the matching boot image (it carries the new system checksum) and read
    it back, then restart normally and wait for a completed GabOS boot.
 
-The private data image is never touched. If the new image does not complete a
-boot, the watchdog returns to the rescue; restore with this tool and the
-previous candidate, or with promote-android12.py --action rollback.
+The private data image is never replaced. With --grow-data, a candidate built
+for a larger data image (same UUID) is accepted, and the device file is grown in
+place (e2fsck, truncate, resize2fs) before the new boot image is written.
+
+--retire-old-systems (owner decision, November 2026) deletes, from the rescue,
+the factory Android 7.1.2 user data on userdata, leftover trial staging files
+and old trial copies inside the rescue's own data. It keeps both system images
+in use, the rescue's runtime overlay, gabos-rescue/ and the GabOS data. The 7.1.2
+system partition and the factory images (host copies, gabos-rescue/) remain, so
+7.1.2 can still be restored, but it would start as after a factory reset.
+
+If the new image does not complete a boot, the watchdog returns to the rescue;
+restore with this tool and the previous candidate, or with
+promote-android12.py --action rollback.
 """
 import argparse
 import hashlib
@@ -31,12 +42,35 @@ SYSTEM = '/realdata/local/tmp/rayo12-framework-system.raw.img'
 DATA = '/realdata/rayo12-framework-data/userdata.ext4'
 RESCUE = '/realdata/gabos-rescue'
 MIB = 1024*1024
+# Factory 7.1.2 user data and trial leftovers removed by --retire-old-systems.
+# Everything else on userdata is kept.
+RETIRE = ['/realdata/app', '/realdata/dalvik-cache', '/realdata/data', '/realdata/app-lib',
+          '/realdata/local/tmp/dalvik-cache', '/realdata/local/tmp/rayo81-abi-lab',
+          '/realdata/local/tmp/rayo81-abi-lab.tar.gz', '/realdata/local/tmp/rayo81-mount-check',
+          '/realdata/local/tmp/rayo-graphics-delta', '/realdata/local/tmp/rayo-keylayout-candidate',
+          '/realdata/local/tmp/RayoDark.apk', '/realdata/local/tmp/bootanimation-gabrieli-v03.zip',
+          '/realdata/local/tmp/bootanimation-gabrieli.zip', '/realdata/local/tmp/rayo-bootanimation-oreo.zip',
+          '/realdata/local/tmp/hwcomposer.rayo_adapter.so', '/realdata/local/tmp/hwcomposer.rk30board.factory.so',
+          '/realdata/local/tmp/rayo-fb-read', '/realdata/local/tmp/rayo-kernel-capabilities',
+          '/realdata/local/tmp/rayo-kernel-probe', '/realdata/local/tmp/rayo-stock-return.png',
+          '/realdata/local/tmp/rayo-visible-test.png', '/realdata/local/tmp/rayo81-gpu.strace',
+          '/realdata/local/tmp/rayo_hwbinder-test.ko', '/realdata/local/tmp/rayo_hwbinder_probe',
+          '/realdata/local/tmp/trial-vendor-manifest.xml', '/realdata/local/tmp/prepare-live-overlay-stock.sh']
+# Old trial copies inside the rescue's data (its /data/local/tmp); rayo-live is its overlay and stays.
+RETIRE_GLOBS = ['/realdata/rayo81-trial/data/local/tmp/rayo12-framework-[0-9a-f]*',
+                '/realdata/rayo81-trial/data/local/tmp/rayo12-recovery-repair-*']
+KEEP = ('/realdata/local/tmp/rayo12-framework-system.raw.img', '/realdata/local/tmp/rayo81-system.raw.img',
+        '/realdata/rayo81-trial/data/local/tmp/rayo-live', RESCUE, DATA)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--candidate', type=Path, required=True)
     parser.add_argument('--execute', action='store_true')
+    parser.add_argument('--grow-data', action='store_true',
+                        help='Accept a candidate built for a larger data image and grow the device file')
+    parser.add_argument('--retire-old-systems', action='store_true',
+                        help='Delete the factory 7.1.2 user data and trial leftovers (see above)')
     args = parser.parse_args()
     prefix = [shutil.which('adb'), '-s', '0123456789ABCDEF']
 
@@ -132,24 +166,62 @@ def main():
     if b'rayo12-framework' in mapped:
         raise SystemExit('GabOS images are mapped; this is not the rescue system')
     superblock = command('exec-out', '/sbin/busybox dd if='+DATA+' bs=1024 skip=1 count=1 2>/dev/null')
-    if (checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', DATA) != str(manifest['data']['bytes'])
-            or len(superblock.stdout) != 1024
-            or superblock.stdout[104:120] != uuid.UUID(manifest['data']['uuid']).bytes):
-        raise SystemExit('Device private data does not match the candidate')
+    data_now = int(checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', DATA))
+    data_new = manifest['data']['bytes']
+    if (len(superblock.stdout) != 1024 or superblock.stdout[104:120] != uuid.UUID(manifest['data']['uuid']).bytes
+            or not (data_now == data_new or (args.grow_data and data_now < data_new))):
+        raise SystemExit('Device private data does not match the candidate (device %d, candidate %d bytes)'
+                         % (data_now, data_new))
+    for keep in KEEP:
+        if any(keep == path or keep.startswith(path+'/') for path in RETIRE):
+            raise SystemExit('Retire list would remove '+keep)
+    retire = []
+    if args.retire_old_systems:
+        for pattern in RETIRE+RETIRE_GLOBS:
+            listing = command('shell', '/sbin/busybox sh -c \'for p in '+pattern+'; do /sbin/busybox test -e "$p" && '
+                              '/sbin/busybox du -sk "$p"; done; true\'', timeout=300)
+            for line in listing.stdout.decode(errors='replace').splitlines():
+                parts = line.split(None, 1)
+                if len(parts) == 2 and parts[0].isdigit() and parts[1].startswith('/realdata/'):
+                    if any(keep == parts[1] or keep.startswith(parts[1]+'/') for keep in KEEP):
+                        raise SystemExit('Retire match would remove '+parts[1])
+                    retire.append((parts[1], int(parts[0])*1024))
     old_bytes = int(checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', SYSTEM))
     available = int(checked('shell', 'df', '-k', '/realdata').splitlines()[-1].split()[3])*1024
-    needed = system_image.stat().st_size+768*MIB
+    retired = sum(size for _, size in retire)
+    # The 768 MiB userdata reserve is kept after the system file and the data growth.
+    needed = system_image.stat().st_size+(data_new-data_now)+768*MIB
     print(json.dumps({'boot_now': current_boot, 'boot_new': boot_md5, 'system_new_md5': system_md5,
-                      'available_mib': available//MIB, 'freed_mib': old_bytes//MIB, 'needed_mib': needed//MIB,
-                      'execute': args.execute}, indent=2), flush=True)
-    if available+old_bytes < needed:
+                      'available_mib': available//MIB, 'freed_mib': old_bytes//MIB, 'retired_mib': retired//MIB,
+                      'data_now_mib': data_now//MIB, 'data_new_mib': data_new//MIB, 'needed_mib': needed//MIB,
+                      'retire': [path for path, _ in retire], 'execute': args.execute}, indent=2), flush=True)
+    if available+old_bytes+retired < needed:
         raise SystemExit('Insufficient physical space with the reserve')
     if not args.execute:
         return
+    for path, _ in retire:
+        checked('shell', '/sbin/busybox', 'rm', '-rf', path, timeout=300)
+    if retire:
+        checked('shell', '/sbin/busybox', 'sync')
+        print('Removed %d MiB of old system data.' % (retired//MIB), flush=True)
+    if data_new > data_now:
+        # GabOS is not running, so its data file is not mounted. Grow and check it in place.
+        fsck = command('shell', '/system/bin/e2fsck', '-fy', DATA, timeout=900)
+        if fsck.returncode not in (0, 1):
+            raise RuntimeError('Data check failed before growth: '+fsck.stdout.decode(errors='replace')[-400:])
+        checked('shell', '/system/bin/truncate', '-s', str(data_new), DATA)
+        checked('shell', '/system/bin/resize2fs', DATA, timeout=900)
+        checked('shell', '/system/bin/e2fsck', '-fn', DATA, timeout=900)
+        grown = command('exec-out', '/sbin/busybox dd if='+DATA+' bs=1024 skip=1 count=1 2>/dev/null').stdout
+        if (int(checked('shell', '/system/bin/toybox', 'stat', '-c', '%s', DATA)) != data_new
+                or grown[104:120] != uuid.UUID(manifest['data']['uuid']).bytes):
+            raise RuntimeError('Data growth check failed; boot not changed')
+        print('Private data grown to %d MiB.' % (data_new//MIB), flush=True)
     logs = ROOT/'local/android12-promotion'/time.strftime('%Y%m%d-%H%M%S')
     logs.mkdir(parents=True)
     result = {'action': 'update', 'candidate': str(candidate), 'previous_boot_md5': current_boot,
-              'boot_image_md5': boot_md5, 'system_md5': system_md5}
+              'boot_image_md5': boot_md5, 'system_md5': system_md5, 'data_bytes': data_new,
+              'retired': [path for path, _ in retire]}
     remote_boot = RESCUE+'/gabos-boot.img'
     checked('push', str(boot_image), remote_boot, timeout=180)
     if md5(remote_boot) != boot_md5:

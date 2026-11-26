@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- GabOS Share for phones: sends photos and videos to a GabOS projector on the same Wi-Fi network. -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.gabos.share.sender" android:versionCode="1" android:versionName="1.0">
+<!-- GabOS Share for phones: sends photos and videos to a GabOS projector on the same Wi-Fi network or on this phone's hotspot. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="local.gabos.share.sender" android:versionCode="2" android:versionName="1.1">
   <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="25"/>
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
   <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <!-- Newer Android versions gate connections to local addresses behind this permission. -->
+  <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK"/>
   <uses-feature android:name="android.hardware.wifi" android:required="false"/>
   <application android:label="@string/app_name" android:allowBackup="false" android:icon="@drawable/ic_launcher"
       android:theme="@style/GabOS" android:usesCleartextTraffic="true">

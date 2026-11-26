@@ -57,6 +57,26 @@ if has_package "$SHARE"; then
     am startservice --user 0 -n "$SHARE/.ShareService" >/dev/null 2>&1 || true
 fi
 
+# GRemote: the phone remote's pointer is an accessibility service. Enable it
+# once (keeping any other enabled services) and exempt it from idle limits so
+# it keeps answering the phone. The owner can still turn it off in Settings.
+GREMOTE=com.gabrieli2806.gremote.tv
+GREMOTE_SERVICE="$GREMOTE/.PointerService"
+if has_package "$GREMOTE" && [ "$(settings get secure gabos_gremote_defaulted 2>/dev/null)" != "1" ]; then
+    CURRENT="$(settings get secure enabled_accessibility_services 2>/dev/null)"
+    case "$CURRENT" in
+        ""|null) LIST="$GREMOTE_SERVICE" ;;
+        *"$GREMOTE_SERVICE"*) LIST="$CURRENT" ;;
+        *) LIST="$CURRENT:$GREMOTE_SERVICE" ;;
+    esac
+    settings put secure enabled_accessibility_services "$LIST" >/dev/null 2>&1 || true
+    settings put secure accessibility_enabled 1 >/dev/null 2>&1 || true
+    settings put secure gabos_gremote_defaulted 1 >/dev/null 2>&1 || true
+fi
+for PACKAGE in "$GREMOTE" "$SHARE"; do
+    has_package "$PACKAGE" && dumpsys deviceidle whitelist +"$PACKAGE" >/dev/null 2>&1 || true
+done
+
 # Friendly network name (GabOS Share, Bluetooth) instead of the build product.
 NAME="$(settings get global device_name 2>/dev/null)"
 case "$NAME" in

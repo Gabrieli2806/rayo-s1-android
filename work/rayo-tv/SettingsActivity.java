@@ -107,15 +107,36 @@ public class SettingsActivity extends Activity {
         r=ui.settingRow(page,getString(R.string.volume_title),null);
         ui.slider(r,0,max,1,audio.getStreamVolume(AudioManager.STREAM_MUSIC),v->audio.setStreamVolume(AudioManager.STREAM_MUSIC,v,0));
 
-        ui.section(page,getString(R.string.section_more));
+        // One Settings for everything: the native Android pages open from here, so
+        // Home needs no chooser. Each tile opens the matching TV Settings screen.
+        ui.section(page,getString(R.string.section_connections));
         LinearLayout tiles=ui.row(page,14);
-        ui.primaryTile(tiles,getString(R.string.more_wifi),v->open(new Intent(Settings.ACTION_WIFI_SETTINGS)));
-        ui.tile(tiles,getString(R.string.more_bluetooth),v->open(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS)));
-        ui.tile(tiles,getString(R.string.more_date),v->open(new Intent(Settings.ACTION_DATE_SETTINGS)));
-        // Five Home-size tiles are wider than the 1280x720 page at density 192; use two rows.
+        ui.primaryTile(tiles,getString(R.string.more_wifi),v->open(firstResolvable(new Intent(Settings.ACTION_WIFI_SETTINGS))));
+        // Native TV Settings has no ACTION_BLUETOOTH_SETTINGS page; its accessory
+        // search and pairing screen answers CONNECT_INPUT. Paired devices are
+        // listed under native Settings > Remotes and accessories.
+        ui.tile(tiles,getString(R.string.more_bluetooth),v->open(firstResolvable(
+                new Intent("com.google.android.intent.action.CONNECT_INPUT"),
+                new Intent(Settings.ACTION_BLUETOOTH_SETTINGS))));
+        ui.tile(tiles,getString(R.string.more_accessibility),v->open(firstResolvable(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))));
+
+        ui.section(page,getString(R.string.section_system));
+        // Five Home-size tiles are wider than the 1280x720 page at density 192; three per row.
+        tiles=ui.row(page,14);
+        ui.tile(tiles,getString(R.string.more_language),v->open(firstResolvable(new Intent(Settings.ACTION_LOCALE_SETTINGS))));
+        ui.tile(tiles,getString(R.string.more_date),v->open(firstResolvable(new Intent(Settings.ACTION_DATE_SETTINGS))));
+        ui.tile(tiles,getString(R.string.more_keyboard),v->open(firstResolvable(new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))));
         tiles=ui.row(page,18);
+        ui.tile(tiles,getString(R.string.more_apps),v->open(firstResolvable(new Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS))));
+        ui.tile(tiles,getString(R.string.more_storage),v->open(firstResolvable(new Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS))));
+        ui.tile(tiles,getString(R.string.more_default_apps),v->open(firstResolvable(new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS))));
+        tiles=ui.row(page,18);
+        ui.tile(tiles,getString(R.string.more_device_info),v->open(firstResolvable(new Intent(Settings.ACTION_DEVICE_INFO_SETTINGS))));
         ui.tile(tiles,getString(R.string.more_diagnostics),v->open(getPackageManager().getLaunchIntentForPackage("local.gabos.diagnostics")));
-        ui.tile(tiles,getString(R.string.more_android),v->open(new Intent(Settings.ACTION_SETTINGS)));
+        ui.tile(tiles,getString(R.string.more_developer),v->open(firstResolvable(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS))));
+        // Anything not listed above stays reachable.
+        r=ui.settingRow(page,getString(R.string.more_android),getString(R.string.more_android_summary));
+        ui.tile(r,getString(R.string.more_android_action),v->open(firstResolvable(new Intent(Settings.ACTION_SETTINGS))));
 
         r=ui.settingRow(page,getString(R.string.setup_again_title),getString(R.string.setup_again_summary));
         ui.tile(r,getString(R.string.setup_again_action),v->open(new Intent(this,SetupActivity.class).putExtra(SetupActivity.EXTRA_AGAIN,true)));
@@ -140,6 +161,11 @@ public class SettingsActivity extends Activity {
         if(accent==ThemeProvider.accent(this)&&light==ThemeProvider.light(this))return;
         ThemeProvider.save(this,accent,light);
         ui.refreshTheme();render(focusTag);
+    }
+
+    private Intent firstResolvable(Intent... intents){
+        for(Intent intent:intents)if(intent.resolveActivity(getPackageManager())!=null)return intent;
+        return null;
     }
 
     private void open(Intent intent){

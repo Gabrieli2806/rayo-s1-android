@@ -211,7 +211,7 @@ public class MainActivity extends Activity {
         page.addView(header,new LinearLayout.LayoutParams(-1,dp(60)));
 
         LinearLayout system=row(page,dp(20));
-        View settings=systemTile(getString(R.string.tile_settings),GabosUi.BLUE_TOP,GabosUi.BLUE_BOTTOM,true,v->chooseSettings());
+        View settings=systemTile(getString(R.string.tile_settings),GabosUi.BLUE_TOP,GabosUi.BLUE_BOTTOM,true,v->open(new Intent(this,SettingsActivity.class)));
         system.addView(settings,tileParams());
         if(installed("com.android.documentsui"))system.addView(systemTile(getString(R.string.tile_files),GabosUi.TILE_TOP,GabosUi.TILE_BOTTOM,false,v->launch("com.android.documentsui")),tileParams());
 

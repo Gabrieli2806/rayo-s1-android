@@ -13,7 +13,14 @@ serves at `/`.
 - The receiver advertises itself with DNS-SD/mDNS (Android `NsdManager`) as
   service type **`_gabosshare._tcp`**. The service name is the projector's name
   (`Settings.Global` `device_name`, or "GabOS projector" / "Proyector GabOS").
-- Both devices must be on the **same Wi-Fi network** (or the same LAN). Guest
+- The Android sender (1.1 and later) also probes every address of the phone's
+  own local IPv4 subnets (at most the /24 around each of its addresses) with
+  `GET /info`, and lists every receiver that answers. This finds the projector
+  when it is connected to **the phone's own hotspot**, where Android does not
+  run mDNS, and on routers that drop multicast. Mobile-data and VPN interfaces
+  are never probed.
+- Both devices must be on the **same Wi-Fi network** (or the same LAN, or the
+  projector on the phone's hotspot). Guest
   networks with client isolation block both discovery and transfers; in that
   case nothing can be sent. The sender also accepts a typed address
   (`192.168.1.20` or `192.168.1.20:8765`), which the projector shows in the

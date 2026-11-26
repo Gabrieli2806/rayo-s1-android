@@ -80,3 +80,12 @@ normal boot or that factory recovery is installed. Use
 are file replacements on userdata plus a new rehearsed boot image; keep the
 boot-success watchdog and the rescue slot until the older systems are removed
 under a separate plan.
+
+GabOS 1.1 (November 26, 2026): the factory 7.1.2 user data and trial leftovers
+were deleted with the owner's approval (`update-android12.py
+--retire-old-systems`); the 7.1.2 system partition, the v14 rescue and every
+factory image remain. GabOS data is 1408 MiB. Keep `ro.build.type=userdebug`:
+the `eng` type makes any app `Log.wtf` fatal and killed TV Settings' Bluetooth
+screen. Owner apps GRemote TV and GBrowse are preinstalled from
+`manifests/gabos-partner-apps.json`; their code belongs to the separate apps
+workspace, so coordinate changes with that session. See `docs/HANDOFF.md`.

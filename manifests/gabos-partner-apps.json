@@ -1,0 +1,17 @@
+[
+  {
+    "file": "GRemote-TV.apk",
+    "dir": "GRemoteTV",
+    "package": "com.gabrieli2806.gremote.tv",
+    "accessibility_service": "com.gabrieli2806.gremote.tv/.PointerService",
+    "source": "C:/src/personal/apps/GRemote-Android (tv module, release build)",
+    "signer_sha256": "3019639071f56ea229fb957b1f484dffdad1576736c536ee7ceed6377e49f460"
+  },
+  {
+    "file": "GBrowse.apk",
+    "dir": "GBrowse",
+    "package": "com.gabrieli2806.gbrowse",
+    "source": "C:/src/personal/apps/GBrowse-Android (app module, release build)",
+    "signer_sha256": "3019639071f56ea229fb957b1f484dffdad1576736c536ee7ceed6377e49f460"
+  }
+]

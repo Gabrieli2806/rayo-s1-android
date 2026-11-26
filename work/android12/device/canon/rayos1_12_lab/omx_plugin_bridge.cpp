@@ -2,6 +2,7 @@
 #define LOG_TAG "RayoOMXBridge"
 #include <android-base/properties.h>
 #include <media/hardware/OMXPluginBase.h>
+#include <media/openmax/OMX_IndexExt.h>
 #include <utils/Log.h>
 #include <vndksupport/linker.h>
 #include <dlfcn.h>
@@ -16,7 +17,16 @@ namespace {
 // pointer is already NULL by then, and the codec service crashed on every
 // release. Re-provide the buffer before state changes; ComponentDeInit frees it.
 constexpr size_t kScratchOffset=616, kScratchSize=128, kSubOffset=108;
-struct Wrapped { OMX_COMPONENTTYPE* component; decltype(OMX_COMPONENTTYPE::SendCommand) send; };
+struct Wrapped {
+    OMX_COMPONENTTYPE* component;
+    decltype(OMX_COMPONENTTYPE::SendCommand) send;
+    decltype(OMX_COMPONENTTYPE::GetParameter) getParameter;
+    decltype(OMX_COMPONENTTYPE::SetParameter) setParameter;
+    decltype(OMX_COMPONENTTYPE::GetConfig) getConfig;
+    // Output picture size as the decoder reports it, and the 16-line aligned
+    // height that the facade reports instead (0 when no change was needed).
+    OMX_U32 width, height, alignedHeight;
+};
 std::mutex gWrappedLock;
 Wrapped gWrapped[32];
 
@@ -32,12 +42,85 @@ void ensureScratch(OMX_HANDLETYPE handle){
     }
 }
 
-OMX_ERRORTYPE guardedSendCommand(OMX_HANDLETYPE handle,OMX_COMMANDTYPE command,OMX_U32 param,OMX_PTR data){
-    decltype(OMX_COMPONENTTYPE::SendCommand) send=nullptr;
+Wrapped* find(OMX_HANDLETYPE handle){
+    for(auto& w:gWrapped)if(w.component==handle)return &w;
+    return nullptr;
+}
+
+// The decoder writes NV12 with its luma plane padded to a multiple of 16 lines
+// (1080 -> 1088, 360 -> 368) but reports the visible height as the frame
+// height. Android 12 allocates the window buffers from that frame height, so
+// the consumers place the chroma plane 8 lines too early and the top rows of
+// every 1080p/360p picture show green and magenta garbage. Report the padded
+// height (the slice height) as the frame height and the visible area as the
+// output crop, which is how Android expects padded decoder output.
+bool isOutputPicture(const OMX_PARAM_PORTDEFINITIONTYPE* def){
+    return def->eDir==OMX_DirOutput && def->eDomain==OMX_PortDomainVideo && def->format.video.nFrameHeight>0;
+}
+
+OMX_ERRORTYPE guardedGetParameter(OMX_HANDLETYPE handle,OMX_INDEXTYPE index,OMX_PTR data){
+    decltype(OMX_COMPONENTTYPE::GetParameter) get=nullptr;
+    {std::lock_guard<std::mutex> lock(gWrappedLock);if(Wrapped* w=find(handle))get=w->getParameter;}
+    if(!get)return OMX_ErrorInvalidComponent;
+    OMX_ERRORTYPE status=get(handle,index,data);
+    if(status!=OMX_ErrorNone||index!=OMX_IndexParamPortDefinition||!data)return status;
+    auto* def=static_cast<OMX_PARAM_PORTDEFINITIONTYPE*>(data);
+    if(!isOutputPicture(def))return status;
+    OMX_VIDEO_PORTDEFINITIONTYPE& video=def->format.video;
+    OMX_U32 visible=video.nFrameHeight, aligned=(visible+15)&~15u;
+    if(video.nSliceHeight>aligned&&video.nSliceHeight<visible+64)aligned=video.nSliceHeight;
+    std::lock_guard<std::mutex> lock(gWrappedLock);
+    Wrapped* w=find(handle);
+    if(!w)return status;
+    if(w->width!=video.nFrameWidth||w->height!=visible)
+        ALOGI("%p output %ux%u stride %d slice %u -> frame height %u",handle,(unsigned)video.nFrameWidth,(unsigned)visible,
+              (int)video.nStride,(unsigned)video.nSliceHeight,(unsigned)aligned);
+    w->width=video.nFrameWidth;w->height=visible;w->alignedHeight=aligned!=visible?aligned:0;
+    if(w->alignedHeight){video.nFrameHeight=aligned;video.nSliceHeight=aligned;}
+    return status;
+}
+
+OMX_ERRORTYPE guardedSetParameter(OMX_HANDLETYPE handle,OMX_INDEXTYPE index,OMX_PTR data){
+    decltype(OMX_COMPONENTTYPE::SetParameter) set=nullptr;
+    OMX_U32 visible=0, aligned=0;
     {
         std::lock_guard<std::mutex> lock(gWrappedLock);
-        for(auto& w:gWrapped)if(w.component==handle){send=w.send;break;}
+        if(Wrapped* w=find(handle)){set=w->setParameter;visible=w->height;aligned=w->alignedHeight;}
     }
+    if(!set)return OMX_ErrorInvalidComponent;
+    if(index==OMX_IndexParamPortDefinition&&data&&aligned){
+        // Hand the decoder back its own visible height (for example when the
+        // framework only changes the buffer count).
+        OMX_PARAM_PORTDEFINITIONTYPE copy=*static_cast<OMX_PARAM_PORTDEFINITIONTYPE*>(data);
+        if(isOutputPicture(&copy)&&copy.format.video.nFrameHeight==aligned){
+            copy.format.video.nFrameHeight=visible;
+            return set(handle,index,&copy);
+        }
+    }
+    return set(handle,index,data);
+}
+
+OMX_ERRORTYPE guardedGetConfig(OMX_HANDLETYPE handle,OMX_INDEXTYPE index,OMX_PTR data){
+    decltype(OMX_COMPONENTTYPE::GetConfig) get=nullptr;
+    OMX_U32 width=0, visible=0, aligned=0;
+    {
+        std::lock_guard<std::mutex> lock(gWrappedLock);
+        if(Wrapped* w=find(handle)){get=w->getConfig;width=w->width;visible=w->height;aligned=w->alignedHeight;}
+    }
+    if(!get)return OMX_ErrorInvalidComponent;
+    OMX_ERRORTYPE status=get(handle,index,data);
+    if(index!=OMX_IndexConfigCommonOutputCrop||!data||!aligned)return status;
+    auto* crop=static_cast<OMX_CONFIG_RECTTYPE*>(data);
+    if(status!=OMX_ErrorNone||crop->nHeight<=0||(OMX_U32)(crop->nTop+crop->nHeight)>visible){
+        crop->nLeft=0;crop->nTop=0;crop->nWidth=width;crop->nHeight=visible;
+        status=OMX_ErrorNone;
+    }
+    return status;
+}
+
+OMX_ERRORTYPE guardedSendCommand(OMX_HANDLETYPE handle,OMX_COMMANDTYPE command,OMX_U32 param,OMX_PTR data){
+    decltype(OMX_COMPONENTTYPE::SendCommand) send=nullptr;
+    {std::lock_guard<std::mutex> lock(gWrappedLock);if(Wrapped* w=find(handle))send=w->send;}
     if(!send)return OMX_ErrorInvalidComponent;
     if(command==OMX_CommandStateSet)ensureScratch(handle);
     return send(handle,command,param,data);
@@ -96,8 +179,15 @@ public:
             *component=static_cast<OMX_COMPONENTTYPE*>(handle);
             std::lock_guard<std::mutex> lock(gWrappedLock);
             for(auto& w:gWrapped)if(!w.component){
+                w=Wrapped{};
                 w.component=*component;w.send=(*component)->SendCommand;
-                (*component)->SendCommand=guardedSendCommand;break;
+                w.getParameter=(*component)->GetParameter;w.setParameter=(*component)->SetParameter;
+                w.getConfig=(*component)->GetConfig;
+                (*component)->SendCommand=guardedSendCommand;
+                (*component)->GetParameter=guardedGetParameter;
+                (*component)->SetParameter=guardedSetParameter;
+                (*component)->GetConfig=guardedGetConfig;
+                break;
             }
         }
         return status;
@@ -108,7 +198,7 @@ public:
         ensureScratch(component);
         OMX_ERRORTYPE status=free_(component);
         std::lock_guard<std::mutex> lock(gWrappedLock);
-        for(auto& w:gWrapped)if(w.component==component){w.component=nullptr;w.send=nullptr;}
+        for(auto& w:gWrapped)if(w.component==component)w=Wrapped{};
         return status;
     }
     OMX_ERRORTYPE enumerateComponents(OMX_STRING name,size_t size,OMX_U32 index) override {

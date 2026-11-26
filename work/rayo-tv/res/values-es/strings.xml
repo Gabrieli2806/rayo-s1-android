@@ -83,8 +83,20 @@
   <string name="more_date">Fecha y hora</string>
   <string name="more_diagnostics">Diagnóstico</string>
   <string name="more_android">Ajustes de Android</string>
+  <string name="section_connections">CONEXIONES</string>
+  <string name="section_system">SISTEMA</string>
+  <string name="more_accessibility">Accesibilidad</string>
+  <string name="more_language">Idioma</string>
+  <string name="more_keyboard">Teclado</string>
+  <string name="more_apps">Aplicaciones</string>
+  <string name="more_storage">Almacenamiento</string>
+  <string name="more_default_apps">Apps predeterminadas</string>
+  <string name="more_device_info">Acerca de Android</string>
+  <string name="more_developer">Opciones de desarrollador</string>
+  <string name="more_android_summary">Todas las demás opciones de Android, con su diseño original</string>
+  <string name="more_android_action">Abrir</string>
   <string name="about_caption">ACERCA DE</string>
-  <string name="about_version">GabOS 1.0 · g2806.net</string>
+  <string name="about_version">GabOS 1.1 · g2806.net</string>
   <string name="about_device">Canon Rayo S1   ·   motor óptico %1$s</string>
   <string name="about_battery">Batería %1$d%%</string>
 
@@ -104,7 +116,7 @@
   <string name="setup_get_started">Empezar</string>
   <string name="setup_current">Actual</string>
   <string name="setup_welcome_title">Bienvenido a GabOS</string>
-  <string name="setup_welcome_version">Versión 1.0</string>
+  <string name="setup_welcome_version">Versión 1.1</string>
   <string name="setup_welcome_body">Un sistema ligero y rápido para tu proyector Canon Rayo S1. En unos pocos pasos elegirás el idioma, te conectarás al Wi-Fi y escogerás un aspecto.</string>
   <string name="setup_welcome_hint">Usa el panel táctil como ratón, o las flechas y OK. Atrás vuelve al paso anterior.</string>
   <string name="setup_welcome_site">GabOS por g2806.net</string>

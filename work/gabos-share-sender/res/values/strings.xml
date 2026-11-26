@@ -6,7 +6,7 @@
   <string name="default_sender">Phone</string>
 
   <string name="section_projector">Projector</string>
-  <string name="searching">Searching your Wi-Fi network for GabOS projectors…</string>
+  <string name="searching">Searching your Wi-Fi network or hotspot for GabOS projectors…</string>
   <string name="searching_more">Tap a projector to send to it.</string>
   <string name="manual_hint">Or type its address, e.g. 192.168.1.20</string>
   <string name="manual_use">Use</string>
@@ -52,6 +52,6 @@
   <string name="error_network">Could not reach the projector. Check that both devices are on the same Wi-Fi network.</string>
   <string name="error_bad_address">That address does not look right. Use the one shown in GabOS Share on the projector.</string>
 
-  <string name="same_network">Both devices must be on the same Wi-Fi network.</string>
+  <string name="same_network">Both devices must be on the same Wi-Fi network, or the projector on this phone\'s hotspot.</string>
   <string name="footer">Made for GabOS · g2806.net</string>
 </resources>
